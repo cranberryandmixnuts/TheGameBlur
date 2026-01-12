@@ -9,8 +9,8 @@ public class PlayerStatusView : MonoBehaviour
     [SerializeField] private Image manaView;
     [SerializeField] private float smoothSpeed = 5f;
 
-    private float healthFillAmount = 1;
-    private float manaFillAmount = 1;
+    private float healthFillAmount = 1f;
+    private float manaFillAmount = 1f;
 
     private void Awake()
     {
