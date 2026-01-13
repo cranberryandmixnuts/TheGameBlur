@@ -1,6 +1,12 @@
 using System.Collections;
 using UnityEngine;
 
+public enum EnemyState
+{
+    Idle,
+    Move
+}
+
 [RequireComponent(typeof(Rigidbody))]
 public class EnemyScript : MonoBehaviour
 {
@@ -12,10 +18,27 @@ public class EnemyScript : MonoBehaviour
     int currentHP;
     int damage;
 
+    public int FacingDir { get; private set; } = -1;
+
+    EnemyState state;
+
+    public bool useDebugColor = true;
+
+    Renderer rend;
+    Material mat;
+    Color originalColor;
+    readonly Color idleColor = new Color(1f, 0.5f, 0f);
+
+    static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
+    static readonly int ColorId = Shader.PropertyToID("_Color");
+
+    Animator anim;
+
+    static readonly int AnimIsMoving = Animator.StringToHash("IsMoving");
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
-
         rb.useGravity = true;
         rb.constraints =
             RigidbodyConstraints.FreezePositionZ |
@@ -23,14 +46,26 @@ public class EnemyScript : MonoBehaviour
             RigidbodyConstraints.FreezeRotationY |
             RigidbodyConstraints.FreezeRotationZ;
 
-        Debug.Log($"[EnemyScript] Awake - Rigidbody 설정 완료 ({name})");
+        anim = GetComponentInChildren<Animator>();
+
+        if (useDebugColor)
+        {
+            rend = GetComponent<Renderer>();
+            if (rend != null)
+            {
+                mat = rend.material;
+                originalColor = GetMatColor();
+            }
+        }
+
+        FacingDir = -1;
     }
 
     void Start()
     {
         if (data == null)
         {
-            Debug.LogError($"[EnemyScript] EnemyDataSO 없음 ({name})");
+            Debug.LogError($"[Enemy] data(EnemyDataSO) 없음: {name}");
             enabled = false;
             return;
         }
@@ -38,67 +73,90 @@ public class EnemyScript : MonoBehaviour
         currentHP = data.maxHP;
         damage = data.damage;
 
-        Debug.Log($"[EnemyScript] Start - HP:{currentHP}, DMG:{damage}, Speed:{data.moveSpeed}, Dist:{data.moveDistance}");
-
-        loop = StartCoroutine(MoveRestLoop());
+        loop = StartCoroutine(AI_Loop());
     }
 
-    IEnumerator MoveRestLoop()
+    IEnumerator AI_Loop()
     {
-        Debug.Log("[EnemyScript] 이동 루프 시작");
-
         while (true)
         {
+            SetState(EnemyState.Move);
+
             int dir = Random.value < 0.5f ? -1 : 1;
+
+            FacingDir = dir;
 
             Vector3 start = rb.position;
             Vector3 target = start + Vector3.right * dir * data.moveDistance;
 
-            Debug.Log($"[EnemyScript] 이동 시작 | 방향:{(dir == 1 ? "Right" : "Left")} | 시작:{start} → 목표:{target}");
-
             while ((rb.position - target).sqrMagnitude > 0.001f)
             {
-                Vector3 next = Vector3.MoveTowards(
-                    rb.position,
-                    target,
-                    data.moveSpeed * Time.fixedDeltaTime
-                );
-
+                Vector3 next = Vector3.MoveTowards(rb.position, target, data.moveSpeed * Time.fixedDeltaTime);
                 rb.MovePosition(next);
-
-                Debug.Log($"[EnemyScript] 이동 중 | 현재:{rb.position}");
-
                 yield return new WaitForFixedUpdate();
             }
 
             rb.MovePosition(target);
 
-            Debug.Log($"[EnemyScript] 이동 완료 | 도착:{target} | {data.restTime}초 대기");
+            SetState(EnemyState.Idle);
 
-            yield return new WaitForSeconds(data.restTime);
+            if (data.restTime > 0f)
+                yield return new WaitForSeconds(data.restTime);
+            else
+                yield return null;
         }
+    }
+
+    void SetState(EnemyState newState)
+    {
+        if (state == newState) return;
+        state = newState;
+
+        if (anim != null)
+        {
+            bool isMoving = (state == EnemyState.Move);
+            anim.SetBool(AnimIsMoving, isMoving);
+        }
+
+        if (useDebugColor)
+        {
+            if (state == EnemyState.Idle) SetMatColor(idleColor);
+            else SetMatColor(originalColor);
+        }
+    }
+
+    Color GetMatColor()
+    {
+        if (mat == null) return Color.white;
+
+        if (mat.HasProperty(BaseColorId)) return mat.GetColor(BaseColorId);
+        if (mat.HasProperty(ColorId)) return mat.GetColor(ColorId);
+
+        return Color.white;
+    }
+
+    void SetMatColor(Color c)
+    {
+        if (mat == null) return;
+
+        if (mat.HasProperty(BaseColorId)) mat.SetColor(BaseColorId, c);
+        else if (mat.HasProperty(ColorId)) mat.SetColor(ColorId, c);
     }
 
     public int GetCurrentHP() => currentHP;
     public int GetDamage() => damage;
     public EnemyGrade GetGrade() => data.grade;
+    public EnemyState GetState() => state;
 
     public void TakeDamage(int amount)
     {
         currentHP -= amount;
-        Debug.Log($"[EnemyScript] 데미지 받음 {amount} | 남은 HP:{currentHP}");
-
-        if (currentHP <= 0)
-            Die();
+        if (currentHP <= 0) Die();
     }
 
     void Die()
     {
-        Debug.Log($"[EnemyScript] 사망 ({name})");
-
-        if (loop != null)
-            StopCoroutine(loop);
-
+        if (loop != null) StopCoroutine(loop);
         Destroy(gameObject);
     }
 }

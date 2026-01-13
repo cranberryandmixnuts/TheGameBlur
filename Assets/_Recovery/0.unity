@@ -373,7 +373,6 @@ GameObject:
   - component: {fileID: 541527047}
   - component: {fileID: 541527046}
   - component: {fileID: 541527045}
-  - component: {fileID: 541527051}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -508,34 +507,12 @@ Transform:
   m_GameObject: {fileID: 541527044}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2.12, z: 29.1}
+  m_LocalPosition: {x: -0.02, y: -2.13, z: 29.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &541527051
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 541527044}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 018b9e19866c4aa43803f3a464a0eccf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyVision
-  enemy: {fileID: 541527045}
-  viewRadius: 8
-  viewAngle: 60
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 0
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 0
-  detectedTarget: {fileID: 0}
 --- !u!1 &1402748506
 GameObject:
   m_ObjectHideFlags: 0
