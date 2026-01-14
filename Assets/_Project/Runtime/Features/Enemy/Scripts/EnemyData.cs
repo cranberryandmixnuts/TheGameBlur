@@ -7,7 +7,7 @@ public enum EnemyGrade
 
 
 [CreateAssetMenu(fileName = "EnemyData_", menuName = "Game/Enemy Data")]
-public class EnemyDataSO : ScriptableObject
+public class EnemyData : ScriptableObject
 {
     public EnemyGrade grade = EnemyGrade.F;
 

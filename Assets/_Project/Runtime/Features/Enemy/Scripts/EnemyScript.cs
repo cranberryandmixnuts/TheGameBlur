@@ -4,13 +4,15 @@ using UnityEngine;
 public enum EnemyState
 {
     Idle,
-    Move
+    Move,
+    Chase
 }
 
 [RequireComponent(typeof(Rigidbody))]
 public class EnemyScript : MonoBehaviour
 {
-    public EnemyDataSO data;
+    public EnemyData data;
+    public EnemyVision vision;
 
     Rigidbody rb;
     Coroutine loop;
@@ -22,18 +24,10 @@ public class EnemyScript : MonoBehaviour
 
     EnemyState state;
 
-    public bool useDebugColor = true;
-
-    Renderer rend;
-    Material mat;
-    Color originalColor;
-    readonly Color idleColor = new Color(1f, 0.5f, 0f);
-
-    static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
-    static readonly int ColorId = Shader.PropertyToID("_Color");
+    bool hasAggro = false;
+    Transform lockedTarget;
 
     Animator anim;
-
     static readonly int AnimIsMoving = Animator.StringToHash("IsMoving");
 
     void Awake()
@@ -48,24 +42,18 @@ public class EnemyScript : MonoBehaviour
 
         anim = GetComponentInChildren<Animator>();
 
-        if (useDebugColor)
-        {
-            rend = GetComponent<Renderer>();
-            if (rend != null)
-            {
-                mat = rend.material;
-                originalColor = GetMatColor();
-            }
-        }
+        if (vision == null) vision = GetComponent<EnemyVision>();
+        if (vision != null && vision.enemy == null) vision.enemy = this;
 
         FacingDir = -1;
+        UpdateFacingRotation();
     }
 
     void Start()
     {
         if (data == null)
         {
-            Debug.LogError($"[Enemy] data(EnemyDataSO) 없음: {name}");
+            Debug.LogError($"[Enemy] EnemyDataSO 없음: {name}");
             enabled = false;
             return;
         }
@@ -80,31 +68,92 @@ public class EnemyScript : MonoBehaviour
     {
         while (true)
         {
-            SetState(EnemyState.Move);
-
-            int dir = Random.value < 0.5f ? -1 : 1;
-
-            FacingDir = dir;
-
-            Vector3 start = rb.position;
-            Vector3 target = start + Vector3.right * dir * data.moveDistance;
-
-            while ((rb.position - target).sqrMagnitude > 0.001f)
+            if (!hasAggro && vision != null && vision.IsDetected && vision.target != null)
             {
-                Vector3 next = Vector3.MoveTowards(rb.position, target, data.moveSpeed * Time.fixedDeltaTime);
-                rb.MovePosition(next);
-                yield return new WaitForFixedUpdate();
+                hasAggro = true;
+                lockedTarget = vision.target;
             }
 
-            rb.MovePosition(target);
+            if (hasAggro && lockedTarget != null)
+            {
+                yield return ChaseLoop();
+                continue;
+            }
 
-            SetState(EnemyState.Idle);
-
-            if (data.restTime > 0f)
-                yield return new WaitForSeconds(data.restTime);
-            else
-                yield return null;
+            yield return PatrolOnce();
         }
+    }
+
+
+    IEnumerator PatrolOnce()
+    {
+        SetState(EnemyState.Move);
+
+        int dir = Random.value < 0.5f ? -1 : 1;
+        FacingDir = dir;
+        UpdateFacingRotation();
+
+        Vector3 start = rb.position;
+        Vector3 target = start + Vector3.right * dir * data.moveDistance;
+
+        while ((rb.position - target).sqrMagnitude > 0.001f)
+        {
+            if (!hasAggro && vision != null && vision.IsDetected && vision.target != null)
+            {
+                hasAggro = true;
+                lockedTarget = vision.target;
+                yield break;
+            }
+
+            Vector3 next = Vector3.MoveTowards(rb.position, target, data.moveSpeed * Time.fixedDeltaTime);
+            rb.MovePosition(next);
+            yield return new WaitForFixedUpdate();
+        }
+
+        rb.MovePosition(target);
+        SetState(EnemyState.Idle);
+
+        yield return data.restTime > 0f
+            ? new WaitForSeconds(data.restTime)
+            : null;
+    }
+
+    IEnumerator ChaseLoop()
+    {
+        SetState(EnemyState.Chase);
+
+        while (hasAggro && lockedTarget != null)
+        {
+            float targetX = lockedTarget.position.x;
+            float myY = rb.position.y;
+            float myZ = rb.position.z;
+
+            float dx = targetX - rb.position.x;
+            FacingDir = (dx >= 0f) ? 1 : -1;
+            UpdateFacingRotation();
+
+            Vector3 chasePos = new Vector3(targetX, myY, myZ);
+            Vector3 next = Vector3.MoveTowards(rb.position, chasePos, data.moveSpeed * Time.fixedDeltaTime);
+            rb.MovePosition(next);
+
+            yield return new WaitForFixedUpdate();
+        }
+
+        SetState(EnemyState.Idle);
+    }
+
+    public void GiveUp()
+    {
+        hasAggro = false;
+        lockedTarget = null;
+    }
+
+    void UpdateFacingRotation()
+    {
+        if (FacingDir < 0)
+            transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+        else
+            transform.rotation = Quaternion.Euler(0f, 0f, 0f);
     }
 
     void SetState(EnemyState newState)
@@ -114,33 +163,9 @@ public class EnemyScript : MonoBehaviour
 
         if (anim != null)
         {
-            bool isMoving = (state == EnemyState.Move);
-            anim.SetBool(AnimIsMoving, isMoving);
+            bool moving = (state == EnemyState.Move || state == EnemyState.Chase);
+            anim.SetBool(AnimIsMoving, moving);
         }
-
-        if (useDebugColor)
-        {
-            if (state == EnemyState.Idle) SetMatColor(idleColor);
-            else SetMatColor(originalColor);
-        }
-    }
-
-    Color GetMatColor()
-    {
-        if (mat == null) return Color.white;
-
-        if (mat.HasProperty(BaseColorId)) return mat.GetColor(BaseColorId);
-        if (mat.HasProperty(ColorId)) return mat.GetColor(ColorId);
-
-        return Color.white;
-    }
-
-    void SetMatColor(Color c)
-    {
-        if (mat == null) return;
-
-        if (mat.HasProperty(BaseColorId)) mat.SetColor(BaseColorId, c);
-        else if (mat.HasProperty(ColorId)) mat.SetColor(ColorId, c);
     }
 
     public int GetCurrentHP() => currentHP;
@@ -151,7 +176,8 @@ public class EnemyScript : MonoBehaviour
     public void TakeDamage(int amount)
     {
         currentHP -= amount;
-        if (currentHP <= 0) Die();
+        if (currentHP <= 0)
+            Die();
     }
 
     void Die()
