@@ -1,0 +1,255 @@
+using System;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public sealed class InputManager : Singleton<InputManager, GlobalScope>
+{
+    [SerializeField] private InputActionAsset actions;
+
+    [Header("Action Map")]
+    [SerializeField] private string playerMapName = "Player";
+    [SerializeField] private string UIMapName = "UI";
+
+    [Header("Action Names")]
+    [SerializeField] private string moveActionName = "Move";
+    [SerializeField] private string jumpActionName = "Jump";
+    [SerializeField] private string dashActionName = "Dash";
+    [SerializeField] private string parryActionName = "Parry";
+    [SerializeField] private string healActionName = "Heal";
+    [SerializeField] private string escapeActionName = "Escape";
+
+    private InputAction moveAction;
+    private InputAction jumpAction;
+    private InputAction dashAction;
+    private InputAction parryAction;
+    private InputAction healAction;
+    private InputAction escapeAction;
+
+    private InputActionRebindingExtensions.RebindingOperation currentRebind;
+
+    private InputAction currentRebindAction;
+    private int currentRebindBindingIndex;
+    private bool currentRebindExcludeMouse;
+
+    private const string RebindsKey = "InputService_Rebinds";
+
+    public float MoveAxis { get; private set; }
+
+    public bool JumpDown { get; private set; }
+    public bool JumpUp { get; private set; }
+    public bool JumpHeld { get; private set; }
+
+    public bool DashDown { get; private set; }
+
+    public bool ParryDown { get; private set; }
+    public bool ParryHeld { get; private set; }
+
+    public bool HealHeld { get; private set; }
+
+    public bool EscapeDown { get; private set; }
+
+    public bool IsRebinding { get; private set; }
+
+    public InputActionAsset Actions { get { return actions; } }
+
+    public event Action OnRebindStarted;
+    public event Action OnRebindCompleted;
+    public event Action OnRebindCanceled;
+
+    protected override void SingletonAwake()
+    {
+        InitializeActions();
+        LoadBindingOverrides();
+    }
+
+    private void OnEnable()
+    {
+        if (Instance != this) return;
+        EnableActions(true);
+    }
+
+    private void OnDisable()
+    {
+        if (Instance != this) return;
+        EnableActions(false);
+    }
+
+    private void Update()
+    {
+        if (IsRebinding)
+        {
+            MoveAxis = 0f;
+
+            JumpDown = false;
+            JumpUp = false;
+            JumpHeld = false;
+
+            DashDown = false;
+
+            ParryDown = false;
+            ParryHeld = false;
+
+            HealHeld = false;
+
+            EscapeDown = false;
+            return;
+        }
+
+        Vector2 move = moveAction.ReadValue<Vector2>();
+        MoveAxis = Mathf.Clamp(move.x, -1f, 1f);
+
+        JumpDown = jumpAction.WasPressedThisFrame();
+        JumpUp = jumpAction.WasReleasedThisFrame();
+        JumpHeld = jumpAction.IsPressed();
+
+        DashDown = dashAction.WasPressedThisFrame();
+
+        ParryDown = parryAction.WasPressedThisFrame();
+        ParryHeld = parryAction.IsPressed();
+
+        HealHeld = healAction.IsPressed();
+
+        EscapeDown = escapeAction.WasPressedThisFrame();
+    }
+
+    private void InitializeActions()
+    {
+        moveAction = FindAction(playerMapName, moveActionName);
+        jumpAction = FindAction(playerMapName, jumpActionName);
+        dashAction = FindAction(playerMapName, dashActionName);
+        parryAction = FindAction(playerMapName, parryActionName);
+        healAction = FindAction(playerMapName, healActionName);
+
+        escapeAction = FindAction(UIMapName, escapeActionName);
+    }
+
+    private InputAction FindAction(string mapName, string actionName) => actions.FindAction(mapName + "/" + actionName);
+
+    private void EnableActions(bool enable)
+    {
+        if (enable) actions.Enable();
+        else actions.Disable();
+    }
+
+    public void SaveBindingOverrides()
+    {
+        string json = actions.SaveBindingOverridesAsJson();
+        PlayerPrefs.SetString(RebindsKey, json);
+        PlayerPrefs.Save();
+    }
+
+    public void LoadBindingOverrides()
+    {
+        Debug.Log("Loading input binding overrides.");
+        if (!PlayerPrefs.HasKey(RebindsKey))
+            return;
+
+        string json = PlayerPrefs.GetString(RebindsKey);
+        actions.LoadBindingOverridesFromJson(json);
+    }
+
+    public void ClearBindingOverrides()
+    {
+        actions.RemoveAllBindingOverrides();
+        PlayerPrefs.DeleteKey(RebindsKey);
+    }
+
+    public void CancelCurrentRebind()
+    {
+        if (currentRebind == null)
+            return;
+
+        currentRebind.Cancel();
+    }
+
+    public void StartRebind(string mapName, string actionName, int bindingIndex)
+    {
+        InputAction action = FindAction(mapName, actionName);
+
+        if (action == null)
+            return;
+
+        if (bindingIndex < 0 || bindingIndex >= action.bindings.Count)
+            return;
+
+        currentRebind?.Cancel();
+
+        IsRebinding = true;
+
+        currentRebindAction = action;
+        currentRebindBindingIndex = bindingIndex;
+        currentRebindExcludeMouse = false;
+
+        action.Disable();
+
+        OnRebindStarted?.Invoke();
+
+        currentRebind = BuildRebindOperation(action, bindingIndex, currentRebindExcludeMouse);
+        currentRebind.Start();
+    }
+
+    public void SetCurrentRebindExcludeMouse(bool excludeMouse)
+    {
+        if (!IsRebinding)
+            return;
+
+        if (currentRebind == null)
+            return;
+
+        if (currentRebindAction == null)
+            return;
+
+        if (currentRebindExcludeMouse == excludeMouse)
+            return;
+
+        currentRebindExcludeMouse = excludeMouse;
+
+        currentRebind.Dispose();
+        currentRebind = null;
+
+        currentRebind = BuildRebindOperation(currentRebindAction, currentRebindBindingIndex, currentRebindExcludeMouse);
+        currentRebind.Start();
+    }
+
+    private InputActionRebindingExtensions.RebindingOperation BuildRebindOperation(InputAction action, int bindingIndex, bool excludeMouse)
+    {
+        var operation = action.PerformInteractiveRebinding(bindingIndex);
+
+        if (excludeMouse) operation.WithControlsExcluding("Mouse");
+
+        operation.OnMatchWaitForAnother(0.1f);
+
+        return operation
+            .OnComplete(o => FinishRebind(action))
+            .OnCancel(o => CancelRebind(action));
+    }
+
+    private void FinishRebind(InputAction action)
+    {
+        action.Enable();
+
+        currentRebind.Dispose();
+        currentRebind = null;
+
+        currentRebindAction = null;
+
+        IsRebinding = false;
+
+        SaveBindingOverrides();
+        OnRebindCompleted?.Invoke();
+    }
+
+    private void CancelRebind(InputAction action)
+    {
+        action.Enable();
+
+        currentRebind.Dispose();
+        currentRebind = null;
+
+        currentRebindAction = null;
+
+        IsRebinding = false;
+
+        OnRebindCanceled?.Invoke();
+    }
+}
