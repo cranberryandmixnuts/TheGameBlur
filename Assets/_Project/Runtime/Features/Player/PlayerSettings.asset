@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6abb639d3c9adb048aecbec7504d6522, type: 3}
+  m_Name: PlayerSettings
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSettings
+  fixedZ: 0
+  moveSpeed: 6
+  runMultiplier: 1.2
+  backwalkMultiplier: 0.8
+  attackMoveMultiplier: 0.5
+  accelTimeToMax: 0.05
+  jumpVelocity: 11
+  jumpCutMultiplier: 0.5
+  jumpBufferTime: 0.1
+  coyoteTime: 0.1
+  maxFallSpeed: 25
+  dashCooldown: 0.8
+  dashDuration: 0.2
+  dashDistance: 6
+  attackDuration: 0.2
+  skillDuration: 0.2
+  hitNormalizedTime: 0.35
+  attackDamage: 1
+  skillDamage: 2
+  hitboxHalfExtents: {x: 0.7, y: 0.6, z: 0.8}
+  hitboxForwardOffset: 1.1
+  enemyMask:
+    serializedVersion: 2
+    m_Bits: 512
+  environmentMask:
+    serializedVersion: 2
+    m_Bits: 256
+  attackWallRecoilSpeed: 14
+  downAttackThreshold: -0.35
+  downAttackBounceVelocity: 12
+  diceGaugeMax: 10
+  diceGainOnAttackHit: 1
+  ledgeAssistDuration: 0.15
+  ledgeSensorRadius: 0.18
+  ledgeProbeUp: 0.6
+  ledgeProbeForward: 0.15
+  ledgeProbeDown: 1.8
+  ledgeSnapInset: 0.25
+  ledgeSnapExtraY: 0.02
+  hitStopDuration: 0.2
+  darkenAlpha: 0.35
+  shakeDuration: 0.2
+  shakeAmplitude: 0.25
+  shakeFrequency: 25
+  lookAheadPercent: 0.15
+  cliffDownPercent: 0.05
+  lookDownPercent: 0.4
+  lookDownHoldTime: 1
+  cameraSmoothTime: 0.12
+  cliffProbeForward: 0.8
+  cliffProbeDown: 4

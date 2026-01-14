@@ -12,9 +12,9 @@ TagManager:
   - Water
   - UI
   - OutlinedObjects
-  - 
-  - 
-  - 
+  - Ground
+  - Wall
+  - Enemy
   - 
   - 
   - 

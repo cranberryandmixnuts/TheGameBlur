@@ -8,21 +8,31 @@ public sealed class InputManager : Singleton<InputManager, GlobalScope>
 
     [Header("Action Map")]
     [SerializeField] private string playerMapName = "Player";
-    [SerializeField] private string UIMapName = "UI";
+    [SerializeField] private string uiMapName = "UI";
 
     [Header("Action Names")]
     [SerializeField] private string moveActionName = "Move";
-    [SerializeField] private string jumpActionName = "Jump";
+    [SerializeField] private string runActionName = "Run";
     [SerializeField] private string dashActionName = "Dash";
-    [SerializeField] private string parryActionName = "Parry";
+    [SerializeField] private string jumpActionName = "Jump";
+    [SerializeField] private string attackActionName = "Attack";
+    [SerializeField] private string skillActionName = "Skill";
+    [SerializeField] private string diceSkillActionName = "DiceSkill";
     [SerializeField] private string healActionName = "Heal";
+    [SerializeField] private string interactionActionName = "Interaction";
+    [SerializeField] private string mapActionName = "Map";
     [SerializeField] private string escapeActionName = "Escape";
 
     private InputAction moveAction;
-    private InputAction jumpAction;
+    private InputAction runAction;
     private InputAction dashAction;
-    private InputAction parryAction;
+    private InputAction jumpAction;
+    private InputAction attackAction;
+    private InputAction skillAction;
+    private InputAction diceSkillAction;
     private InputAction healAction;
+    private InputAction interactionAction;
+    private InputAction mapAction;
     private InputAction escapeAction;
 
     private InputActionRebindingExtensions.RebindingOperation currentRebind;
@@ -33,24 +43,31 @@ public sealed class InputManager : Singleton<InputManager, GlobalScope>
 
     private const string RebindsKey = "InputService_Rebinds";
 
-    public float MoveAxis { get; private set; }
+    public Vector2 MoveVector { get; private set; }
+    public float MoveAxis => MoveVector.x;
 
     public bool JumpDown { get; private set; }
     public bool JumpUp { get; private set; }
     public bool JumpHeld { get; private set; }
 
     public bool DashDown { get; private set; }
+    public bool RunHeld { get; private set; }
 
-    public bool ParryDown { get; private set; }
-    public bool ParryHeld { get; private set; }
+    public bool AttackDown { get; private set; }
+    public bool SkillDown { get; private set; }
+    public bool DiceSkillDown { get; private set; }
 
+    public bool HealDown { get; private set; }
     public bool HealHeld { get; private set; }
+
+    public bool InteractionDown { get; private set; }
+    public bool MapDown { get; private set; }
 
     public bool EscapeDown { get; private set; }
 
     public bool IsRebinding { get; private set; }
 
-    public InputActionAsset Actions { get { return actions; } }
+    public InputActionAsset Actions => actions;
 
     public event Action OnRebindStarted;
     public event Action OnRebindCompleted;
@@ -65,49 +82,61 @@ public sealed class InputManager : Singleton<InputManager, GlobalScope>
     private void OnEnable()
     {
         if (Instance != this) return;
-        EnableActions(true);
+        actions.Enable();
     }
 
     private void OnDisable()
     {
         if (Instance != this) return;
-        EnableActions(false);
+        actions.Disable();
     }
 
     private void Update()
     {
         if (IsRebinding)
         {
-            MoveAxis = 0f;
+            MoveVector = Vector2.zero;
 
             JumpDown = false;
             JumpUp = false;
             JumpHeld = false;
 
             DashDown = false;
+            RunHeld = false;
 
-            ParryDown = false;
-            ParryHeld = false;
+            AttackDown = false;
+            SkillDown = false;
+            DiceSkillDown = false;
 
+            HealDown = false;
             HealHeld = false;
+
+            InteractionDown = false;
+            MapDown = false;
 
             EscapeDown = false;
             return;
         }
 
         Vector2 move = moveAction.ReadValue<Vector2>();
-        MoveAxis = Mathf.Clamp(move.x, -1f, 1f);
+        MoveVector = new Vector2(Mathf.Clamp(move.x, -1f, 1f), Mathf.Clamp(move.y, -1f, 1f));
 
         JumpDown = jumpAction.WasPressedThisFrame();
         JumpUp = jumpAction.WasReleasedThisFrame();
         JumpHeld = jumpAction.IsPressed();
 
         DashDown = dashAction.WasPressedThisFrame();
+        RunHeld = runAction.IsPressed();
 
-        ParryDown = parryAction.WasPressedThisFrame();
-        ParryHeld = parryAction.IsPressed();
+        AttackDown = attackAction.WasPressedThisFrame();
+        SkillDown = skillAction.WasPressedThisFrame();
+        DiceSkillDown = diceSkillAction.WasPressedThisFrame();
 
+        HealDown = healAction.WasPressedThisFrame();
         HealHeld = healAction.IsPressed();
+
+        InteractionDown = interactionAction.WasPressedThisFrame();
+        MapDown = mapAction.WasPressedThisFrame();
 
         EscapeDown = escapeAction.WasPressedThisFrame();
     }
@@ -115,21 +144,20 @@ public sealed class InputManager : Singleton<InputManager, GlobalScope>
     private void InitializeActions()
     {
         moveAction = FindAction(playerMapName, moveActionName);
-        jumpAction = FindAction(playerMapName, jumpActionName);
+        runAction = FindAction(playerMapName, runActionName);
         dashAction = FindAction(playerMapName, dashActionName);
-        parryAction = FindAction(playerMapName, parryActionName);
+        jumpAction = FindAction(playerMapName, jumpActionName);
+        attackAction = FindAction(playerMapName, attackActionName);
+        skillAction = FindAction(playerMapName, skillActionName);
+        diceSkillAction = FindAction(playerMapName, diceSkillActionName);
         healAction = FindAction(playerMapName, healActionName);
+        interactionAction = FindAction(playerMapName, interactionActionName);
+        mapAction = FindAction(playerMapName, mapActionName);
 
-        escapeAction = FindAction(UIMapName, escapeActionName);
+        escapeAction = FindAction(uiMapName, escapeActionName);
     }
 
     private InputAction FindAction(string mapName, string actionName) => actions.FindAction(mapName + "/" + actionName);
-
-    private void EnableActions(bool enable)
-    {
-        if (enable) actions.Enable();
-        else actions.Disable();
-    }
 
     public void SaveBindingOverrides()
     {
@@ -140,9 +168,7 @@ public sealed class InputManager : Singleton<InputManager, GlobalScope>
 
     public void LoadBindingOverrides()
     {
-        Debug.Log("Loading input binding overrides.");
-        if (!PlayerPrefs.HasKey(RebindsKey))
-            return;
+        if (!PlayerPrefs.HasKey(RebindsKey)) return;
 
         string json = PlayerPrefs.GetString(RebindsKey);
         actions.LoadBindingOverridesFromJson(json);
@@ -156,21 +182,16 @@ public sealed class InputManager : Singleton<InputManager, GlobalScope>
 
     public void CancelCurrentRebind()
     {
-        if (currentRebind == null)
-            return;
-
+        if (currentRebind == null) return;
         currentRebind.Cancel();
     }
 
     public void StartRebind(string mapName, string actionName, int bindingIndex)
     {
         InputAction action = FindAction(mapName, actionName);
+        if (action == null) return;
 
-        if (action == null)
-            return;
-
-        if (bindingIndex < 0 || bindingIndex >= action.bindings.Count)
-            return;
+        if (bindingIndex < 0 || bindingIndex >= action.bindings.Count) return;
 
         currentRebind?.Cancel();
 
@@ -190,17 +211,10 @@ public sealed class InputManager : Singleton<InputManager, GlobalScope>
 
     public void SetCurrentRebindExcludeMouse(bool excludeMouse)
     {
-        if (!IsRebinding)
-            return;
-
-        if (currentRebind == null)
-            return;
-
-        if (currentRebindAction == null)
-            return;
-
-        if (currentRebindExcludeMouse == excludeMouse)
-            return;
+        if (!IsRebinding) return;
+        if (currentRebind == null) return;
+        if (currentRebindAction == null) return;
+        if (currentRebindExcludeMouse == excludeMouse) return;
 
         currentRebindExcludeMouse = excludeMouse;
 
@@ -213,13 +227,14 @@ public sealed class InputManager : Singleton<InputManager, GlobalScope>
 
     private InputActionRebindingExtensions.RebindingOperation BuildRebindOperation(InputAction action, int bindingIndex, bool excludeMouse)
     {
-        var operation = action.PerformInteractiveRebinding(bindingIndex);
+        InputActionRebindingExtensions.RebindingOperation op = action.PerformInteractiveRebinding(bindingIndex);
 
-        if (excludeMouse) operation.WithControlsExcluding("Mouse");
+        if (excludeMouse)
+            op.WithControlsExcluding("Mouse");
 
-        operation.OnMatchWaitForAnother(0.1f);
+        op.OnMatchWaitForAnother(0.1f);
 
-        return operation
+        return op
             .OnComplete(o => FinishRebind(action))
             .OnCancel(o => CancelRebind(action));
     }
