@@ -374,6 +374,7 @@ GameObject:
   - component: {fileID: 541527046}
   - component: {fileID: 541527045}
   - component: {fileID: 541527051}
+  - component: {fileID: 541527052}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -395,6 +396,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyScript
   data: {fileID: 11400000, guid: d080f609735419441a7df0e61e793bb7, type: 2}
   vision: {fileID: 541527051}
+  combat: {fileID: 0}
+  attackRangeX: 1.2
 --- !u!54 &541527046
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -537,6 +540,22 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 0
+--- !u!114 &541527052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 541527044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdae26c7da7cc1b46b179a3094d2a8c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyCombat
+  hitOrigin: {fileID: 541527050}
+  debugShowHitbox: 1
+  debugPersistSeconds: 0.15
+  hitboxVisualizer: {fileID: 0}
 --- !u!1 &1402748506
 GameObject:
   m_ObjectHideFlags: 0

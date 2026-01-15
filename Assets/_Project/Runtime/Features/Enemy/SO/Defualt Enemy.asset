@@ -18,4 +18,10 @@ MonoBehaviour:
   moveSpeed: 2
   moveDistance: 3
   restTime: 2
-  fixedZ: 0
+  attackAnimTime: 0.6
+  hitNormalizedTime: 0.35
+  hitboxHalfExtents: {x: 0.6, y: 0.5, z: 0.6}
+  hitboxForwardOffset: 0.9
+  playerMask:
+    serializedVersion: 2
+    m_Bits: 8

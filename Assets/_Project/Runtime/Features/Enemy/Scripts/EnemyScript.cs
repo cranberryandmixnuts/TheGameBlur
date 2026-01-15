@@ -1,3 +1,4 @@
+// EnemyScript.cs
 using System.Collections;
 using UnityEngine;
 
@@ -5,7 +6,8 @@ public enum EnemyState
 {
     Idle,
     Move,
-    Chase
+    Chase,
+    Attack
 }
 
 [RequireComponent(typeof(Rigidbody))]
@@ -13,6 +15,10 @@ public class EnemyScript : MonoBehaviour
 {
     public EnemyData data;
     public EnemyVision vision;
+
+    [Header("Combat")]
+    public EnemyCombat combat;
+    public float attackRangeX = 1.2f;
 
     Rigidbody rb;
     Coroutine loop;
@@ -26,6 +32,9 @@ public class EnemyScript : MonoBehaviour
 
     bool hasAggro = false;
     Transform lockedTarget;
+
+    bool isActionLocked = false;
+    Coroutine lockRoutine;
 
     Animator anim;
     static readonly int AnimIsMoving = Animator.StringToHash("IsMoving");
@@ -45,6 +54,8 @@ public class EnemyScript : MonoBehaviour
         if (vision == null) vision = GetComponent<EnemyVision>();
         if (vision != null && vision.enemy == null) vision.enemy = this;
 
+        if (combat == null) combat = GetComponent<EnemyCombat>();
+
         FacingDir = -1;
         UpdateFacingRotation();
     }
@@ -53,7 +64,7 @@ public class EnemyScript : MonoBehaviour
     {
         if (data == null)
         {
-            Debug.LogError($"[Enemy] EnemyDataSO 없음: {name}");
+            Debug.LogError($"[Enemy] EnemyData 없음: {name}");
             enabled = false;
             return;
         }
@@ -68,6 +79,13 @@ public class EnemyScript : MonoBehaviour
     {
         while (true)
         {
+            if (isActionLocked)
+            {
+                yield return null;
+                continue;
+            }
+
+
             if (!hasAggro && vision != null && vision.IsDetected && vision.target != null)
             {
                 hasAggro = true;
@@ -84,7 +102,6 @@ public class EnemyScript : MonoBehaviour
         }
     }
 
-
     IEnumerator PatrolOnce()
     {
         SetState(EnemyState.Move);
@@ -98,6 +115,13 @@ public class EnemyScript : MonoBehaviour
 
         while ((rb.position - target).sqrMagnitude > 0.001f)
         {
+            if (isActionLocked)
+            {
+                yield return null;
+                continue;
+            }
+
+
             if (!hasAggro && vision != null && vision.IsDetected && vision.target != null)
             {
                 hasAggro = true;
@@ -113,9 +137,18 @@ public class EnemyScript : MonoBehaviour
         rb.MovePosition(target);
         SetState(EnemyState.Idle);
 
-        yield return data.restTime > 0f
-            ? new WaitForSeconds(data.restTime)
-            : null;
+        float t = data.restTime;
+        while (t > 0f)
+        {
+            if (isActionLocked)
+            {
+                yield return null;
+                continue;
+            }
+
+            t -= Time.deltaTime;
+            yield return null;
+        }
     }
 
     IEnumerator ChaseLoop()
@@ -124,6 +157,23 @@ public class EnemyScript : MonoBehaviour
 
         while (hasAggro && lockedTarget != null)
         {
+            if (isActionLocked)
+            {
+                yield return null;
+                continue;
+            }
+
+            if (combat != null && !combat.IsActionActive)
+            {
+                float dxAbs = Mathf.Abs(lockedTarget.position.x - rb.position.x);
+                if (dxAbs <= attackRangeX)
+                {
+                    combat.BeginAttack(); 
+                    yield return null;   
+                    continue;
+                }
+            }
+
             float targetX = lockedTarget.position.x;
             float myY = rb.position.y;
             float myZ = rb.position.z;
@@ -142,6 +192,29 @@ public class EnemyScript : MonoBehaviour
         SetState(EnemyState.Idle);
     }
 
+
+    public void BeginAttackLock(float duration)
+    {
+        if (!gameObject.activeInHierarchy) return;
+
+        if (lockRoutine != null) StopCoroutine(lockRoutine);
+        lockRoutine = StartCoroutine(AttackLockRoutine(duration));
+    }
+
+    IEnumerator AttackLockRoutine(float duration)
+    {
+        isActionLocked = true;
+        SetState(EnemyState.Attack);
+
+        yield return new WaitForSeconds(duration);
+
+        isActionLocked = false;
+        lockRoutine = null;
+
+        SetState(EnemyState.Idle);
+    }
+
+
     public void GiveUp()
     {
         hasAggro = false;
@@ -150,6 +223,7 @@ public class EnemyScript : MonoBehaviour
 
     void UpdateFacingRotation()
     {
+
         if (FacingDir < 0)
             transform.rotation = Quaternion.Euler(0f, 180f, 0f);
         else
@@ -183,6 +257,7 @@ public class EnemyScript : MonoBehaviour
     void Die()
     {
         if (loop != null) StopCoroutine(loop);
+        if (lockRoutine != null) StopCoroutine(lockRoutine);
         Destroy(gameObject);
     }
 }
