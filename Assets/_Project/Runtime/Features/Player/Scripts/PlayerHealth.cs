@@ -5,7 +5,18 @@ public sealed class PlayerHealth : MonoBehaviour
 {
     [SerializeField] private int maxHP = 10;
 
-    public int CurrentHP { get; private set; }
+    private int currentHP;
+
+    public int CurrentHP
+    {
+        get => currentHP;
+        set
+        {
+            currentHP = value;
+            PlayerStatusView.Instance.SetHealthView(currentHP/MaxHP);
+        }
+    }
+
     public int MaxHP => maxHP;
 
     public event Action<DamagePayload> OnDamaged;
