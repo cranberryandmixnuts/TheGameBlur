@@ -11,10 +11,16 @@ public sealed class PlayerSettings : ScriptableObject
     public float runMultiplier = 1.2f;
     public float backwalkMultiplier = 0.8f;
     public float attackMoveMultiplier = 0.5f;
+    public float attackBackwalkMultiplier = 0.3f;
     public float accelTimeToMax = 0.05f;
 
+    [Header("Gravity")]
+    public float gravityMultiplier = 2f;
+
     [Header("Jump")]
-    public float jumpVelocity = 11f;
+    public float jumpHoldTime = 0.18f;
+    public AnimationCurve jumpHoldForceCurve = AnimationCurve.Linear(0f, 30f, 1f, 0f);
+    public float jumpHeightMultiplier = 1f;
     [Range(0f, 1f)] public float jumpCutMultiplier = 0.5f;
     public float jumpBufferTime = 0.1f;
     public float coyoteTime = 0.1f;
@@ -26,8 +32,8 @@ public sealed class PlayerSettings : ScriptableObject
     public float dashDistance = 6f;
 
     [Header("Combat")]
-    public float attackDuration = 0.2f;
-    public float skillDuration = 0.2f;
+    public float attackAnimTime = 0.2f;
+    public float skillAnimTime = 0.2f;
     [Range(0f, 1f)] public float hitNormalizedTime = 0.35f;
 
     public int attackDamage = 1;
@@ -68,8 +74,9 @@ public sealed class PlayerSettings : ScriptableObject
     [Range(0f, 1f)] public float lookAheadPercent = 0.15f;
     [Range(0f, 1f)] public float cliffDownPercent = 0.05f;
     [Range(0f, 1f)] public float lookDownPercent = 0.40f;
-    public float lookDownHoldTime = 1f;
+    public float cameraFollowSpeed = 40f;
     public float cameraSmoothTime = 0.12f;
+    public float lookDownHoldTime = 1f;
 
     [Header("Camera Cliff Probe")]
     public float cliffProbeForward = 0.8f;

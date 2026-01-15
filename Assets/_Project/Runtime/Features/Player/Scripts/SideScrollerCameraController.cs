@@ -1,6 +1,7 @@
 using DG.Tweening;
 using UnityEngine;
 
+[RequireComponent(typeof(Camera))]
 public sealed class SideScrollerCameraController : Singleton<SideScrollerCameraController, SceneScope>
 {
     [SerializeField] private PlayerSettings settings;
@@ -12,17 +13,16 @@ public sealed class SideScrollerCameraController : Singleton<SideScrollerCameraC
     [Header("Move Detection")]
     [SerializeField] private float moveThreshold = 0.1f;
 
+    [Header("Snap Control")]
+    [SerializeField] private float teleportSnapDistance = 5f;
+
     private Camera cam;
     private PlayerMotor playerMotor;
-
-    private Vector3 followVelocity;
 
     private float lookAheadCurrent;
     private float yOffsetCurrent;
 
     private float lookDownHold;
-
-    private int moveDir = 1;
 
     private Tween lookAheadTween;
     private Tween yOffsetTween;
@@ -35,9 +35,12 @@ public sealed class SideScrollerCameraController : Singleton<SideScrollerCameraC
     private float shakeFrequency;
     private float shakeTime;
 
+    private bool isMovingThisFrame;
+    private int moveDir = 1;
+
     protected override void SingletonAwake()
     {
-        cam = Camera.main;
+        cam = GetComponent<Camera>();
         playerMotor = player.GetComponent<PlayerMotor>();
     }
 
@@ -53,9 +56,25 @@ public sealed class SideScrollerCameraController : Singleton<SideScrollerCameraC
         if (bounds != null)
             desired = bounds.Clamp(desired, cam);
 
-        Vector3 p = Vector3.SmoothDamp(transform.position, desired, ref followVelocity, settings.cameraSmoothTime);
-        p.z = transform.position.z;
+        float dx = desired.x - transform.position.x;
+        float dy = desired.y - transform.position.y;
+        float distSq = dx * dx + dy * dy;
 
+        float teleportSq = teleportSnapDistance * teleportSnapDistance;
+
+        bool hasOffsetTween =
+            (lookAheadTween != null && lookAheadTween.IsActive() && lookAheadTween.IsPlaying()) ||
+            (yOffsetTween != null && yOffsetTween.IsActive() && yOffsetTween.IsPlaying());
+
+        bool followSmooth = isMovingThisFrame || hasOffsetTween;
+
+        Vector3 p;
+        if (!followSmooth || distSq >= teleportSq)
+            p = desired;
+        else
+            p = Vector3.MoveTowards(transform.position, desired, settings.cameraFollowSpeed * Time.deltaTime);
+
+        p.z = transform.position.z;
         transform.position = p + ComputeShake();
     }
 
@@ -65,36 +84,55 @@ public sealed class SideScrollerCameraController : Singleton<SideScrollerCameraC
         float screenH = cam.orthographicSize * 2f;
 
         Vector2 move = InputManager.Instance.MoveVector;
+        isMovingThisFrame = Mathf.Abs(move.x) > moveThreshold;
 
-        bool isMoving = Mathf.Abs(move.x) > moveThreshold;
-        if (isMoving)
-            moveDir = move.x > 0f ? 1 : -1;
+        if (isMovingThisFrame)
+            moveDir = move.x >= 0f ? 1 : -1;
 
-        float lookAheadTarget = isMoving ? moveDir * (screenW * settings.lookAheadPercent) : 0f;
+        float lookAheadTarget = isMovingThisFrame ? moveDir * (screenW * settings.lookAheadPercent) : 0f;
         TweenToLookAhead(lookAheadTarget);
 
-        float cliffTarget = ShouldCliffLookDown(isMoving) ? -(screenH * settings.cliffDownPercent) : 0f;
-        float manualTarget = GetManualLookDownOffset(screenH, isMoving);
+        float cliffTarget = ShouldCliffLookDown() ? -(screenH * settings.cliffDownPercent) : 0f;
+        float manualTarget = GetManualLookDownOffset(screenH);
         float yTarget = cliffTarget + manualTarget;
 
         TweenToYOffset(yTarget);
 
+        float offsetX = lookAheadCurrent;
+
+        if (!isMovingThisFrame)
+        {
+            float currentOffsetX = transform.position.x - target.position.x;
+
+            if (Mathf.Abs(currentOffsetX) < Mathf.Abs(offsetX) && Mathf.Sign(currentOffsetX) == Mathf.Sign(offsetX))
+                offsetX = currentOffsetX;
+            else if (Mathf.Sign(currentOffsetX) != Mathf.Sign(offsetX))
+                offsetX = 0f;
+        }
+
         Vector3 basePos = target.position;
-        return new Vector3(basePos.x + lookAheadCurrent, basePos.y + yOffsetCurrent, transform.position.z);
+        return new Vector3(basePos.x + offsetX, basePos.y + yOffsetCurrent, transform.position.z);
     }
 
-    private float GetManualLookDownOffset(float screenH, bool isMoving)
+    private float GetManualLookDownOffset(float screenH)
     {
-        Vector2 move = InputManager.Instance.MoveVector;
+        bool holdingDown = InputManager.Instance.MoveVector.y < -0.8f;
 
-        bool holdingDown = move.y < -0.8f;
-        bool eligible =
-            playerMotor.IsGrounded
-            && !isMoving
-            && holdingDown
-            && IsPureIdleExceptLookDown();
+        bool pureIdle =
+            playerMotor.IsGrounded &&
+            !player.IsAttacking &&
+            !playerMotor.IsDashing &&
+            Mathf.Abs(InputManager.Instance.MoveVector.x) < 0.05f &&
+            !InputManager.Instance.RunHeld &&
+            !InputManager.Instance.DashDown &&
+            !InputManager.Instance.AttackDown &&
+            !InputManager.Instance.SkillDown &&
+            !InputManager.Instance.DiceSkillDown &&
+            !InputManager.Instance.JumpDown &&
+            !InputManager.Instance.JumpUp &&
+            holdingDown;
 
-        if (eligible)
+        if (pureIdle)
             lookDownHold += Time.deltaTime;
         else
             lookDownHold = 0f;
@@ -107,7 +145,7 @@ public sealed class SideScrollerCameraController : Singleton<SideScrollerCameraC
         if (bounds == null)
             return offset;
 
-        Vector3 probe = new(target.position.x, target.position.y + offset, transform.position.z);
+        Vector3 probe = new Vector3(target.position.x, target.position.y + offset, transform.position.z);
         Vector3 clamped = bounds.Clamp(probe, cam);
 
         if (Mathf.Abs(clamped.y - probe.y) > 0.001f)
@@ -116,86 +154,52 @@ public sealed class SideScrollerCameraController : Singleton<SideScrollerCameraC
         return offset;
     }
 
-    private bool IsPureIdleExceptLookDown()
-    {
-        Vector2 move = InputManager.Instance.MoveVector;
-
-        if (Mathf.Abs(move.x) > moveThreshold)
-            return false;
-
-        if (InputManager.Instance.RunHeld)
-            return false;
-
-        if (InputManager.Instance.JumpHeld)
-            return false;
-
-        if (InputManager.Instance.DashDown)
-            return false;
-
-        if (InputManager.Instance.AttackDown)
-            return false;
-
-        if (InputManager.Instance.SkillDown)
-            return false;
-
-        if (InputManager.Instance.DiceSkillDown)
-            return false;
-
-        if (InputManager.Instance.HealHeld)
-            return false;
-
-        if (InputManager.Instance.InteractionDown)
-            return false;
-
-        if (InputManager.Instance.MapDown)
-            return false;
-
-        if (InputManager.Instance.EscapeDown)
-            return false;
-
-        return true;
-    }
-
-    private bool ShouldCliffLookDown(bool isMoving)
+    private bool ShouldCliffLookDown()
     {
         if (!playerMotor.IsGrounded)
             return false;
 
-        if (!isMoving)
-            return false;
+        Vector3 baseOrigin = target.position + Vector3.up * 0.1f;
 
-        Vector3 origin = target.position + moveDir * settings.cliffProbeForward * Vector3.right + Vector3.up * 0.1f;
-        return !Physics.Raycast(origin, Vector3.down, settings.cliffProbeDown, groundMask, QueryTriggerInteraction.Ignore);
+        Vector3 rightOrigin = baseOrigin + Vector3.right * settings.cliffProbeForward;
+        Vector3 leftOrigin = baseOrigin + Vector3.left * settings.cliffProbeForward;
+
+        bool rightHasGround = Physics.Raycast(rightOrigin, Vector3.down, settings.cliffProbeDown, groundMask, QueryTriggerInteraction.Ignore);
+        bool leftHasGround = Physics.Raycast(leftOrigin, Vector3.down, settings.cliffProbeDown, groundMask, QueryTriggerInteraction.Ignore);
+
+        return !rightHasGround || !leftHasGround;
     }
 
-    private void TweenToLookAhead(float target)
+    private void TweenToLookAhead(float targetValue)
     {
-        if (Mathf.Abs(lookAheadCurrent - target) < 0.001f)
+        if (Mathf.Abs(lookAheadCurrent - targetValue) < 0.001f)
             return;
 
         lookAheadTween?.Kill();
-        lookAheadTween = DOTween.To(
-                () => lookAheadCurrent,
-                v => lookAheadCurrent = v,
-                target,
-                settings.cameraSmoothTime
-            )
-            .SetEase(Ease.OutSine);
+        lookAheadTween =
+            DOTween.To(
+                    () => lookAheadCurrent,
+                    v => lookAheadCurrent = v,
+                    targetValue,
+                    settings.cameraSmoothTime
+                )
+                .SetEase(Ease.Linear);
     }
 
-    private void TweenToYOffset(float target)
+    private void TweenToYOffset(float targetValue)
     {
-        if (Mathf.Abs(yOffsetCurrent - target) < 0.001f)
+        if (Mathf.Abs(yOffsetCurrent - targetValue) < 0.001f)
             return;
 
         yOffsetTween?.Kill();
-        yOffsetTween = DOTween.To(
-                () => yOffsetCurrent,
-                v => yOffsetCurrent = v,
-                target,
-                settings.cameraSmoothTime
-            )
-            .SetEase(Ease.OutSine);
+        yOffsetTween =
+            DOTween.To(
+                    () => yOffsetCurrent,
+                    v => yOffsetCurrent = v,
+                    targetValue,
+                    settings.cameraSmoothTime
+                )
+                .SetEase(Ease.Linear);
     }
 
     public void LockAt(Vector3 worldPos)

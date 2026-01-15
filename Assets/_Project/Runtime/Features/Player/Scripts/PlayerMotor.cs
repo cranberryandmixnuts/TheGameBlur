@@ -1,3 +1,4 @@
+// PlayerMotor.cs
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -13,6 +14,8 @@ public sealed class PlayerMotor : MonoBehaviour
     private Rigidbody rb;
     private CapsuleCollider capsule;
 
+    private PlayerSettings settings;
+
     private float desiredAxis;
     private float desiredSpeed;
     private float accelTimeToMax;
@@ -22,6 +25,8 @@ public sealed class PlayerMotor : MonoBehaviour
     private float dashCooldownRemaining;
     private float dashRemaining;
     private float dashSpeed;
+    private int dashDir;
+    private float dashEndMoveSpeed;
     private bool isDashing;
     private bool isInvincible;
     private bool isAirDashConsumed;
@@ -34,10 +39,16 @@ public sealed class PlayerMotor : MonoBehaviour
 
     private bool prevUseGravity;
 
+    private bool jumpHeld;
+    private float jumpHoldRemaining;
+    private float jumpHoldElapsed;
+
     public bool IsGrounded => isGrounded;
     public bool IsDashing => isDashing;
     public bool IsInvincible => isInvincible;
     public bool IsLedgeAssisting => isLedgeAssisting;
+    public int DashDir => dashDir;
+    public Vector3 Velocity => rb.linearVelocity;
 
     private void Awake()
     {
@@ -50,6 +61,11 @@ public sealed class PlayerMotor : MonoBehaviour
             RigidbodyConstraints.FreezeRotationX |
             RigidbodyConstraints.FreezeRotationY |
             RigidbodyConstraints.FreezeRotationZ;
+    }
+
+    public void SetSettings(PlayerSettings settings)
+    {
+        this.settings = settings;
     }
 
     public void SetFacingDir(int dir)
@@ -67,45 +83,66 @@ public sealed class PlayerMotor : MonoBehaviour
         accelTimeToMax = accelTime;
     }
 
-    public void Jump(float jumpVelocity)
+    public void SetJumpHeld(bool held)
+    {
+        jumpHeld = held;
+    }
+
+    public void Jump()
     {
         Vector3 v = rb.linearVelocity;
-        if (v.y < 0f) v.y = 0f;
+        if (v.y < 0f)
+            v.y = 0f;
 
-        v.y = jumpVelocity;
+        float initialUpVelocity = settings.jumpHoldForceCurve.Evaluate(0f) * settings.jumpHeightMultiplier;
+        v.y = initialUpVelocity;
         rb.linearVelocity = v;
+
+        jumpHoldRemaining = settings.jumpHoldTime;
+        jumpHoldElapsed = 0f;
     }
 
     public void CutJump(float cutMultiplier)
     {
+        jumpHoldRemaining = 0f;
+
         Vector3 v = rb.linearVelocity;
-        if (v.y > 0f) v.y *= cutMultiplier;
+        if (v.y > 0f)
+            v.y *= cutMultiplier;
 
         rb.linearVelocity = v;
     }
 
     public bool TryDash(PlayerSettings settings, float dirX)
     {
-        if (isLedgeAssisting) return false;
-        if (isDashing) return false;
-        if (dashCooldownRemaining > 0f) return false;
+        if (isLedgeAssisting)
+            return false;
 
-        if (!isGrounded && isAirDashConsumed) return false;
+        if (isDashing)
+            return false;
+
+        if (dashCooldownRemaining > 0f)
+            return false;
+
+        if (!isGrounded && isAirDashConsumed)
+            return false;
 
         dashCooldownRemaining = settings.dashCooldown;
         dashRemaining = settings.dashDuration;
 
         float speed = settings.dashDistance / settings.dashDuration;
         dashSpeed = dirX >= 0f ? speed : -speed;
+        dashDir = dashSpeed >= 0f ? 1 : -1;
+        dashEndMoveSpeed = settings.moveSpeed;
 
         isDashing = true;
         isInvincible = true;
 
+        prevUseGravity = rb.useGravity;
+
         if (!isGrounded)
         {
             isAirDashConsumed = true;
-
-            prevUseGravity = rb.useGravity;
             rb.useGravity = false;
 
             Vector3 v = rb.linearVelocity;
@@ -116,6 +153,15 @@ public sealed class PlayerMotor : MonoBehaviour
         return true;
     }
 
+    public void ClampFallSpeed(float maxFallSpeed)
+    {
+        Vector3 v = rb.linearVelocity;
+        if (v.y < -maxFallSpeed)
+            v.y = -maxFallSpeed;
+
+        rb.linearVelocity = v;
+    }
+
     public void ResetAirDash()
     {
         isAirDashConsumed = false;
@@ -124,10 +170,8 @@ public sealed class PlayerMotor : MonoBehaviour
     public void ApplyWallRecoil(PlayerSettings settings, Vector3 aimDir)
     {
         Vector3 v = rb.linearVelocity;
-        v.x = -aimDir.x * settings.attackWallRecoilSpeed;
+        v.x = -Mathf.Sign(aimDir.x) * settings.attackWallRecoilSpeed;
         rb.linearVelocity = v;
-
-        ResetAirDash();
     }
 
     public void ApplyDownAttackBounce(PlayerSettings settings)
@@ -135,41 +179,34 @@ public sealed class PlayerMotor : MonoBehaviour
         Vector3 v = rb.linearVelocity;
         v.y = settings.downAttackBounceVelocity;
         rb.linearVelocity = v;
-
-        ResetAirDash();
     }
 
-    public void ClampFallSpeed(float maxFallSpeed)
+    public void TryStartLedgeAssist(PlayerSettings settings, int facingDir)
     {
-        Vector3 v = rb.linearVelocity;
-        if (v.y < -maxFallSpeed) v.y = -maxFallSpeed;
+        if (isLedgeAssisting)
+            return;
 
-        rb.linearVelocity = v;
-    }
+        if (isGrounded)
+            return;
 
-    public bool TryStartLedgeAssist(PlayerSettings settings, int facingDir)
-    {
-        if (isLedgeAssisting) return false;
-        if (isGrounded) return false;
-        if (rb.linearVelocity.y >= -0.01f) return false;
+        if (rb.linearVelocity.y > 0f)
+            return;
 
-        if (!Physics.CheckSphere(headSensor.position, settings.ledgeSensorRadius, groundMask, QueryTriggerInteraction.Ignore))
-            return false;
+        Vector3 origin = headSensor.position;
+        Vector3 dir = facingDir < 0 ? Vector3.left : Vector3.right;
 
-        Vector3 probeStart =
-            headSensor.position
-            + Vector3.up * settings.ledgeProbeUp
-            + Vector3.right * (facingDir * settings.ledgeProbeForward);
+        if (!Physics.SphereCast(origin, settings.ledgeSensorRadius, Vector3.up, out RaycastHit upHit, settings.ledgeProbeUp, groundMask, QueryTriggerInteraction.Ignore))
+            return;
 
-        if (!Physics.Raycast(probeStart, Vector3.down, out RaycastHit hit, settings.ledgeProbeDown, groundMask, QueryTriggerInteraction.Ignore))
-            return false;
+        Vector3 forwardOrigin = upHit.point + dir * settings.ledgeProbeForward;
+        if (!Physics.Raycast(forwardOrigin, Vector3.down, out RaycastHit downHit, settings.ledgeProbeDown, groundMask, QueryTriggerInteraction.Ignore))
+            return;
 
-        float extY = capsule.bounds.extents.y;
-
+        float extY = capsule.height * 0.5f;
         Vector3 target =
-            new(
-                hit.point.x - facingDir * settings.ledgeSnapInset,
-                hit.point.y + extY + settings.ledgeSnapExtraY,
+            new Vector3(
+                downHit.point.x - facingDir * settings.ledgeSnapInset,
+                downHit.point.y + extY + settings.ledgeSnapExtraY,
                 rb.position.z
             );
 
@@ -187,8 +224,6 @@ public sealed class PlayerMotor : MonoBehaviour
         v.x = 0f;
         v.y = 0f;
         rb.linearVelocity = v;
-
-        return true;
     }
 
     private void FixedUpdate()
@@ -197,16 +232,35 @@ public sealed class PlayerMotor : MonoBehaviour
 
         float dt = Time.fixedDeltaTime;
 
+        if (rb.useGravity && settings != null)
+            rb.AddForce(Physics.gravity * (settings.gravityMultiplier - 1f), ForceMode.Acceleration);
+
+        if (jumpHeld && jumpHoldRemaining > 0f && rb.linearVelocity.y > 0f)
+        {
+            float t = settings.jumpHoldTime > 0f ? jumpHoldElapsed / settings.jumpHoldTime : 1f;
+            if (t > 1f)
+                t = 1f;
+
+            float accel = settings.jumpHoldForceCurve.Evaluate(t) * settings.jumpHeightMultiplier;
+            rb.AddForce(Vector3.up * accel, ForceMode.Acceleration);
+
+            jumpHoldElapsed += dt;
+            jumpHoldRemaining -= dt;
+        }
+
         if (dashCooldownRemaining > 0f)
+        {
             dashCooldownRemaining -= dt;
+            if (dashCooldownRemaining < 0f)
+                dashCooldownRemaining = 0f;
+        }
 
         if (isLedgeAssisting)
         {
             ledgeAssistRemaining -= dt;
 
             float t = 1f - Mathf.Clamp01(ledgeAssistRemaining / ledgeAssistDuration);
-            Vector3 p = Vector3.Lerp(ledgeAssistFrom, ledgeAssistTo, t);
-            rb.MovePosition(p);
+            rb.MovePosition(Vector3.Lerp(ledgeAssistFrom, ledgeAssistTo, t));
 
             if (ledgeAssistRemaining <= 0f)
             {
@@ -232,10 +286,16 @@ public sealed class PlayerMotor : MonoBehaviour
                 isDashing = false;
                 isInvincible = false;
 
-                rb.useGravity = true;
+                rb.useGravity = prevUseGravity;
 
                 Vector3 after = rb.linearVelocity;
                 after.z = 0f;
+
+                if (Mathf.Abs(desiredAxis) > 0.001f && Mathf.Sign(desiredAxis) == dashDir)
+                    after.x = dashDir * dashEndMoveSpeed;
+                else
+                    after.x = 0f;
+
                 rb.linearVelocity = after;
             }
 
@@ -267,10 +327,10 @@ public sealed class PlayerMotor : MonoBehaviour
             ResetAirDash();
     }
 
-    private void OnCollisionStay(Collision collision)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (isGrounded) return;
-        if (!isAirDashConsumed) return;
+        if (collision.collider.isTrigger)
+            return;
 
         int count = collision.contactCount;
 

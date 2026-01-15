@@ -18,43 +18,74 @@ public sealed class PlayerController : Singleton<PlayerController, SceneScope>
     private float coyoteTimer;
     private float jumpBufferTimer;
 
-    private float actionTimer;
+    private float attackTimer;
+    private bool attacking;
+    private int lockedFacingDir;
+
     private QueuedAction queuedAction;
-    private bool currentActionMovementPenalty;
 
     public int FacingDir { get; private set; } = 1;
+    public bool IsAttacking => attacking;
 
     protected override void SingletonAwake()
     {
         motor = GetComponent<PlayerMotor>();
         combat = GetComponent<PlayerCombat>();
+
+        motor.SetSettings(settings);
     }
 
     private void Update()
     {
         Vector2 move = InputManager.Instance.MoveVector;
 
-        float dx = aimCursor.WorldPosition.x - transform.position.x;
+        if (attackTimer > 0f)
+        {
+            attackTimer -= Time.deltaTime;
+            if (attackTimer < 0f)
+                attackTimer = 0f;
+        }
 
-        if (Mathf.Abs(dx) > facingDeadZoneX)
-            FacingDir = dx > 0f ? 1 : -1;
-        else if (Mathf.Abs(move.x) > facingMoveThreshold)
-            FacingDir = move.x > 0f ? 1 : -1;
+        attacking = attackTimer > 0f;
 
-        motor.SetFacingDir(FacingDir);
+        bool runHeld = InputManager.Instance.RunHeld;
+        if (attacking)
+            runHeld = false;
+
+        bool isRunning = runHeld && Mathf.Abs(move.x) > facingMoveThreshold;
+        bool isDashing = motor.IsDashing;
 
         Vector3 aimDir = aimCursor.GetAimDir(transform.position);
 
-        if (actionTimer > 0f)
+        if (attacking)
         {
-            actionTimer -= Time.deltaTime;
-            if (actionTimer < 0f)
-                actionTimer = 0f;
+            FacingDir = lockedFacingDir;
+        }
+        else if (isDashing)
+        {
+            FacingDir = motor.DashDir;
+        }
+        else if (isRunning)
+        {
+            FacingDir = move.x >= 0f ? 1 : -1;
+        }
+        else
+        {
+            float dx = aimCursor.WorldPosition.x - transform.position.x;
+
+            if (Mathf.Abs(dx) > facingDeadZoneX)
+                FacingDir = dx > 0f ? 1 : -1;
+            else if (Mathf.Abs(move.x) > facingMoveThreshold)
+                FacingDir = move.x > 0f ? 1 : -1;
         }
 
-        bool locked = actionTimer > 0f || motor.IsDashing || motor.IsLedgeAssisting;
+        motor.SetFacingDir(FacingDir);
 
-        if (InputManager.Instance.DashDown)
+        motor.SetJumpHeld(InputManager.Instance.JumpHeld);
+
+        bool locked = motor.IsDashing || motor.IsLedgeAssisting || attacking;
+
+        if (!attacking && InputManager.Instance.DashDown)
         {
             if (locked)
                 queuedAction = QueuedAction.Dash;
@@ -89,20 +120,25 @@ public sealed class PlayerController : Singleton<PlayerController, SceneScope>
         if (!locked && queuedAction != QueuedAction.None)
             ConsumeQueued(aimDir, move.x);
 
-        bool runHeld = InputManager.Instance.RunHeld;
-
-        if (InputManager.Instance.AttackDown || InputManager.Instance.SkillDown)
-            runHeld = false;
-
         float speed = settings.moveSpeed;
 
-        if (runHeld)
+        if (!attacking && runHeld)
             speed *= settings.runMultiplier;
-        else if (IsBackwalking(move.x, aimDir.x))
-            speed *= settings.backwalkMultiplier;
 
-        if (currentActionMovementPenalty && actionTimer > 0f)
-            speed *= settings.attackMoveMultiplier;
+        bool backwalking = IsBackwalking(move.x, FacingDir);
+
+        if (attacking)
+        {
+            if (backwalking)
+                speed *= settings.attackBackwalkMultiplier;
+            else
+                speed *= settings.attackMoveMultiplier;
+        }
+        else
+        {
+            if (backwalking)
+                speed *= settings.backwalkMultiplier;
+        }
 
         motor.SetMove(move.x, speed, settings.accelTimeToMax);
 
@@ -116,16 +152,16 @@ public sealed class PlayerController : Singleton<PlayerController, SceneScope>
     {
         combat.BeginAttack(settings, aimDir, isSkill);
 
-        actionTimer = isSkill ? settings.skillDuration : settings.attackDuration;
-        currentActionMovementPenalty = true;
+        attackTimer = isSkill ? settings.skillAnimTime : settings.attackAnimTime;
+        lockedFacingDir = FacingDir;
 
         queuedAction = QueuedAction.None;
     }
 
     private void StartDiceSkill()
     {
-        actionTimer = 0.2f;
-        currentActionMovementPenalty = true;
+        attackTimer = 0.2f;
+        lockedFacingDir = FacingDir;
 
         queuedAction = QueuedAction.None;
     }
@@ -149,7 +185,8 @@ public sealed class PlayerController : Singleton<PlayerController, SceneScope>
 
         if (q == QueuedAction.Dash)
         {
-            motor.TryDash(settings, GetDashDirX(moveAxis));
+            if (!attacking)
+                motor.TryDash(settings, GetDashDirX(moveAxis));
             return;
         }
 
@@ -183,22 +220,20 @@ public sealed class PlayerController : Singleton<PlayerController, SceneScope>
             jumpBufferTimer = 0f;
             coyoteTimer = 0f;
 
-            motor.Jump(settings.jumpVelocity);
+            motor.Jump();
         }
 
         if (InputManager.Instance.JumpUp)
             motor.CutJump(settings.jumpCutMultiplier);
     }
 
-    private bool IsBackwalking(float moveAxis, float aimX)
+    private bool IsBackwalking(float moveAxis, int facingDir)
     {
         if (Mathf.Abs(moveAxis) < 0.001f)
             return false;
 
         int moveDir = moveAxis >= 0f ? 1 : -1;
-        int aimDir = aimX >= 0f ? 1 : -1;
-
-        return moveDir != aimDir;
+        return moveDir != facingDir;
     }
 
     private float GetDashDirX(float moveAxis)

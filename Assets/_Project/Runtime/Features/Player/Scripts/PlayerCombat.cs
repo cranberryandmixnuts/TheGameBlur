@@ -28,7 +28,7 @@ public sealed class PlayerCombat : MonoBehaviour
     private Vector3 aimDir;
 
     private readonly Collider[] overlap = new Collider[32];
-    private readonly HashSet<EnemyScript> hitEnemies = new();
+    private readonly HashSet<EnemyScript> hitEnemies = new HashSet<EnemyScript>();
 
     public bool IsActionActive => active;
 
@@ -39,7 +39,7 @@ public sealed class PlayerCombat : MonoBehaviour
 
         if (hitboxVisualizer == null)
         {
-            GameObject go = new("AttackHitboxDebug");
+            GameObject go = new GameObject("AttackHitboxDebug");
             go.transform.SetParent(transform, false);
             hitboxVisualizer = go.AddComponent<AttackHitboxVisualizer>();
         }
@@ -71,7 +71,7 @@ public sealed class PlayerCombat : MonoBehaviour
 
         active = true;
         elapsed = 0f;
-        duration = isSkill ? settings.skillDuration : settings.attackDuration;
+        duration = isSkill ? settings.skillAnimTime : settings.attackAnimTime;
 
         hitFired = false;
         diceGainedThisAction = false;

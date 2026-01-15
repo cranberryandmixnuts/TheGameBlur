@@ -17,17 +17,44 @@ MonoBehaviour:
   runMultiplier: 1.2
   backwalkMultiplier: 0.8
   attackMoveMultiplier: 0.5
+  attackBackwalkMultiplier: 0.3
   accelTimeToMax: 0.05
-  jumpVelocity: 11
+  gravityMultiplier: 5
+  jumpHoldTime: 0.15
+  jumpHoldForceCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 30
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -80.04276
+      outSlope: -80.04276
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.046403766
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  jumpHeightMultiplier: 0.6
   jumpCutMultiplier: 0.5
   jumpBufferTime: 0.1
   coyoteTime: 0.1
-  maxFallSpeed: 25
+  maxFallSpeed: 300
   dashCooldown: 0.8
   dashDuration: 0.2
   dashDistance: 6
-  attackDuration: 0.2
-  skillDuration: 0.2
+  attackAnimTime: 0.2
+  skillAnimTime: 0.2
   hitNormalizedTime: 0.35
   attackDamage: 1
   skillDamage: 2
@@ -56,10 +83,11 @@ MonoBehaviour:
   shakeDuration: 0.2
   shakeAmplitude: 0.25
   shakeFrequency: 25
-  lookAheadPercent: 0.15
-  cliffDownPercent: 0.05
-  lookDownPercent: 0.4
+  lookAheadPercent: 0.05
+  cliffDownPercent: 0.1
+  lookDownPercent: 0.2
+  cameraFollowSpeed: 90
+  cameraSmoothTime: 0.3
   lookDownHoldTime: 1
-  cameraSmoothTime: 0.12
   cliffProbeForward: 0.8
   cliffProbeDown: 4
