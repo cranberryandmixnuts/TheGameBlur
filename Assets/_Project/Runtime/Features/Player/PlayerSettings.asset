@@ -56,8 +56,8 @@ MonoBehaviour:
   attackAnimTime: 0.2
   skillAnimTime: 0.2
   hitNormalizedTime: 0.35
-  attackDamage: 1
-  skillDamage: 2
+  attackDamage: 10
+  skillDamage: 10
   hitboxHalfExtents: {x: 0.7, y: 0.6, z: 0.8}
   hitboxForwardOffset: 1.1
   enemyMask:
