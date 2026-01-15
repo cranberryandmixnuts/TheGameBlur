@@ -13,7 +13,7 @@ public sealed class PlayerHealth : MonoBehaviour
         set
         {
             currentHP = value;
-            PlayerStatusView.Instance.SetHealthView(currentHP/MaxHP);
+            PlayerStatusView.Instance.SetHealthView((float)currentHP/(float)MaxHP);
         }
     }
 
