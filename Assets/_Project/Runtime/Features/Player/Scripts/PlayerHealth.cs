@@ -32,7 +32,7 @@ public sealed class PlayerHealth : MonoBehaviour
             return;
 
         CurrentHP -= payload.Amount;
-        if (CurrentHP < 0)
+        if (CurrentHP <= 0)
         {
             CurrentHP = 0;
             Destroy(gameObject);
