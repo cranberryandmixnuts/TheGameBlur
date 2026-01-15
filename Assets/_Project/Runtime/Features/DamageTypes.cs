@@ -5,10 +5,10 @@ public readonly struct DamagePayload
     public readonly int Amount;
     public readonly GameObject Source;
 
-    public DamagePayload(int amount, GameObject source)
+    public DamagePayload(int amount, GameObject Attacker)
     {
         Amount = amount;
-        Source = source;
+        Source = Attacker;
     }
 }
 
