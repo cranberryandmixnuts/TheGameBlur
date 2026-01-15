@@ -2,7 +2,8 @@
 using System;
 [Serializable]
 public enum SceneType {
-	OutdoorsScene,
-	MainScene,
+	TitleScene,
 	TestScene_cogus,
+	MainScene,
+	TutorialScene,
 }
