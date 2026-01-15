@@ -39,7 +39,7 @@ public sealed class PlayerSettings : ScriptableObject
     public int attackDamage = 1;
     public int skillDamage = 2;
 
-    public Vector3 hitboxHalfExtents = new Vector3(0.7f, 0.6f, 0.8f);
+    public Vector3 hitboxHalfExtents = new(0.7f, 0.6f, 0.8f);
     public float hitboxForwardOffset = 1.1f;
 
     public LayerMask enemyMask;
