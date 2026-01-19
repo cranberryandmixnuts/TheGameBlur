@@ -7,8 +7,12 @@ public class CinematicDialog : Cinematic
     private DialogData dialogData;
 
     private DialogEventReciever dialogEventReciever;
-    private Action<DialogInfo> onFinished;
     private int dialogIndex = 0;
+
+    [SerializeField] private SelectionView selectionViewPrefab;
+
+    private SelectionView selectionView;
+    private DialogView dialogView;
 
     public void BindDialog(string name)
     {
@@ -19,21 +23,34 @@ public class CinematicDialog : Cinematic
 
     private void Initialize()
     {
-        dialogEventReciever = new GameObject("DialogEventReciever").AddComponent<DialogEventReciever>();
+        dialogEventReciever = new GameObject(typeof(DialogEventReciever).Name).AddComponent<DialogEventReciever>();
         ProcessDialog();
     }
 
-    private void OnDialogFinished(DialogInfo dialogInfo)
+    private void OnDialogFinished(Dialog dialog)
     {
-        ProcessDialog();
+        if (dialog.IsSelectable)
+        {
+            selectionView = Instantiate(selectionViewPrefab);
+            selectionView.Initialize(dialog.Selections, OnSelected);
+        }
+        else
+        {
+            Destroy(dialogView.gameObject);
+
+            ProcessDialog();
+        }
     }
 
-    public override void Finish()
+    private void OnSelected(Selection selection)
     {
-        base.Finish();
+        dialogData = selection.DialogData;
 
-        Destroy(dialogEventReciever.gameObject);
-        Destroy(gameObject);
+        Destroy(selectionView.gameObject);
+        Destroy(dialogView.gameObject);
+
+        dialogIndex = 0;
+        ProcessDialog();
     }
 
     private void ProcessDialog()
@@ -44,7 +61,7 @@ public class CinematicDialog : Cinematic
             return;
         }
 
-        UIManager.Instance.Show<DialogView>().Initialize(
+        dialogView = UIManager.Instance.Show<DialogView>().Initialize(
             dialogData.Dialogs[dialogIndex], 
             dialogEventReciever, 
             OnDialogFinished
@@ -52,4 +69,13 @@ public class CinematicDialog : Cinematic
 
         dialogIndex++;
     }
+
+    public override void Finish()
+    {
+        base.Finish();
+
+        Destroy(dialogEventReciever.gameObject);
+        Destroy(gameObject);
+    }
+
 }

@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8c01357d99225d41ad5dfa01f80b6a5, type: 3}
-  m_Name: TestDialog
+  m_Name: TestDialog2
   m_EditorClassIdentifier: Assembly-CSharp::DialogData
   _name: TestDialog
   _dialogs:
   - name: Name1
-    line: this is name1 DialogTest
+    line: selection1
     isSelectable: 0
     selections: []
   - name: Name2
-    line: this is name2DialogTest
+    line: selection1_1
     isSelectable: 0
     selections: []
   - name: Name1
-    line: AFDAFASD
+    line: selection1_2
     isSelectable: 0
     selections: []

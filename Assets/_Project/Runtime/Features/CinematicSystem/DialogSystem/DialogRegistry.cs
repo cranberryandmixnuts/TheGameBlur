@@ -8,7 +8,7 @@ public class DialogRegistry : ScriptableObject
 
     public DialogData GetDialogData(string name)
     {
-        var dialogData = dialogDatas.Find(dialogDatas => dialogDatas.Name == name);
+        var dialogData = dialogDatas.Find(dialogDatas => dialogDatas.name == name);
         
         if(dialogData == null)
             throw new KeyNotFoundException($"DialogData not found: {name}");

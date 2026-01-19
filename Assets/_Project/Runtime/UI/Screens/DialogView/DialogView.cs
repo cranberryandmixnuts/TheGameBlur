@@ -10,12 +10,15 @@ public class DialogView : UIView
     [SerializeField] private float speed;
 
     private DialogEventReciever dialogEventReciever;
-    public event Action<DialogInfo> OnFinished;
+    private Dialog dialog;
+    public event Action<Dialog> OnFinished;
 
     private Coroutine updateDialogCoroutine;
+    private bool isStopped = false;
 
-    public DialogView Initialize(Dialog dialog, DialogEventReciever dialogEventReciever, Action<DialogInfo> onFinished = null)
+    public DialogView Initialize(Dialog dialog, DialogEventReciever dialogEventReciever, Action<Dialog> onFinished = null)
     {
+        this.dialog = dialog;
         nameText.text = dialog.Name;
         lineText.text = dialog.Line;
         this.dialogEventReciever = dialogEventReciever;
@@ -24,6 +27,12 @@ public class DialogView : UIView
         StartDialog();
 
         return this;
+    }
+
+    private void Update()
+    {
+        if(Input.GetMouseButtonDown(0))
+            SkipDialog();
     }
 
     private void StartDialog()
@@ -49,6 +58,9 @@ public class DialogView : UIView
 
     public void SkipDialog()
     {
+        if (isStopped)
+            return;
+
         StopDialog();
         lineText.maxVisibleCharacters = lineText.text.Length;
     }
@@ -60,14 +72,15 @@ public class DialogView : UIView
             StopCoroutine(updateDialogCoroutine);
         }
 
+        isStopped = true;
         StartCoroutine(EndDialog());
     }
 
     private IEnumerator EndDialog()
     {
+        yield return new WaitForEndOfFrame();
         yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
 
-        OnFinished?.Invoke(new());
-        Destroy(gameObject);
+        OnFinished?.Invoke(dialog);
     }
 }

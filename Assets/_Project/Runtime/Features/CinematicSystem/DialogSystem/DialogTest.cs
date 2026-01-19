@@ -5,6 +5,6 @@ public class DialogTest : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        CinematicManager.Instance.Show<CinematicDialog>().BindDialog("TestDialog");
+        CinematicManager.Instance.Show<CinematicDialog>().BindDialog("TestDialog1");
     }
 }

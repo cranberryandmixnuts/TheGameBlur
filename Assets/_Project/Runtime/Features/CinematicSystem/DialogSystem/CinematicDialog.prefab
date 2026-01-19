@@ -44,3 +44,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53f52438b9f1e874f9f93a9e5aae184d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CinematicDialog
+  selectionViewPrefab: {fileID: 398234188666371232, guid: 64ab6a4c75a906246812a2724dc258a0, type: 3}

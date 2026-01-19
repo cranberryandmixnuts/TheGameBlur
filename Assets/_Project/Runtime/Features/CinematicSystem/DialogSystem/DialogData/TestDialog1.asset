@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8c01357d99225d41ad5dfa01f80b6a5, type: 3}
+  m_Name: TestDialog1
+  m_EditorClassIdentifier: Assembly-CSharp::DialogData
+  _name: TestDialog1
+  _dialogs:
+  - name: Name1
+    line: this is name1 DialogTest
+    isSelectable: 0
+    selections: []
+  - name: Name2
+    line: this is name2DialogTest
+    isSelectable: 0
+    selections: []
+  - name: Name1
+    line: AFDAFASD
+    isSelectable: 1
+    selections:
+    - name: Selection1
+      dialogData: {fileID: 11400000, guid: 81ce6c78da1f7a04a9f7ce7fe88d2c69, type: 2}
+    - name: Selection2
+      dialogData: {fileID: 11400000, guid: b0e63d62dd0e58a40969f1f046bae4e7, type: 2}
