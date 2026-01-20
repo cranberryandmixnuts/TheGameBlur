@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6abb639d3c9adb048aecbec7504d6522, type: 3}
+  m_Name: PlayerSettings
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSettings
+  fixedZ: 0
+  moveSpeed: 6
+  runMultiplier: 1.2
+  backwalkMultiplier: 0.8
+  attackMoveMultiplier: 0.5
+  attackBackwalkMultiplier: 0.3
+  accelTimeToMax: 0.05
+  gravityMultiplier: 5
+  jumpHoldTime: 0.15
+  jumpHoldForceCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 30
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -80.04276
+      outSlope: -80.04276
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.046403766
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  jumpHeightMultiplier: 0.6
+  jumpCutMultiplier: 0.5
+  jumpBufferTime: 0.1
+  coyoteTime: 0.1
+  maxFallSpeed: 300
+  dashCooldown: 0.8
+  dashDuration: 0.2
+  dashDistance: 6
+  attackAnimTime: 0.2
+  skillAnimTime: 0.2
+  hitNormalizedTime: 0.35
+  attackDamage: 10
+  skillDamage: 10
+  hitboxHalfExtents: {x: 0.7, y: 0.6, z: 0.8}
+  hitboxForwardOffset: 1.1
+  enemyMask:
+    serializedVersion: 2
+    m_Bits: 512
+  environmentMask:
+    serializedVersion: 2
+    m_Bits: 256
+  attackWallRecoilSpeed: 14
+  downAttackThreshold: -0.35
+  downAttackBounceVelocity: 12
+  diceGaugeMax: 10
+  diceGainOnAttackHit: 1
+  ledgeAssistDuration: 0.15
+  ledgeSensorRadius: 0.18
+  ledgeProbeUp: 0.6
+  ledgeProbeForward: 0.15
+  ledgeProbeDown: 1.8
+  ledgeSnapInset: 0.25
+  ledgeSnapExtraY: 0.02
+  hitStopDuration: 0.2
+  darkenAlpha: 0.35
+  shakeDuration: 0.2
+  shakeAmplitude: 0.25
+  shakeFrequency: 25
+  lookAheadPercent: 0.05
+  cliffDownPercent: 0.1
+  lookDownPercent: 0.2
+  cameraFollowSpeed: 90
+  cameraSmoothTime: 0.3
+  lookDownHoldTime: 1
+  cliffProbeForward: 0.8
+  cliffProbeDown: 4

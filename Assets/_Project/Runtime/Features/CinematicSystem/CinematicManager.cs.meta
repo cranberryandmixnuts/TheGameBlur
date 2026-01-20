@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 67c8201ed895cc34cabcb94535af9e1d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - cinematicRegistry: {fileID: 11400000, guid: c9cc6595df98f994984ea983b3ba690b, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

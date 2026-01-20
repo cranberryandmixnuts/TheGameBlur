@@ -1,10 +1,24 @@
+// EnemyScript.cs
 using System.Collections;
 using UnityEngine;
+
+public enum EnemyState
+{
+    Idle,
+    Move,
+    Chase,
+    Attack
+}
 
 [RequireComponent(typeof(Rigidbody))]
 public class EnemyScript : MonoBehaviour
 {
-    public EnemyDataSO data;
+    public EnemyData data;
+    public EnemyVision vision;
+
+    [Header("Combat")]
+    public EnemyCombat combat;
+    public float attackRangeX = 1.2f;
 
     Rigidbody rb;
     Coroutine loop;
@@ -12,10 +26,22 @@ public class EnemyScript : MonoBehaviour
     int currentHP;
     int damage;
 
+    public int FacingDir { get; private set; } = -1;
+
+    EnemyState state;
+
+    bool hasAggro = false;
+    Transform lockedTarget;
+
+    bool isActionLocked = false;
+    Coroutine lockRoutine;
+
+    Animator anim;
+    static readonly int AnimIsMoving = Animator.StringToHash("IsMoving");
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
-
         rb.useGravity = true;
         rb.constraints =
             RigidbodyConstraints.FreezePositionZ |
@@ -23,14 +49,22 @@ public class EnemyScript : MonoBehaviour
             RigidbodyConstraints.FreezeRotationY |
             RigidbodyConstraints.FreezeRotationZ;
 
-        Debug.Log($"[EnemyScript] Awake - Rigidbody 설정 완료 ({name})");
+        anim = GetComponentInChildren<Animator>();
+
+        if (vision == null) vision = GetComponent<EnemyVision>();
+        if (vision != null && vision.enemy == null) vision.enemy = this;
+
+        if (combat == null) combat = GetComponent<EnemyCombat>();
+
+        FacingDir = -1;
+        UpdateFacingRotation();
     }
 
     void Start()
     {
         if (data == null)
         {
-            Debug.LogError($"[EnemyScript] EnemyDataSO 없음 ({name})");
+            Debug.LogError($"[Enemy] EnemyData 없음: {name}");
             enabled = false;
             return;
         }
@@ -38,67 +72,192 @@ public class EnemyScript : MonoBehaviour
         currentHP = data.maxHP;
         damage = data.damage;
 
-        Debug.Log($"[EnemyScript] Start - HP:{currentHP}, DMG:{damage}, Speed:{data.moveSpeed}, Dist:{data.moveDistance}");
-
-        loop = StartCoroutine(MoveRestLoop());
+        loop = StartCoroutine(AI_Loop());
     }
 
-    IEnumerator MoveRestLoop()
+    IEnumerator AI_Loop()
     {
-        Debug.Log("[EnemyScript] 이동 루프 시작");
-
         while (true)
         {
-            int dir = Random.value < 0.5f ? -1 : 1;
-
-            Vector3 start = rb.position;
-            Vector3 target = start + Vector3.right * dir * data.moveDistance;
-
-            Debug.Log($"[EnemyScript] 이동 시작 | 방향:{(dir == 1 ? "Right" : "Left")} | 시작:{start} → 목표:{target}");
-
-            while ((rb.position - target).sqrMagnitude > 0.001f)
+            if (isActionLocked)
             {
-                Vector3 next = Vector3.MoveTowards(
-                    rb.position,
-                    target,
-                    data.moveSpeed * Time.fixedDeltaTime
-                );
-
-                rb.MovePosition(next);
-
-                Debug.Log($"[EnemyScript] 이동 중 | 현재:{rb.position}");
-
-                yield return new WaitForFixedUpdate();
+                yield return null;
+                continue;
             }
 
-            rb.MovePosition(target);
 
-            Debug.Log($"[EnemyScript] 이동 완료 | 도착:{target} | {data.restTime}초 대기");
+            if (!hasAggro && vision != null && vision.IsDetected && vision.target != null)
+            {
+                hasAggro = true;
+                lockedTarget = vision.target;
+            }
 
-            yield return new WaitForSeconds(data.restTime);
+            if (hasAggro && lockedTarget != null)
+            {
+                yield return ChaseLoop();
+                continue;
+            }
+
+            yield return PatrolOnce();
+        }
+    }
+
+    IEnumerator PatrolOnce()
+    {
+        SetState(EnemyState.Move);
+
+        int dir = Random.value < 0.5f ? -1 : 1;
+        FacingDir = dir;
+        UpdateFacingRotation();
+
+        Vector3 start = rb.position;
+        Vector3 target = start + Vector3.right * dir * data.moveDistance;
+
+        while ((rb.position - target).sqrMagnitude > 0.001f)
+        {
+            if (isActionLocked)
+            {
+                yield return null;
+                continue;
+            }
+
+
+            if (!hasAggro && vision != null && vision.IsDetected && vision.target != null)
+            {
+                hasAggro = true;
+                lockedTarget = vision.target;
+                yield break;
+            }
+
+            Vector3 next = Vector3.MoveTowards(rb.position, target, data.moveSpeed * Time.fixedDeltaTime);
+            rb.MovePosition(next);
+            yield return new WaitForFixedUpdate();
+        }
+
+        rb.MovePosition(target);
+        SetState(EnemyState.Idle);
+
+        float t = data.restTime;
+        while (t > 0f)
+        {
+            if (isActionLocked)
+            {
+                yield return null;
+                continue;
+            }
+
+            t -= Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    IEnumerator ChaseLoop()
+    {
+        SetState(EnemyState.Chase);
+
+        while (hasAggro && lockedTarget != null)
+        {
+            if (isActionLocked)
+            {
+                yield return null;
+                continue;
+            }
+
+            if (combat != null && !combat.IsActionActive)
+            {
+                float dxAbs = Mathf.Abs(lockedTarget.position.x - rb.position.x);
+                if (dxAbs <= attackRangeX)
+                {
+                    combat.BeginAttack(); 
+                    yield return null;   
+                    continue;
+                }
+            }
+
+            float targetX = lockedTarget.position.x;
+            float myY = rb.position.y;
+            float myZ = rb.position.z;
+
+            float dx = targetX - rb.position.x;
+            FacingDir = (dx >= 0f) ? 1 : -1;
+            UpdateFacingRotation();
+
+            Vector3 chasePos = new Vector3(targetX, myY, myZ);
+            Vector3 next = Vector3.MoveTowards(rb.position, chasePos, data.moveSpeed * Time.fixedDeltaTime);
+            rb.MovePosition(next);
+
+            yield return new WaitForFixedUpdate();
+        }
+
+        SetState(EnemyState.Idle);
+    }
+
+
+    public void BeginAttackLock(float duration)
+    {
+        if (!gameObject.activeInHierarchy) return;
+
+        if (lockRoutine != null) StopCoroutine(lockRoutine);
+        lockRoutine = StartCoroutine(AttackLockRoutine(duration));
+    }
+
+    IEnumerator AttackLockRoutine(float duration)
+    {
+        isActionLocked = true;
+        SetState(EnemyState.Attack);
+
+        yield return new WaitForSeconds(duration);
+
+        isActionLocked = false;
+        lockRoutine = null;
+
+        SetState(EnemyState.Idle);
+    }
+
+
+    public void GiveUp()
+    {
+        hasAggro = false;
+        lockedTarget = null;
+    }
+
+    void UpdateFacingRotation()
+    {
+
+        if (FacingDir < 0)
+            transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+        else
+            transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+    }
+
+    void SetState(EnemyState newState)
+    {
+        if (state == newState) return;
+        state = newState;
+
+        if (anim != null)
+        {
+            bool moving = (state == EnemyState.Move || state == EnemyState.Chase);
+            anim.SetBool(AnimIsMoving, moving);
         }
     }
 
     public int GetCurrentHP() => currentHP;
     public int GetDamage() => damage;
     public EnemyGrade GetGrade() => data.grade;
+    public EnemyState GetState() => state;
 
     public void TakeDamage(int amount)
     {
         currentHP -= amount;
-        Debug.Log($"[EnemyScript] 데미지 받음 {amount} | 남은 HP:{currentHP}");
-
         if (currentHP <= 0)
             Die();
     }
 
     void Die()
     {
-        Debug.Log($"[EnemyScript] 사망 ({name})");
-
-        if (loop != null)
-            StopCoroutine(loop);
-
+        if (loop != null) StopCoroutine(loop);
+        if (lockRoutine != null) StopCoroutine(lockRoutine);
         Destroy(gameObject);
     }
 }
