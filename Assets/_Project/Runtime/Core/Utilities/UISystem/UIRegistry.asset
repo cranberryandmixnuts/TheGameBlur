@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIRegistry
   entries:
   - Prefab: {fileID: 59642535161315312, guid: d818de81cd90e6340ad38961daf65e69, type: 3}
+  - Prefab: {fileID: 5260883214942761160, guid: 2e315972ca562a042829ad24fbf7350c, type: 3}

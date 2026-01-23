@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 135cf6fe637a61649abf1f5e03710c3f, type: 3}
+  m_Name: CinematicRegistry
+  m_EditorClassIdentifier: Assembly-CSharp::CinematicRegistry
+  entries:
+  - Cinematic: {fileID: 1175730651350292878, guid: 62e44f8c2548d3141ad600fb1bc4058a, type: 3}
+  - Cinematic: {fileID: 3467826891080391073, guid: 66857249ba97fd149b4ee6aea51f1373, type: 3}
+  - Cinematic: {fileID: 7595201542066238570, guid: 3f7babb64bc2f8b49ae290010da99690, type: 3}

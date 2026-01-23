@@ -27,9 +27,9 @@ public class UIManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public T Show<T>() where T : UIView
+    public static T Show<T>() where T : UIView
     {
-        var entry = uiRegistry.GetEntry<T>();
+        var entry = Instance.uiRegistry.GetEntry<T>();
         if (entry != null)
         {
             return Instantiate(entry.Prefab) as T;

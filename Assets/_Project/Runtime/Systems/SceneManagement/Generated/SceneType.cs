@@ -6,6 +6,5 @@ public enum SceneType {
 	TestScene_cogus,
 	MainScene,
 	TutorialScene,
-	GoldBugScene,
-	SubTutorialScene,
+	PrologScene,
 }
