@@ -28,10 +28,16 @@ public class CinematicSubTutorial : Cinematic
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
+        if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
         {
             isMoved = true;
             Finish();
         }
+    }
+
+    public override void Finish()
+    {
+        base.Finish();
+        Destroy(gameObject);
     }
 }

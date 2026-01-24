@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Playables;
 
@@ -6,6 +7,7 @@ public class PrologManager : MonoBehaviour
     [SerializeField] private PlayableDirector prologTimelime;
     [SerializeField] private PlayableDirector goldBugTimeline;
     [SerializeField] private PrologPlayerController prologPlayerController;
+    [SerializeField] private GameObject devil;
 
     private void Start()
     {
@@ -22,6 +24,24 @@ public class PrologManager : MonoBehaviour
         
     }
 
+    public void OnExitGoldBugPrologTimeline()
+    {
+        devil.SetActive(true);
+        StartCoroutine(DelayStartDialog());
+    }
+
+    private IEnumerator DelayStartDialog()
+    {
+        yield return new WaitForSeconds(1f);
+        var cinematicGoldBugDialog = CinematicManager.Show<CinematicGoldBugDialog>();
+        cinematicGoldBugDialog.OnFinished += OnEndCinematicPrologDialog;
+        cinematicGoldBugDialog.StartDialog();
+    }
+
+    public void OnEndCinematicPrologDialog(Cinematic cinematic)
+    {
+
+    }
 
     public void Play_DialogSubtutorialCut2()
     {
