@@ -6,12 +6,22 @@ public class PrologManager : MonoBehaviour
 {
     [SerializeField] private PlayableDirector prologTimelime;
     [SerializeField] private PlayableDirector goldBugTimeline;
+    [SerializeField] private PlayableDirector fallTimeline;
     [SerializeField] private PrologPlayerController prologPlayerController;
+    [SerializeField] private CameraShaker cameraShaker;
     [SerializeField] private GameObject devil;
+
+    private CinematicDialog cinematicDialog;
 
     private void Start()
     {
         prologTimelime.Play();
+    }
+
+    public void OnEndProlog()
+    {
+        UIManager.Show<DarkSolidView>();
+        SceneController.Instance.LoadScene(SceneType.FallScene);
     }
 
     public void StartGoldBug()
@@ -40,7 +50,29 @@ public class PrologManager : MonoBehaviour
 
     public void OnEndCinematicPrologDialog(Cinematic cinematic)
     {
+        cameraShaker.ShakePosition();
+        cameraShaker.ShakeRotation();
+        StartCoroutine(PlayFallTimeline());
+    }
 
+    private IEnumerator PlayFallTimeline()
+    {
+        yield return new WaitForSeconds(1f);
+        fallTimeline.Play();
+    }
+
+    public void PlayDialog(DialogData dialogData)
+    {
+        cinematicDialog = CinematicManager.Show<CinematicDialog>();
+        cinematicDialog.BindDialog(dialogData);
+    }
+
+    public void DestroyDialog()
+    {
+        if(cinematicDialog != null)
+        {
+            cinematicDialog.Finish();
+        }
     }
 
     public void Play_DialogSubtutorialCut2()

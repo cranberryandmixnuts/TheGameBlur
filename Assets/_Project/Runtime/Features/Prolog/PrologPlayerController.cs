@@ -27,8 +27,9 @@ public class PrologPlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (!isActive && followTarget != null)
+        if (!isActive && followTarget != null && followTarget != transform)
         {
+            //Debug.Log(followTarget.gameObject.name);
             transform.position = transform.position
                 .LerpTo(followTarget.position, 0.1f)
                 .ToVector2()

@@ -173,6 +173,168 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &379514251
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 379514254}
+  - component: {fileID: 379514253}
+  - component: {fileID: 379514252}
+  m_Layer: 0
+  m_Name: FallTimeline_PlayableDirector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &379514252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 379514251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Timeline::UnityEngine.Timeline.SignalReceiver
+  m_Events:
+    m_Signals:
+    - {fileID: 11400000, guid: d823d2a13f6da444d87b4f66cfc182bd, type: 2}
+    - {fileID: 11400000, guid: f5ab4987f7cf7364fa891cefe19d3171, type: 2}
+    - {fileID: 11400000, guid: 7d7772b3449985b498104d9448dc0dfa, type: 2}
+    - {fileID: 11400000, guid: d5eb9e17bbc3024459b39a67c27a44b8, type: 2}
+    - {fileID: 11400000, guid: 1c3935e3a722fc043a40301d1f0f86d5, type: 2}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 537952057}
+          m_TargetAssemblyTypeName: CameraShaker, Assembly-CSharp
+          m_MethodName: ShakePosition
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 537952057}
+          m_TargetAssemblyTypeName: CameraShaker, Assembly-CSharp
+          m_MethodName: ShakeRotation
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 659242991}
+          m_TargetAssemblyTypeName: PrologManager, Assembly-CSharp
+          m_MethodName: PlayDialog
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 18b593000f797114cabefc68defdbc27, type: 2}
+            m_ObjectArgumentAssemblyTypeName: DialogData, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 659242991}
+          m_TargetAssemblyTypeName: PrologManager, Assembly-CSharp
+          m_MethodName: DestroyDialog
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 659242991}
+          m_TargetAssemblyTypeName: PrologManager, Assembly-CSharp
+          m_MethodName: OnEndProlog
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1302700788}
+          m_TargetAssemblyTypeName: PrologPlayerController, Assembly-CSharp
+          m_MethodName: SetFollowTarget
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 1302700786}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!320 &379514253
+PlayableDirector:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 379514251}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_PlayableAsset: {fileID: 11400000, guid: 2c972a913935e2d40b507e59fa721ce0, type: 2}
+  m_InitialState: 0
+  m_WrapMode: 2
+  m_DirectorUpdateMode: 1
+  m_InitialTime: 0
+  m_SceneBindings:
+  - key: {fileID: 9189710357011914608, guid: 2c972a913935e2d40b507e59fa721ce0, type: 2}
+    value: {fileID: 379514252}
+  - key: {fileID: 5543750827884138008, guid: 2c972a913935e2d40b507e59fa721ce0, type: 2}
+    value: {fileID: 537952056}
+  - key: {fileID: 4300897937858867, guid: 2c972a913935e2d40b507e59fa721ce0, type: 2}
+    value: {fileID: 379514252}
+  - key: {fileID: 2807425468135303468, guid: 2c972a913935e2d40b507e59fa721ce0, type: 2}
+    value: {fileID: 1302700787}
+  - key: {fileID: 2023546114315209861, guid: 2c972a913935e2d40b507e59fa721ce0, type: 2}
+    value: {fileID: 379514252}
+  m_ExposedReferences:
+    m_References: []
+--- !u!4 &379514254
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 379514251}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 9.66567, y: -1.18047, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &537952051
 GameObject:
   m_ObjectHideFlags: 0
@@ -262,7 +424,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 537952051}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 7.09, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -603,7 +765,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PrologManager
   prologTimelime: {fileID: 1170071890}
   goldBugTimeline: {fileID: 1663355104}
+  fallTimeline: {fileID: 379514253}
   prologPlayerController: {fileID: 1302700788}
+  cameraShaker: {fileID: 537952057}
   devil: {fileID: 618930390}
 --- !u!4 &659242992
 Transform:
@@ -2152,6 +2316,8 @@ PlayableDirector:
     value: {fileID: 1810613463}
   - key: {fileID: 5520526949848920149, guid: 849264b33b896574b8c36a96c8ba1ccf, type: 2}
     value: {fileID: 671846441}
+  - key: {fileID: 8770172936386050774, guid: 849264b33b896574b8c36a96c8ba1ccf, type: 2}
+    value: {fileID: 537952056}
   m_ExposedReferences:
     m_References:
     - f74f1111df8ea0f41bd76451712bcda2: {fileID: 1302700784}
@@ -3000,6 +3166,7 @@ SceneRoots:
   - {fileID: 1488813581}
   - {fileID: 1170071891}
   - {fileID: 1663355105}
+  - {fileID: 379514254}
   - {fileID: 1302700786}
   - {fileID: 659242992}
   - {fileID: 868068817}

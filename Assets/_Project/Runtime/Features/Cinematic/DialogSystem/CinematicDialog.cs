@@ -81,7 +81,9 @@ public class CinematicDialog : Cinematic
     {
         base.Finish();
 
-        Destroy(dialogEventReciever.gameObject);
+        if(dialogEventReciever != null) Destroy(dialogEventReciever.gameObject);
+        if (dialogView != null) Destroy(dialogView.gameObject);
+        if (selectionView != null) Destroy(selectionView.gameObject);
         Destroy(gameObject);
     }
 
