@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 89a2dd79fe601c44a9a65a4beb10fdbc
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 289695
+  packageName: Casual Cat - Calico
+  packageVersion: 1.4.0
+  assetPath: Assets/CasualCat_Calico/Demo/Script/Demo.cs
+  uploadId: 718372
