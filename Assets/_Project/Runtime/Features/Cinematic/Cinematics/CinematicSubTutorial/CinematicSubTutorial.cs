@@ -13,17 +13,31 @@ public class CinematicSubTutorial : Cinematic
     private IEnumerator PlayMoveTutorial()
     {
         yield return new WaitForSeconds(7f);
-        if(!isMoved)
+        if (!isMoved)
         {
-            CinematicManager.Show<CinematicDialog>().BindDialog("SubTutorial_Cut3");
+            var dialog = CinematicManager.Show<CinematicDialog>();
+            dialog.BindDialog("SubTutorial_Cut3");
+            dialog.OnFinished += OnFinishDialog;
         }
+    }
+
+    private void OnFinishDialog(Cinematic cinematic)
+    {
+        Finish();
     }
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
+        if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
         {
             isMoved = true;
+            Finish();
         }
+    }
+
+    public override void Finish()
+    {
+        base.Finish();
+        Destroy(gameObject);
     }
 }

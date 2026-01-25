@@ -2,29 +2,29 @@ using UnityEngine;
 
 public class PrologCameraController : MonoBehaviour
 {
-    [SerializeField] private Transform playerTransform;
+    [SerializeField] private Transform followTarget;
     [SerializeField] private Vector3 offset;
     [SerializeField] private float followSpeed;
 
-    private bool isActive = false;
-
-    public void ActiveCamera()
+    public void SetTarget(Transform target)
     {
-        isActive = true;
+        followTarget = target;
     }
 
-    public void InactiveCamera()
+    public void SetFollowSpeed(float followSpeed)
     {
-        isActive = false;
+        this.followSpeed = followSpeed;
+    }
+
+    public void SetOffsetZero()
+    {
+        this.offset = Vector3.zero;
     }
 
     private void Update()
     {
-        if (!isActive)
-            return;
-
         transform.position = transform.position
-            .LerpTo(playerTransform.position + offset, followSpeed)
+            .LerpTo(followTarget.position + offset, followSpeed)
             .ToVector2()
             .ToVector3(transform.position.z);
     }

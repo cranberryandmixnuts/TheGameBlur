@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class PrologDiceController : MonoBehaviour
 {
+    [SerializeField] private PrologManager prologManager;
+
     private InteractionView interactionView;
     private bool isEnter = false;
 
@@ -30,7 +32,7 @@ public class PrologDiceController : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.E) && isEnter)
         {
             Destroy(this);
-            CinematicManager.Show<CinematicGoldBug>();
+            prologManager.StartGoldBug();
             if (interactionView != null) Destroy(interactionView.gameObject);
         }
     }

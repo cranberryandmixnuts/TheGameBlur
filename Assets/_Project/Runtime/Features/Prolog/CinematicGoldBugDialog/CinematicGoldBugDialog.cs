@@ -1,34 +1,19 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
-public class CinematicDialog : Cinematic
+public class CinematicGoldBugDialog : Cinematic
 {
-    private DialogData dialogData;
+    [SerializeField] private DialogData goldBugDialog;
 
     private DialogEventReciever dialogEventReciever;
     private int dialogIndex = 0;
 
-    [SerializeField] private SelectionView selectionViewPrefab;
+    [SerializeField] private GoldBugSelectionView selectionViewPrefab;
 
-    private SelectionView selectionView;
+    private GoldBugSelectionView selectionView;
     private DialogView dialogView;
 
-    public void BindDialog(string name)
-    {
-        dialogData = DialogRegistryManager.Instance.GetDialogData(name);
-
-        Initialize();
-    }
-
-    public void BindDialog(DialogData dialogData)
-    {
-        this.dialogData = dialogData;
-
-        Initialize();
-    }
-
-    private void Initialize()
+    public void StartDialog()
     {
         dialogEventReciever = new GameObject(typeof(DialogEventReciever).Name).AddComponent<DialogEventReciever>();
         ProcessDialog();
@@ -40,6 +25,7 @@ public class CinematicDialog : Cinematic
         {
             selectionView = Instantiate(selectionViewPrefab);
             selectionView.Initialize(dialog.Selections, OnSelected);
+            StartCoroutine(ForceProcessDialog());
         }
         else
         {
@@ -49,28 +35,32 @@ public class CinematicDialog : Cinematic
         }
     }
 
+    private IEnumerator ForceProcessDialog()
+    {
+        yield return new WaitForSeconds(1f);
+
+        Destroy(dialogView.gameObject);
+        Destroy(selectionView.gameObject);
+
+        ProcessDialog();
+    }
+
     private void OnSelected(Selection selection)
     {
-        dialogData = selection.DialogData;
 
-        Destroy(selectionView.gameObject);
-        Destroy(dialogView.gameObject);
-
-        dialogIndex = 0;
-        ProcessDialog();
     }
 
     private void ProcessDialog()
     {
-        if(dialogIndex >= dialogData.Dialogs.Count)
+        if (dialogIndex >= goldBugDialog.Dialogs.Count)
         {
             Finish();
             return;
         }
 
         dialogView = UIManager.Show<DialogView>().Initialize(
-            dialogData.Dialogs[dialogIndex], 
-            dialogEventReciever, 
+            goldBugDialog.Dialogs[dialogIndex],
+            dialogEventReciever,
             OnDialogFinished
             );
 
@@ -81,9 +71,7 @@ public class CinematicDialog : Cinematic
     {
         base.Finish();
 
-        if(dialogEventReciever != null) Destroy(dialogEventReciever.gameObject);
-        if (dialogView != null) Destroy(dialogView.gameObject);
-        if (selectionView != null) Destroy(selectionView.gameObject);
+        Destroy(dialogEventReciever.gameObject);
         Destroy(gameObject);
     }
 
