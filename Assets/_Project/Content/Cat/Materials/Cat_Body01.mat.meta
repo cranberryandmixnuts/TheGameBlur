@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 7ef28e600aa2e7941afbb557a8ca15e7
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 289695
+  packageName: Casual Cat - Calico
+  packageVersion: 1.4.0
+  assetPath: Assets/CasualCat_Calico/Materials/Cat_Body01.mat
+  uploadId: 718372

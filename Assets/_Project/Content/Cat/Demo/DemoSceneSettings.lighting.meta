@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 759ec53de59afb646bdb56616e57307f
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 4890085278179872738
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 289695
+  packageName: Casual Cat - Calico
+  packageVersion: 1.4.0
+  assetPath: Assets/CasualCat_Calico/Demo/DemoSceneSettings.lighting
+  uploadId: 718372
