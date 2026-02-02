@@ -13,8 +13,8 @@ public class AudioManager : MonoBehaviour
     private List<AudioSource> sfxSourcePool = new();
     private LinkedList<AudioSource> bgmSourcePool = new();
 
-    private static float sfxVolume;
-    private static float bgmVolume;
+    private static float sfxVolume = 1f;
+    private static float bgmVolume = 1f;
 
     public static float SFXVolume
     {
