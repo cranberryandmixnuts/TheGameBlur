@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 8e4cd150466224641b08947ee80e020e
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 312483
+  packageName: Modular Victorian Walls
+  packageVersion: 1.0
+  assetPath: Assets/ModularVictorian/Materials/FrameTrimsOldShader.mat
+  uploadId: 818084

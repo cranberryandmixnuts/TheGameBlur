@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f8f5b1cb8012b3948be27c05c672fa73
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 312483
+  packageName: Modular Victorian Walls
+  packageVersion: 1.0
+  assetPath: Assets/ModularVictorian/Materials/MetalSlateShader.mat
+  uploadId: 818084

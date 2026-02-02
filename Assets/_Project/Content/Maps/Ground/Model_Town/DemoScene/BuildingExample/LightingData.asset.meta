@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: cc5060c7ea39a6047af835f0366c1a0c
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 112000000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 312483
+  packageName: Modular Victorian Walls
+  packageVersion: 1.0
+  assetPath: Assets/ModularVictorian/DemoScene/BuildingExample/LightingData.asset
+  uploadId: 818084

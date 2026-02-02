@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 6491f83840aea70459775c53b5098fa9
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 312483
+  packageName: Modular Victorian Walls
+  packageVersion: 1.0
+  assetPath: Assets/ModularVictorian/Materials/DoorAShader.mat
+  uploadId: 818084

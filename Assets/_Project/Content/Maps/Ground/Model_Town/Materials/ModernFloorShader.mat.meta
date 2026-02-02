@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a50bf1c4e5ccc6f4eb608e9db4c158e9
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 312483
+  packageName: Modular Victorian Walls
+  packageVersion: 1.0
+  assetPath: Assets/ModularVictorian/Materials/ModernFloorShader.mat
+  uploadId: 818084

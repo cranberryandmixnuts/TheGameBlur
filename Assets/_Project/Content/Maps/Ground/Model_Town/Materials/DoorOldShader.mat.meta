@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 293ba28b77e8a8b479dc244acdf3f77a
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 312483
+  packageName: Modular Victorian Walls
+  packageVersion: 1.0
+  assetPath: Assets/ModularVictorian/Materials/DoorOldShader.mat
+  uploadId: 818084
