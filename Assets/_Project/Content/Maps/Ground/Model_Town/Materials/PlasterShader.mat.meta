@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fac4962ff57be1545803e28f35849cd1
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 312483
+  packageName: Modular Victorian Walls
+  packageVersion: 1.0
+  assetPath: Assets/ModularVictorian/Materials/PlasterShader.mat
+  uploadId: 818084

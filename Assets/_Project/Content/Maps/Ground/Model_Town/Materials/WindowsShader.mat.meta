@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f84fc9ca6e02aaf4484b2c630ceed7e1
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 312483
+  packageName: Modular Victorian Walls
+  packageVersion: 1.0
+  assetPath: Assets/ModularVictorian/Materials/WindowsShader.mat
+  uploadId: 818084
