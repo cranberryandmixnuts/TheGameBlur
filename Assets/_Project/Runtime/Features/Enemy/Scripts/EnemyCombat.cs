@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(EnemyScript))]
@@ -42,8 +42,7 @@ public sealed class EnemyCombat : MonoBehaviour
 
     private void Update()
     {
-        if (!active)
-            return;
+        if (!active) return;
 
         elapsed += Time.deltaTime;
 
@@ -73,9 +72,12 @@ public sealed class EnemyCombat : MonoBehaviour
 
         enemy.BeginAttackLock(duration);
 
+        enemy.PlayAttackAnimation();
+
         aimDir = (enemy.FacingDir >= 0) ? Vector3.right : Vector3.left;
         aimDir.z = 0f;
     }
+
 
     private void PerformHit()
     {
@@ -102,11 +104,8 @@ public sealed class EnemyCombat : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             PlayerHealth player = overlap[i].GetComponentInParent<PlayerHealth>();
-            if (player == null)
-                continue;
-
-            if (!hitPlayers.Add(player))
-                continue;
+            if (player == null) continue;
+            if (!hitPlayers.Add(player)) continue;
 
             player.ApplyDamage(new DamagePayload(enemy.data.damage, gameObject));
         }
@@ -115,7 +114,6 @@ public sealed class EnemyCombat : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         if (hitOrigin == null) return;
-
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(hitOrigin.position, 0.05f);
     }
