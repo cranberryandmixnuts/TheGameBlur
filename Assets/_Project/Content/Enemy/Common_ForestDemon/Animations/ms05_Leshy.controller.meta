@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 10f60c6f011ce4342ae1de2e9f247524
+timeCreated: 1532159888
+licenseType: Store
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 177455
+  packageName: Poly HP - Leshy
+  packageVersion: 1.1
+  assetPath: Assets/DownrainDC/PolyHP/b_ms/ms01_05_Leshy/Animations/ms05_Leshy.controller
+  uploadId: 774732

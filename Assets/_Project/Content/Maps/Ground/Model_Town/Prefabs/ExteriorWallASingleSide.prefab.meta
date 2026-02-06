@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 5c4d55b020b1f244c96b13c9f384f4d2
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 312483
+  packageName: Modular Victorian Walls
+  packageVersion: 1.0
+  assetPath: Assets/ModularVictorian/Prefabs/ExteriorWallASingleSide.prefab
+  uploadId: 818084

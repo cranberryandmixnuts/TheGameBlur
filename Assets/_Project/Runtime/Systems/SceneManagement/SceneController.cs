@@ -34,8 +34,14 @@ public class SceneController : MonoBehaviour
 
     }
 
-    public void LoadScene(SceneType sceneName, float duration = 1f)
+    public void LoadScene(SceneType sceneType, float duration = 1f)
     {
-        SceneManager.LoadScene(sceneName.ToString());
+        StartCoroutine(DelayedLoadScene(sceneType, duration));
+    }
+
+    private IEnumerator DelayedLoadScene(SceneType sceneType, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        SceneManager.LoadScene(sceneType.ToString());
     }
 }

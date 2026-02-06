@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 528cc1ed265558c45a681485e8a605b5
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 312483
+  packageName: Modular Victorian Walls
+  packageVersion: 1.0
+  assetPath: Assets/ModularVictorian/Materials/StoneWallTrimShader.mat
+  uploadId: 818084

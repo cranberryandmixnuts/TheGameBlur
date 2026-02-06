@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8c01357d99225d41ad5dfa01f80b6a5, type: 3}
+  m_Name: SubTutorial_Cut2
+  m_EditorClassIdentifier: Assembly-CSharp::DialogData
+  _dialogs:
+  - name: "\uBCF4\uB514\uAC00\uB4DC"
+    line: "\uB300\uB0AE\uBD80\uD130 \uC65C \uC774\uB798, \uAEBC\uC838!"
+    isSelectable: 0
+    selections: []

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 5f0a76d97cd9a6941aedc17dceff67db
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 312483
+  packageName: Modular Victorian Walls
+  packageVersion: 1.0
+  assetPath: Assets/ModularVictorian/Prefabs/WallCap.prefab
+  uploadId: 818084

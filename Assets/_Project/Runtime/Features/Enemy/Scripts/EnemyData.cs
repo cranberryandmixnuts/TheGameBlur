@@ -20,6 +20,10 @@ public class EnemyData : ScriptableObject
     public float moveDistance = 3f;
     public float restTime = 1f;
 
+    [Header("추격")]
+    public float chaseSpeed = 3.5f;
+
+
 
     [Header("공격 타이밍")]
     public float attackAnimTime = 0.6f;

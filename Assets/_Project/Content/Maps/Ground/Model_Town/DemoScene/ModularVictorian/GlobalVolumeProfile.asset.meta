@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2c00730fa48d3254f91bbc2976ebe857
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 312483
+  packageName: Modular Victorian Walls
+  packageVersion: 1.0
+  assetPath: Assets/ModularVictorian/DemoScene/ModularVictorian/GlobalVolumeProfile.asset
+  uploadId: 818084

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: f70f4cd79d0d27e419976a412c9d2dc0
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - audioRegistry: {fileID: 11400000, guid: d397ca3a84fb1dc439b453990bdd45c8, type: 2}
+  - sfxPrefab: {fileID: 481162255565895830, guid: 51acdc286b695b846896db88fe181715, type: 3}
+  - bgmPrefab: {fileID: 3318891305969462675, guid: 8815ab639b0b814418ecc9429e8467ca, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
