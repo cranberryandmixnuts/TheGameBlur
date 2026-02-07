@@ -6,26 +6,26 @@ public class PrologCameraController : MonoBehaviour
     [SerializeField] private Vector3 offset;
     [SerializeField] private float followSpeed;
 
-    public void SetTarget(Transform target)
+    private bool isActive = true;
+
+    public void ActiveCamera()
     {
-        followTarget = target;
+        isActive = true;
     }
 
-    public void SetFollowSpeed(float followSpeed)
+    public void InactiveCamera()
     {
-        this.followSpeed = followSpeed;
-    }
-
-    public void SetOffsetZero()
-    {
-        this.offset = Vector3.zero;
+        isActive = false;
     }
 
     private void Update()
     {
+        if (!isActive)
+            return;
+
         transform.position = transform.position
             .LerpTo(followTarget.position + offset, followSpeed)
             .ToVector2()
-            .ToVector3(transform.position.z);
+            .ToVector3(-15f);
     }
 }

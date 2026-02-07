@@ -51,8 +51,7 @@ public class PrologManager : MonoBehaviour
 
     public void OnEndCinematicPrologDialog(Cinematic cinematic)
     {
-        cameraShaker.ShakePosition();
-        cameraShaker.ShakeRotation();
+        cameraShaker.Shake();
         StartCoroutine(PlayFallTimeline());
     }
 

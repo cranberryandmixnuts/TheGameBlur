@@ -4630,9 +4630,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35cf4b3099369d441861f0c8142f1841, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraShaker
-  duration: 1
-  strength: 0.5
-  vibrato: 10
 --- !u!114 &537952058
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11488,6 +11485,10 @@ PlayableDirector:
     value: {fileID: 1170071892}
   - key: {fileID: 1557132040251644316, guid: 5232c097df7920e4bade01ffcbb3bc66, type: 2}
     value: {fileID: 1693316113}
+  - key: {fileID: -8155662251895253042, guid: 5232c097df7920e4bade01ffcbb3bc66, type: 2}
+    value: {fileID: 537952056}
+  - key: {fileID: 2112356752102514711, guid: 5232c097df7920e4bade01ffcbb3bc66, type: 2}
+    value: {fileID: 1170071892}
   m_ExposedReferences:
     m_References: []
 --- !u!4 &1170071891
@@ -11529,7 +11530,19 @@ MonoBehaviour:
     - {fileID: 11400000, guid: b1bae86167d775048a8f100f40a42e79, type: 2}
     m_Events:
     - m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 537952058}
+          m_TargetAssemblyTypeName: PrologCameraController, Assembly-CSharp
+          m_MethodName: InactiveCamera
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     - m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 659242991}
@@ -11544,11 +11557,9 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 537952057}
-          m_TargetAssemblyTypeName: CameraShaker, Assembly-CSharp
-          m_MethodName: ShakePosition
+        - m_Target: {fileID: 537952058}
+          m_TargetAssemblyTypeName: PrologCameraController, Assembly-CSharp
+          m_MethodName: ActiveCamera
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -11558,9 +11569,11 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
         - m_Target: {fileID: 537952057}
           m_TargetAssemblyTypeName: CameraShaker, Assembly-CSharp
-          m_MethodName: ShakeRotation
+          m_MethodName: Shake
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -11589,57 +11602,9 @@ MonoBehaviour:
     - m_PersistentCalls:
         m_Calls: []
     - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 537952058}
-          m_TargetAssemblyTypeName: PrologCameraController, Assembly-CSharp
-          m_MethodName: SetTarget
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 923590778}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 537952058}
-          m_TargetAssemblyTypeName: PrologCameraController, Assembly-CSharp
-          m_MethodName: SetFollowSpeed
-          m_Mode: 4
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 1
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+        m_Calls: []
     - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 537952058}
-          m_TargetAssemblyTypeName: PrologCameraController, Assembly-CSharp
-          m_MethodName: SetTarget
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 1302700786}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 537952058}
-          m_TargetAssemblyTypeName: PrologCameraController, Assembly-CSharp
-          m_MethodName: SetFollowSpeed
-          m_Mode: 4
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0.1
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+        m_Calls: []
 --- !u!1 &1179716609
 GameObject:
   m_ObjectHideFlags: 0
@@ -12005,7 +11970,6 @@ MonoBehaviour:
   m_Script: {fileID: 1874467585}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.HighDefinition.Runtime::UnityEngine.Rendering.HighDefinition.SceneObjectIDMapSceneAsset
-  m_Entries: []
 --- !u!4 &1189443487
 Transform:
   m_ObjectHideFlags: 19
@@ -13405,8 +13369,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1302700784}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.39, y: -0.73, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 4.2600007, y: -0.53, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -16781,7 +16745,7 @@ PlayableDirector:
   serializedVersion: 3
   m_PlayableAsset: {fileID: 11400000, guid: 849264b33b896574b8c36a96c8ba1ccf, type: 2}
   m_InitialState: 0
-  m_WrapMode: 2
+  m_WrapMode: 0
   m_DirectorUpdateMode: 1
   m_InitialTime: 0
   m_SceneBindings:
@@ -16791,8 +16755,6 @@ PlayableDirector:
     value: {fileID: 1302700787}
   - key: {fileID: 8486749247969718748, guid: 849264b33b896574b8c36a96c8ba1ccf, type: 2}
     value: {fileID: 1663355106}
-  - key: {fileID: 7558098599835937484, guid: 849264b33b896574b8c36a96c8ba1ccf, type: 2}
-    value: {fileID: 923590779}
   - key: {fileID: 6280273868983573867, guid: 849264b33b896574b8c36a96c8ba1ccf, type: 2}
     value: {fileID: 1663355106}
   - key: {fileID: -8855068988637202448, guid: 849264b33b896574b8c36a96c8ba1ccf, type: 2}
@@ -16819,6 +16781,8 @@ PlayableDirector:
     value: {fileID: 537952056}
   - key: {fileID: 7775758541572109510, guid: 849264b33b896574b8c36a96c8ba1ccf, type: 2}
     value: {fileID: 1693316113}
+  - key: {fileID: -1814360202248878090, guid: 849264b33b896574b8c36a96c8ba1ccf, type: 2}
+    value: {fileID: 1290657777}
   m_ExposedReferences:
     m_References:
     - f74f1111df8ea0f41bd76451712bcda2: {fileID: 1302700784}
@@ -16864,6 +16828,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: eb85e72b2d6e9ea44a14d15f3584292d, type: 2}
     - {fileID: 11400000, guid: d5eb9e17bbc3024459b39a67c27a44b8, type: 2}
     - {fileID: 11400000, guid: b1bae86167d775048a8f100f40a42e79, type: 2}
+    - {fileID: 11400000, guid: d823d2a13f6da444d87b4f66cfc182bd, type: 2}
     m_Events:
     - m_PersistentCalls:
         m_Calls:
@@ -16879,35 +16844,9 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-    - m_PersistentCalls:
-        m_Calls:
         - m_Target: {fileID: 537952058}
           m_TargetAssemblyTypeName: PrologCameraController, Assembly-CSharp
-          m_MethodName: SetTarget
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 1982438642}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 537952058}
-          m_TargetAssemblyTypeName: PrologCameraController, Assembly-CSharp
-          m_MethodName: SetFollowSpeed
-          m_Mode: 4
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0.1
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 537952058}
-          m_TargetAssemblyTypeName: PrologCameraController, Assembly-CSharp
-          m_MethodName: SetOffsetZero
+          m_MethodName: InactiveCamera
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -16918,143 +16857,25 @@ MonoBehaviour:
             m_BoolArgument: 0
           m_CallState: 2
     - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1302700788}
-          m_TargetAssemblyTypeName: PrologPlayerController, Assembly-CSharp
-          m_MethodName: SetFollowTarget
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 238066718}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 537952058}
-          m_TargetAssemblyTypeName: PrologCameraController, Assembly-CSharp
-          m_MethodName: SetFollowSpeed
-          m_Mode: 4
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0.2
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 537952058}
-          m_TargetAssemblyTypeName: PrologCameraController, Assembly-CSharp
-          m_MethodName: SetTarget
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 1290657778}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 537952058}
-          m_TargetAssemblyTypeName: PrologCameraController, Assembly-CSharp
-          m_MethodName: SetTarget
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 1928643221}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 537952058}
-          m_TargetAssemblyTypeName: PrologCameraController, Assembly-CSharp
-          m_MethodName: SetTarget
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 1005955612}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+        m_Calls: []
     - m_PersistentCalls:
         m_Calls: []
     - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 537952058}
-          m_TargetAssemblyTypeName: PrologCameraController, Assembly-CSharp
-          m_MethodName: SetTarget
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 671846442}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 537952058}
-          m_TargetAssemblyTypeName: PrologCameraController, Assembly-CSharp
-          m_MethodName: SetFollowSpeed
-          m_Mode: 4
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0.1
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+        m_Calls: []
     - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 537952058}
-          m_TargetAssemblyTypeName: PrologCameraController, Assembly-CSharp
-          m_MethodName: SetTarget
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 1845275416}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 537952058}
-          m_TargetAssemblyTypeName: PrologCameraController, Assembly-CSharp
-          m_MethodName: SetFollowSpeed
-          m_Mode: 4
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0.3
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+        m_Calls: []
     - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 537952058}
-          m_TargetAssemblyTypeName: PrologCameraController, Assembly-CSharp
-          m_MethodName: SetTarget
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 1302700786}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+        m_Calls: []
+    - m_PersistentCalls:
+        m_Calls: []
+    - m_PersistentCalls:
+        m_Calls: []
+    - m_PersistentCalls:
+        m_Calls: []
+    - m_PersistentCalls:
+        m_Calls: []
+    - m_PersistentCalls:
+        m_Calls: []
     - m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 659242991}
@@ -17070,14 +16891,16 @@ MonoBehaviour:
             m_BoolArgument: 0
           m_CallState: 2
     - m_PersistentCalls:
+        m_Calls: []
+    - m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 537952058}
-          m_TargetAssemblyTypeName: PrologCameraController, Assembly-CSharp
-          m_MethodName: SetTarget
-          m_Mode: 2
+        - m_Target: {fileID: 537952057}
+          m_TargetAssemblyTypeName: CameraShaker, Assembly-CSharp
+          m_MethodName: Shake
+          m_Mode: 1
           m_Arguments:
-            m_ObjectArgument: {fileID: 923590778}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
