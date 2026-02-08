@@ -13,6 +13,87 @@ MonoBehaviour:
   m_Name: Boss Skill
   m_EditorClassIdentifier: Assembly-CSharp::BossEnemyDataSO
   idleBetweenSkills: 1
-  skills: []
-  fireballPrefab: {fileID: 0}
-  baseYawForLeft: 0
+  skills:
+  - type: 0
+    weight: 20
+    randomMoveSpeed: 3
+    randomMoveDistanceMin: 5
+    randomMoveDistanceMax: 5
+    randomMoveAfterIdle: 1.5
+    jumpVelocityY: 0
+    jumpMoveSpeed: 0
+    jumpDistanceMin: 0
+    jumpDistanceMax: 0
+    jumpMaxAirTime: 0
+    dashSpeed: 0
+    dashDistance: 0
+    diveDownOffsetY: 0
+    diveDownTime: 0
+    undergroundDelay: 0
+    emergeTime: 0
+    fireHorizontalSpeed: 0
+    fireSpawnXOffset: 0
+    fireTopYOffset: 0
+    fireMidYOffset: 0
+    fireBottomYOffset: 0
+    aimShotSpeed: 0
+    aimShotInterval: 0
+    aimShotCount: 0
+    aimShotSpawnXOffset: 0
+    aimShotSpawnYOffset: 0
+  - type: 1
+    weight: 20
+    randomMoveSpeed: 3
+    randomMoveDistanceMin: 5
+    randomMoveDistanceMax: 5
+    randomMoveAfterIdle: 1.5
+    jumpVelocityY: 5
+    jumpMoveSpeed: 3
+    jumpDistanceMin: 2
+    jumpDistanceMax: 7
+    jumpMaxAirTime: 3
+    dashSpeed: 0
+    dashDistance: 0
+    diveDownOffsetY: 0
+    diveDownTime: 0
+    undergroundDelay: 0
+    emergeTime: 0
+    fireHorizontalSpeed: 0
+    fireSpawnXOffset: 0
+    fireTopYOffset: 0
+    fireMidYOffset: 0
+    fireBottomYOffset: 0
+    aimShotSpeed: 0
+    aimShotInterval: 0
+    aimShotCount: 0
+    aimShotSpawnXOffset: 0
+    aimShotSpawnYOffset: 0
+  - type: 2
+    weight: 60
+    randomMoveSpeed: 3
+    randomMoveDistanceMin: 5
+    randomMoveDistanceMax: 5
+    randomMoveAfterIdle: 1.5
+    jumpVelocityY: 5
+    jumpMoveSpeed: 3
+    jumpDistanceMin: 2
+    jumpDistanceMax: 7
+    jumpMaxAirTime: 1
+    dashSpeed: 10
+    dashDistance: 7
+    diveDownOffsetY: 2
+    diveDownTime: 3
+    undergroundDelay: 1.5
+    emergeTime: 0
+    fireHorizontalSpeed: 0
+    fireSpawnXOffset: 0
+    fireTopYOffset: 0
+    fireMidYOffset: 0
+    fireBottomYOffset: 0
+    aimShotSpeed: 0
+    aimShotInterval: 0
+    aimShotCount: 0
+    aimShotSpawnXOffset: 0
+    aimShotSpawnYOffset: 0
+  fireballPrefab: {fileID: 6187691035932146476, guid: 76199c2031d022444a4411d48ff73a3e, type: 3}
+  baseYawForLeft: 270
