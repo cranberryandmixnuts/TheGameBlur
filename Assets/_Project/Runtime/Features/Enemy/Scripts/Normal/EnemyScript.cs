@@ -15,6 +15,9 @@ public class EnemyScript : MonoBehaviour
     public EnemyData data;
     public EnemyVision vision;
 
+    [Header("AI")]
+    public bool enableNormalAI = true;
+
     [Header("Combat")]
     public EnemyCombat combat;
     public float attackRangeX = 1.2f;
@@ -78,7 +81,9 @@ public class EnemyScript : MonoBehaviour
         }
 
         currentHP = data.maxHP;
-        loop = StartCoroutine(AI_Loop());
+
+        if (enableNormalAI)
+            loop = StartCoroutine(AI_Loop());
     }
 
     IEnumerator AI_Loop()
@@ -169,9 +174,7 @@ public class EnemyScript : MonoBehaviour
                 SetState(EnemyState.Attack);
 
                 if (combat != null && !combat.IsActionActive)
-                {
                     combat.BeginAttack();
-                }
 
                 yield return null;
                 continue;
@@ -229,14 +232,16 @@ public class EnemyScript : MonoBehaviour
     {
         isActionLocked = true;
 
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
 
         yield return new WaitForSeconds(duration);
 
         isActionLocked = false;
         lockRoutine = null;
-
     }
 
     void SetState(EnemyState newState)
@@ -271,5 +276,11 @@ public class EnemyScript : MonoBehaviour
     {
         currentHP -= amount;
         if (currentHP <= 0) Destroy(gameObject);
+    }
+
+    void OnDisable()
+    {
+        if (loop != null) StopCoroutine(loop);
+        if (lockRoutine != null) StopCoroutine(lockRoutine);
     }
 }
