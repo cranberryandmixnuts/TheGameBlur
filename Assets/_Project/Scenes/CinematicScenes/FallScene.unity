@@ -868,6 +868,8 @@ PlayableDirector:
     value: {fileID: 1178900058}
   - key: {fileID: 3324637412209890427, guid: 21982d24de1c42947bd63735778d866f, type: 2}
     value: {fileID: 960691352}
+  - key: {fileID: -4223215532612327488, guid: 21982d24de1c42947bd63735778d866f, type: 2}
+    value: {fileID: 441886856}
   m_ExposedReferences:
     m_References: []
 --- !u!4 &441886855
@@ -900,12 +902,27 @@ MonoBehaviour:
   m_Events:
     m_Signals:
     - {fileID: 11400000, guid: d823d2a13f6da444d87b4f66cfc182bd, type: 2}
+    - {fileID: 11400000, guid: d5eb9e17bbc3024459b39a67c27a44b8, type: 2}
     m_Events:
     - m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 339587625}
           m_TargetAssemblyTypeName: FallCameraController, Assembly-CSharp
           m_MethodName: FallShake
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 682409950}
+          m_TargetAssemblyTypeName: FallManager, Assembly-CSharp
+          m_MethodName: OnExitFallActionTimeline
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -1346,9 +1363,9 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1432720236}
   - {fileID: 1178900055}
   - {fileID: 960691351}
+  - {fileID: 1432720236}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1468,6 +1485,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1503385777}
   m_LocalEulerAnglesHint: {x: 0, y: 45, z: 90}
+--- !u!1 &682409949
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 682409951}
+  - component: {fileID: 682409950}
+  m_Layer: 0
+  m_Name: FallManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &682409950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682409949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2ec666338fe1ad48ad646162f57205b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FallManager
+--- !u!4 &682409951
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682409949}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 361.99185, y: 183.01205, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &750783066
 GameObject:
   m_ObjectHideFlags: 0
@@ -3854,3 +3915,4 @@ SceneRoots:
   - {fileID: 1359188784}
   - {fileID: 568832845}
   - {fileID: 439817195}
+  - {fileID: 682409951}

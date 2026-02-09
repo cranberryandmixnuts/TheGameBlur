@@ -47,7 +47,7 @@ public class SlotMachineManager : MonoBehaviour
             }
 
             slotMachineView.PlaySlot(slotInfos);
-            SceneController.Instance.LoadScene(SceneType.MainScene, 3f);
+            SceneController.Instance.LoadScene(SceneType.PrologScene, 3f);
         }
     }
 
