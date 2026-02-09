@@ -10,6 +10,15 @@ public sealed class BossController : MonoBehaviour
     public Transform player;
     public Transform projectileOrigin;
 
+    [Header("Underground Fire Spawners (1,2,3)")]
+    public Transform undergroundSpawner1;
+    public Transform undergroundSpawner2;
+    public Transform undergroundSpawner3;
+
+    [Header("Underground Fire Facing (Yaw)")]
+    public float lookBackYaw = 180f;
+    public float lookScreenYaw = 0f;
+
     [Header("Anim State Names")]
     public string idleState = "Idle";
     public string moveState = "Move";
@@ -83,8 +92,17 @@ public sealed class BossController : MonoBehaviour
             return;
         }
 
+        StartCoroutine(StopEnemyAISafely());
+
         if (loop != null) StopCoroutine(loop);
         loop = StartCoroutine(SkillLoop());
+    }
+
+    IEnumerator StopEnemyAISafely()
+    {
+        yield return null;
+        if (enemy != null)
+            enemy.StopAllCoroutines();
     }
 
     IEnumerator SkillLoop()
@@ -208,31 +226,61 @@ public sealed class BossController : MonoBehaviour
     }
 
     IEnumerator Skill_RandomJumpMove(BossSkillEntry s)
+{
+    int dir = Random.value < 0.5f ? -1 : 1;
+    SetFacing(dir);
+
+    PlayStateForce(jumpHash);
+
+    float dist = Random.Range(s.jumpDistanceMin, s.jumpDistanceMax);
+    float targetX = rb.position.x + dir * dist;
+
+    float duration = Mathf.Max(0.05f, s.jumpDuration);
+
+    float height = Mathf.Max(0f, s.jumpApexHeightMin + Mathf.Abs(dist) * s.jumpApexHeightPerUnit);
+
+    Vector3 from = rb.position;
+    Vector3 to = new Vector3(targetX, from.y, from.z);
+
+    yield return ParabolicMove(from, to, height, duration);
+
+    PlayStateIfDifferent(idleHash, false);
+}
+
+
+    IEnumerator ParabolicMove(Vector3 from, Vector3 to, float apexHeight, float duration)
     {
-        int dir = Random.value < 0.5f ? -1 : 1;
-        SetFacing(dir);
+        bool prevKinematic = rb.isKinematic;
+        bool prevGravity = rb.useGravity;
 
-        PlayStateForce(jumpHash);
+        rb.isKinematic = true;
+        rb.useGravity = false;
 
-        float dist = Random.Range(s.jumpDistanceMin, s.jumpDistanceMax);
-        float targetX = rb.position.x + dir * dist;
+        float t = 0f;
 
-        if (IsGrounded())
+        while (t < duration)
         {
-            Vector3 v = rb.linearVelocity;
-            v.y = 0f;
-            rb.linearVelocity = v;
-            rb.AddForce(Vector3.up * s.jumpVelocityY, ForceMode.VelocityChange);
-        }
+            float u = t / duration;
 
-        float t = Mathf.Max(0.05f, s.jumpMaxAirTime);
-        while (t > 0f && Mathf.Abs(rb.position.x - targetX) > 0.01f)
-        {
-            MoveX(targetX, s.jumpMoveSpeed);
-            t -= Time.fixedDeltaTime;
+            float x = Mathf.Lerp(from.x, to.x, u);
+            float baseY = Mathf.Lerp(from.y, to.y, u);
+            float y = baseY + 4f * apexHeight * u * (1f - u);
+
+            rb.MovePosition(new Vector3(x, y, from.z));
+
+            t += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
+
+        rb.MovePosition(new Vector3(to.x, to.y, from.z));
+
+        rb.isKinematic = prevKinematic;
+        rb.useGravity = prevGravity;
+
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
     }
+
 
     IEnumerator Skill_DashToPlayerX(BossSkillEntry s)
     {
@@ -254,26 +302,23 @@ public sealed class BossController : MonoBehaviour
         }
     }
 
-
     IEnumerator Skill_UndergroundDoubleFire(BossSkillEntry s)
     {
-        int dir = DirToPlayerOrFacing();
-        SetFacing(dir);
+        int savedFacing = facingDir;
 
-        PlayStateForce(diveHash);
+        float originX = rb.position.x;
+        float outX = originX + Mathf.Abs(s.undergroundWalkDeltaZ);
 
-        Vector3 originPos = transform.position;
+        PlayStateForce(moveHash);
+        SetYaw(lookBackYaw);
 
-        float td = Mathf.Max(0.01f, s.diveDownTime);
-        float downY = originPos.y + s.diveDownOffsetY;
-        float t = 0f;
-        while (t < td)
+        while (Mathf.Abs(rb.position.x - outX) > 0.01f)
         {
-            t += Time.deltaTime;
-            float a = Mathf.Clamp01(t / td);
-            transform.position = new Vector3(originPos.x, Mathf.Lerp(originPos.y, downY, a), originPos.z);
-            yield return null;
+            MoveX(outX, s.undergroundWalkSpeed);
+            yield return new WaitForFixedUpdate();
         }
+
+        PlayStateIfDifferent(idleHash, false);
 
         float u = Mathf.Max(0f, s.undergroundDelay);
         while (u > 0f)
@@ -282,36 +327,46 @@ public sealed class BossController : MonoBehaviour
             yield return null;
         }
 
-        bool topTwo = Random.value < 0.5f;
+        Transform spA;
+        Transform spB;
 
-        Vector3 p = projectileOrigin.position;
-        float sx = p.x + dir * s.fireSpawnXOffset;
-        Vector3 vel = new Vector3(dir * s.fireHorizontalSpeed, 0f, 0f);
-
-        if (topTwo)
+        bool patternA = Random.value < 0.5f;
+        if (patternA)
         {
-            SpawnFireball(new Vector3(sx, p.y + s.fireTopYOffset, p.z), vel);
-            SpawnFireball(new Vector3(sx, p.y + s.fireMidYOffset, p.z), vel);
+            spA = undergroundSpawner1;
+            spB = undergroundSpawner3;
         }
         else
         {
-            SpawnFireball(new Vector3(sx, p.y + s.fireTopYOffset, p.z), vel);
-            SpawnFireball(new Vector3(sx, p.y + s.fireBottomYOffset, p.z), vel);
+            spA = undergroundSpawner2;
+            spB = undergroundSpawner3;
         }
 
-        PlayStateForce(emergeHash);
+        Vector3 vel = new Vector3(-Mathf.Abs(s.fireHorizontalSpeed), 0f, 0f);
 
-        float te = Mathf.Max(0.01f, s.emergeTime);
-        t = 0f;
-        while (t < te)
+        if (spA != null) SpawnFireball(spA.position, vel);
+        if (spB != null) SpawnFireball(spB.position, vel);
+
+        float after = Mathf.Max(0f, s.undergroundAfterFireWait);
+        while (after > 0f)
         {
-            t += Time.deltaTime;
-            float a = Mathf.Clamp01(t / te);
-            transform.position = new Vector3(originPos.x, Mathf.Lerp(downY, originPos.y, a), originPos.z);
+            after -= Time.deltaTime;
             yield return null;
         }
 
-        transform.position = originPos;
+        PlayStateForce(moveHash);
+        SetYaw(lookScreenYaw);
+
+        while (Mathf.Abs(rb.position.x - originX) > 0.01f)
+        {
+            MoveX(originX, s.undergroundWalkSpeed);
+            yield return new WaitForFixedUpdate();
+        }
+
+        facingDir = savedFacing;
+        ApplyFacingRotation();
+
+        PlayStateIfDifferent(idleHash, false);
     }
 
     IEnumerator Skill_TwoShotsToPlayerPos(BossSkillEntry s)
@@ -347,12 +402,9 @@ public sealed class BossController : MonoBehaviour
         rb.MovePosition(new Vector3(nx, p.y, p.z));
     }
 
-    int DirToPlayerOrFacing()
+    void SetYaw(float yaw)
     {
-        if (player == null) return facingDir == 0 ? -1 : facingDir;
-        float dx = player.position.x - rb.position.x;
-        if (Mathf.Abs(dx) < 0.0001f) return facingDir == 0 ? -1 : facingDir;
-        return dx >= 0f ? 1 : -1;
+        transform.rotation = Quaternion.Euler(0f, yaw, 0f);
     }
 
     void SetFacing(int dir)
@@ -376,7 +428,7 @@ public sealed class BossController : MonoBehaviour
         int cur = anim.GetCurrentAnimatorStateInfo(0).shortNameHash;
         if (!restart && cur == stateHash) return;
 
-        anim.CrossFadeInFixedTime(stateHash, crossFade, 0, restart ? 0f : anim.GetCurrentAnimatorStateInfo(0).normalizedTime);
+        anim.CrossFadeInFixedTime(stateHash, crossFade, 0, 0f);
     }
 
     void PlayStateForce(int stateHash)
