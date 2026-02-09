@@ -15,85 +15,75 @@ MonoBehaviour:
   idleBetweenSkills: 1
   skills:
   - type: 0
-    weight: 20
-    randomMoveSpeed: 3
+    weight: 0
+    randomMoveSpeed: 4
     randomMoveDistanceMin: 5
     randomMoveDistanceMax: 5
-    randomMoveAfterIdle: 1.5
-    jumpVelocityY: 0
-    jumpMoveSpeed: 0
+    randomMoveAfterIdle: 1
     jumpDistanceMin: 0
     jumpDistanceMax: 0
-    jumpMaxAirTime: 0
+    jumpDuration: 1
+    jumpApexHeightMin: 1.5
+    jumpApexHeightPerUnit: 0.25
     dashSpeed: 0
-    dashDistance: 0
-    diveDownOffsetY: 0
-    diveDownTime: 0
-    undergroundDelay: 0
-    emergeTime: 0
+    undergroundWalkDeltaZ: 2
+    undergroundWalkSpeed: 3
+    undergroundDropY: 3
+    undergroundDropTime: 0.12
+    undergroundBeforeFireWait: 0
     fireHorizontalSpeed: 0
-    fireSpawnXOffset: 0
-    fireTopYOffset: 0
-    fireMidYOffset: 0
-    fireBottomYOffset: 0
+    undergroundAfterFireWait: 1.2
+    undergroundRiseTime: 0.12
     aimShotSpeed: 0
     aimShotInterval: 0
     aimShotCount: 0
-    aimShotSpawnXOffset: 0
-    aimShotSpawnYOffset: 0
-  - type: 1
-    weight: 20
-    randomMoveSpeed: 3
-    randomMoveDistanceMin: 5
-    randomMoveDistanceMax: 5
-    randomMoveAfterIdle: 1.5
-    jumpVelocityY: 5
-    jumpMoveSpeed: 3
-    jumpDistanceMin: 2
-    jumpDistanceMax: 7
-    jumpMaxAirTime: 3
-    dashSpeed: 0
-    dashDistance: 0
-    diveDownOffsetY: 0
-    diveDownTime: 0
-    undergroundDelay: 0
-    emergeTime: 0
-    fireHorizontalSpeed: 0
-    fireSpawnXOffset: 0
-    fireTopYOffset: 0
-    fireMidYOffset: 0
-    fireBottomYOffset: 0
-    aimShotSpeed: 0
-    aimShotInterval: 0
-    aimShotCount: 0
-    aimShotSpawnXOffset: 0
-    aimShotSpawnYOffset: 0
   - type: 2
-    weight: 60
-    randomMoveSpeed: 3
-    randomMoveDistanceMin: 5
-    randomMoveDistanceMax: 5
-    randomMoveAfterIdle: 1.5
-    jumpVelocityY: 5
-    jumpMoveSpeed: 3
-    jumpDistanceMin: 2
-    jumpDistanceMax: 7
-    jumpMaxAirTime: 1
-    dashSpeed: 10
-    dashDistance: 7
-    diveDownOffsetY: 2
-    diveDownTime: 3
-    undergroundDelay: 1.5
-    emergeTime: 0
+    weight: 0
+    randomMoveSpeed: 0
+    randomMoveDistanceMin: 0
+    randomMoveDistanceMax: 0
+    randomMoveAfterIdle: 0
+    jumpDistanceMin: 0
+    jumpDistanceMax: 0
+    jumpDuration: 1
+    jumpApexHeightMin: 1.5
+    jumpApexHeightPerUnit: 0.25
+    dashSpeed: 13
+    undergroundWalkDeltaZ: 2
+    undergroundWalkSpeed: 3
+    undergroundDropY: 3
+    undergroundDropTime: 0.12
+    undergroundBeforeFireWait: 0
     fireHorizontalSpeed: 0
-    fireSpawnXOffset: 0
-    fireTopYOffset: 0
-    fireMidYOffset: 0
-    fireBottomYOffset: 0
+    undergroundAfterFireWait: 1.2
+    undergroundRiseTime: 0.12
     aimShotSpeed: 0
     aimShotInterval: 0
     aimShotCount: 0
-    aimShotSpawnXOffset: 0
-    aimShotSpawnYOffset: 0
+  - type: 3
+    weight: 50
+    randomMoveSpeed: 0
+    randomMoveDistanceMin: 0
+    randomMoveDistanceMax: 0
+    randomMoveAfterIdle: 0
+    jumpDistanceMin: 0
+    jumpDistanceMax: 0
+    jumpDuration: 1
+    jumpApexHeightMin: 1.5
+    jumpApexHeightPerUnit: 0.25
+    dashSpeed: 13
+    undergroundWalkDeltaZ: 2
+    undergroundWalkSpeed: 3
+    undergroundDropY: 3
+    undergroundDropTime: 0.12
+    undergroundBeforeFireWait: 0
+    fireHorizontalSpeed: 12
+    undergroundAfterFireWait: 1.2
+    undergroundRiseTime: 0.12
+    aimShotSpeed: 0
+    aimShotInterval: 0
+    aimShotCount: 0
   fireballPrefab: {fileID: 6187691035932146476, guid: 76199c2031d022444a4411d48ff73a3e, type: 3}
+  fireballDamage: 1
+  fireballLifeTime: 5
   baseYawForLeft: 270
