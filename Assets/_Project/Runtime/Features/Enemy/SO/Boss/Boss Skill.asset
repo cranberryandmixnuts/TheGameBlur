@@ -61,7 +61,7 @@ MonoBehaviour:
     aimShotInterval: 0
     aimShotCount: 0
   - type: 3
-    weight: 50
+    weight: 0
     randomMoveSpeed: 0
     randomMoveDistanceMin: 0
     randomMoveDistanceMax: 0
@@ -83,6 +83,29 @@ MonoBehaviour:
     aimShotSpeed: 0
     aimShotInterval: 0
     aimShotCount: 0
+  - type: 4
+    weight: 100
+    randomMoveSpeed: 0
+    randomMoveDistanceMin: 0
+    randomMoveDistanceMax: 0
+    randomMoveAfterIdle: 0
+    jumpDistanceMin: 0
+    jumpDistanceMax: 0
+    jumpDuration: 1
+    jumpApexHeightMin: 1.5
+    jumpApexHeightPerUnit: 0.25
+    dashSpeed: 13
+    undergroundWalkDeltaZ: 2
+    undergroundWalkSpeed: 3
+    undergroundDropY: 3
+    undergroundDropTime: 0.12
+    undergroundBeforeFireWait: 0
+    fireHorizontalSpeed: 12
+    undergroundAfterFireWait: 1.2
+    undergroundRiseTime: 0.12
+    aimShotSpeed: 10
+    aimShotInterval: 0
+    aimShotCount: 1
   fireballPrefab: {fileID: 6187691035932146476, guid: 76199c2031d022444a4411d48ff73a3e, type: 3}
   fireballDamage: 1
   fireballLifeTime: 5
