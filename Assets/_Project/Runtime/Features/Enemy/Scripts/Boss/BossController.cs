@@ -1,3 +1,4 @@
+// BossController.cs
 using System.Collections;
 using UnityEngine;
 
@@ -26,6 +27,10 @@ public sealed class BossController : MonoBehaviour
     [Header("Underground Facing (Delta From baseYawForLeft)")]
     public float undergroundBackYawOffset = 90f;
     public float undergroundFrontYawOffset = -90f;
+
+    [Header("Aim Shot Spawn Offset (From Boss Body)")]
+    public float aimShotSpawnXOffset = 0.8f;
+    public float aimShotSpawnYOffset = 0.8f;
 
     [Header("Dash")]
     public float dashStopOffsetX = 0.8f;
@@ -267,7 +272,6 @@ public sealed class BossController : MonoBehaviour
         Transform a = undergroundSpawner1;
         Transform b = patternA ? undergroundSpawner2 : undergroundSpawner3;
 
-
         Vector3 vel = Vector3.left * Mathf.Max(0f, s.fireHorizontalSpeed);
 
         if (a != null) SpawnFireball(a.position, vel);
@@ -289,8 +293,6 @@ public sealed class BossController : MonoBehaviour
         rb.constraints = savedConstraints;
 
         SetFacing(prevFacing);
-        ApplyFacingRotation();
-
         PlayStateForce(idleHash);
     }
 
@@ -298,24 +300,36 @@ public sealed class BossController : MonoBehaviour
     {
         PlayStateForce(castHash);
 
-        Vector3 target = player != null ? player.position : (transform.position + Vector3.right * facingDir);
+        Vector3 lockedTarget = player != null
+            ? player.position
+            : (rb.position + Vector3.left);
+
+        lockedTarget.z = rb.position.z;
 
         int count = Mathf.Max(1, s.aimShotCount);
+        float interval = Mathf.Max(0f, s.aimShotInterval);
+        float speed = Mathf.Max(0f, s.aimShotSpeed);
+
         for (int i = 0; i < count; i++)
         {
-            Vector3 spawn = undergroundSpawner3 != null ? undergroundSpawner3.position : transform.position;
+            Vector3 spawn = rb.position + new Vector3(facingDir * aimShotSpawnXOffset, aimShotSpawnYOffset, 0f);
 
-            Vector3 dir = target - spawn;
+            Vector3 dir = lockedTarget - spawn;
             dir.z = 0f;
-            if (dir.sqrMagnitude < 0.0001f) dir = Vector3.right * facingDir;
+
+            if (dir.sqrMagnitude < 0.0001f)
+                dir = Vector3.left;
+
             dir.Normalize();
 
             SetFacing(dir.x >= 0f ? 1 : -1);
 
-            SpawnFireball(spawn, dir * s.aimShotSpeed);
+            spawn = rb.position + new Vector3(facingDir * aimShotSpawnXOffset, aimShotSpawnYOffset, 0f);
+
+            SpawnFireball(spawn, dir * speed);
 
             if (i < count - 1)
-                yield return WaitSeconds(s.aimShotInterval);
+                yield return WaitSeconds(interval);
         }
 
         PlayStateForce(idleHash);
@@ -397,7 +411,9 @@ public sealed class BossController : MonoBehaviour
     void SetFacing(int dir)
     {
         int nd = dir >= 0 ? 1 : -1;
+        if (facingDir == nd) return;
         facingDir = nd;
+        ApplyFacingRotation();
     }
 
     void ApplyFacingRotation()
