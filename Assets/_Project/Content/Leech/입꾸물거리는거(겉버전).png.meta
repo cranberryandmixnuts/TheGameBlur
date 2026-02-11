@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7e61246433442644caf2582f05783d43
+guid: 9837c8edc86fece4ab562f8401518b0f
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -34,7 +34,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 2
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -69,10 +69,10 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 4096
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 2
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -93,11 +93,24 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "\uAC70\uBA38\uB9AC\uC785\uC5F4\uACE0\uAFB8\uBB3C\uAC70\uB9AC\uB294\uAC70_0"
+      name: "\uC785\uAFB8\uBB3C\uAC70\uB9AC\uB294\uAC70(\uAC89\uBC84\uC804)_0"
       rect:
         serializedVersion: 2
         x: 0
@@ -112,14 +125,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 77ae301af8adf874ebd3738b296e1d46
-      internalID: 1962898320
+      spriteID: a411a12392d683c4fa779b91fdde37c5
+      internalID: 1863953183
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "\uAC70\uBA38\uB9AC\uC785\uC5F4\uACE0\uAFB8\uBB3C\uAC70\uB9AC\uB294\uAC70_1"
+      name: "\uC785\uAFB8\uBB3C\uAC70\uB9AC\uB294\uAC70(\uAC89\uBC84\uC804)_1"
       rect:
         serializedVersion: 2
         x: 768
@@ -134,14 +147,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 00a758c5d47e2a343b2e2f1753a6362a
-      internalID: -451600857
+      spriteID: 0d64910fff29b7348b679933539e7662
+      internalID: -1341634198
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "\uAC70\uBA38\uB9AC\uC785\uC5F4\uACE0\uAFB8\uBB3C\uAC70\uB9AC\uB294\uAC70_2"
+      name: "\uC785\uAFB8\uBB3C\uAC70\uB9AC\uB294\uAC70(\uAC89\uBC84\uC804)_2"
       rect:
         serializedVersion: 2
         x: 1536
@@ -156,14 +169,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c1a327c980e7903468046824162f3c1c
-      internalID: 410660363
+      spriteID: 1f91206f193f182469272e83ad5083c9
+      internalID: 186422136
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "\uAC70\uBA38\uB9AC\uC785\uC5F4\uACE0\uAFB8\uBB3C\uAC70\uB9AC\uB294\uAC70_3"
+      name: "\uC785\uAFB8\uBB3C\uAC70\uB9AC\uB294\uAC70(\uAC89\uBC84\uC804)_3"
       rect:
         serializedVersion: 2
         x: 2304
@@ -178,14 +191,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 378960ab9e2c5e643ae062fd6c66275c
-      internalID: 1152139527
+      spriteID: 0c18bde9b36585045b4098a6733ed049
+      internalID: 2102894645
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "\uAC70\uBA38\uB9AC\uC785\uC5F4\uACE0\uAFB8\uBB3C\uAC70\uB9AC\uB294\uAC70_4"
+      name: "\uC785\uAFB8\uBB3C\uAC70\uB9AC\uB294\uAC70(\uAC89\uBC84\uC804)_4"
       rect:
         serializedVersion: 2
         x: 3072
@@ -200,8 +213,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 132baa4f49d8b0346a9f35193b344113
-      internalID: 621640420
+      spriteID: 677eaf4b0e0cab64dada6c0720bf3891
+      internalID: 1670638509
       vertices: []
       indices: 
       edges: []
@@ -210,7 +223,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 17853adef17dde24097ca3f5a0005ffe
+    spriteID: caaffadfb013e0342a04ddf884e7268e
     internalID: 0
     vertices: []
     indices: 
@@ -222,11 +235,11 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":5.0,"y":1.0},"gridSpriteSize":{"x":768.0,"y":768.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      "\uAC70\uBA38\uB9AC\uC785\uC5F4\uACE0\uAFB8\uBB3C\uAC70\uB9AC\uB294\uAC70_0": 1962898320
-      "\uAC70\uBA38\uB9AC\uC785\uC5F4\uACE0\uAFB8\uBB3C\uAC70\uB9AC\uB294\uAC70_1": -451600857
-      "\uAC70\uBA38\uB9AC\uC785\uC5F4\uACE0\uAFB8\uBB3C\uAC70\uB9AC\uB294\uAC70_2": 410660363
-      "\uAC70\uBA38\uB9AC\uC785\uC5F4\uACE0\uAFB8\uBB3C\uAC70\uB9AC\uB294\uAC70_3": 1152139527
-      "\uAC70\uBA38\uB9AC\uC785\uC5F4\uACE0\uAFB8\uBB3C\uAC70\uB9AC\uB294\uAC70_4": 621640420
+      "\uC785\uAFB8\uBB3C\uAC70\uB9AC\uB294\uAC70(\uAC89\uBC84\uC804)_0": 1863953183
+      "\uC785\uAFB8\uBB3C\uAC70\uB9AC\uB294\uAC70(\uAC89\uBC84\uC804)_1": -1341634198
+      "\uC785\uAFB8\uBB3C\uAC70\uB9AC\uB294\uAC70(\uAC89\uBC84\uC804)_2": 186422136
+      "\uC785\uAFB8\uBB3C\uAC70\uB9AC\uB294\uAC70(\uAC89\uBC84\uC804)_3": 2102894645
+      "\uC785\uAFB8\uBB3C\uAC70\uB9AC\uB294\uAC70(\uAC89\uBC84\uC804)_4": 1670638509
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

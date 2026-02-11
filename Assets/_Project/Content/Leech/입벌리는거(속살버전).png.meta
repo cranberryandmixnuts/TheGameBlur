@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: ec7b6538c28060948aea6e28b2df06f0
+guid: b643146d4fb9e314b8f0aabd95c807e0
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -34,7 +34,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 2
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -69,10 +69,10 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 4096
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 2
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -93,11 +93,24 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "\uAC70\uBA38\uB9AC\uC785\uBC8C\uB9AC\uB294\uC560\uB2C8\uBA54\uC774\uC158_0"
+      name: "\uC785\uBC8C\uB9AC\uB294\uAC70(\uC18D\uC0B4\uBC84\uC804)_0"
       rect:
         serializedVersion: 2
         x: 0
@@ -112,14 +125,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7219be96c32838843b1edaeb10259e13
-      internalID: -1951526263
+      spriteID: 5cb6fd1990bec7c4481abbf7bea2c041
+      internalID: -1618571881
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "\uAC70\uBA38\uB9AC\uC785\uBC8C\uB9AC\uB294\uC560\uB2C8\uBA54\uC774\uC158_1"
+      name: "\uC785\uBC8C\uB9AC\uB294\uAC70(\uC18D\uC0B4\uBC84\uC804)_1"
       rect:
         serializedVersion: 2
         x: 768
@@ -134,14 +147,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cd5b949aea755bc419d37da9b2edddf5
-      internalID: 1142287908
+      spriteID: 634df55661488ad4795352dab9a95a37
+      internalID: 1915567240
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "\uAC70\uBA38\uB9AC\uC785\uBC8C\uB9AC\uB294\uC560\uB2C8\uBA54\uC774\uC158_2"
+      name: "\uC785\uBC8C\uB9AC\uB294\uAC70(\uC18D\uC0B4\uBC84\uC804)_2"
       rect:
         serializedVersion: 2
         x: 1536
@@ -156,14 +169,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 88ee0c19d2823b3499cadb8f791c8b73
-      internalID: -1634885713
+      spriteID: e0b09927e472d694ca327e0e96a8fd6b
+      internalID: -203485491
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "\uAC70\uBA38\uB9AC\uC785\uBC8C\uB9AC\uB294\uC560\uB2C8\uBA54\uC774\uC158_3"
+      name: "\uC785\uBC8C\uB9AC\uB294\uAC70(\uC18D\uC0B4\uBC84\uC804)_3"
       rect:
         serializedVersion: 2
         x: 2304
@@ -178,14 +191,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fdda50d2cb1608d4bb19f8264a25beb8
-      internalID: -1215834340
+      spriteID: aaa88595d882ffa4d984d0936e1b9910
+      internalID: 1378676096
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "\uAC70\uBA38\uB9AC\uC785\uBC8C\uB9AC\uB294\uC560\uB2C8\uBA54\uC774\uC158_4"
+      name: "\uC785\uBC8C\uB9AC\uB294\uAC70(\uC18D\uC0B4\uBC84\uC804)_4"
       rect:
         serializedVersion: 2
         x: 3072
@@ -200,8 +213,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9289f91fc65fed94a99517238070a5db
-      internalID: -1319522757
+      spriteID: 65d4fac28332ca743b0d8a3d1d8ce21a
+      internalID: -534440280
       vertices: []
       indices: 
       edges: []
@@ -210,7 +223,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: aa1f5af09209d404ead23a7bcdb9c45c
+    spriteID: 630d8e6b780731e41a58b4e869b835ce
     internalID: 0
     vertices: []
     indices: 
@@ -220,13 +233,13 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":5.0,"y":1.0},"gridSpriteSize":{"x":768.0,"y":768.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":5.0,"y":1.0},"gridSpriteSize":{"x":768.0,"y":768.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":true,"isAlternate":false}'
     nameFileIdTable:
-      "\uAC70\uBA38\uB9AC\uC785\uBC8C\uB9AC\uB294\uC560\uB2C8\uBA54\uC774\uC158_0": -1951526263
-      "\uAC70\uBA38\uB9AC\uC785\uBC8C\uB9AC\uB294\uC560\uB2C8\uBA54\uC774\uC158_1": 1142287908
-      "\uAC70\uBA38\uB9AC\uC785\uBC8C\uB9AC\uB294\uC560\uB2C8\uBA54\uC774\uC158_2": -1634885713
-      "\uAC70\uBA38\uB9AC\uC785\uBC8C\uB9AC\uB294\uC560\uB2C8\uBA54\uC774\uC158_3": -1215834340
-      "\uAC70\uBA38\uB9AC\uC785\uBC8C\uB9AC\uB294\uC560\uB2C8\uBA54\uC774\uC158_4": -1319522757
+      "\uC785\uBC8C\uB9AC\uB294\uAC70(\uC18D\uC0B4\uBC84\uC804)_0": -1618571881
+      "\uC785\uBC8C\uB9AC\uB294\uAC70(\uC18D\uC0B4\uBC84\uC804)_1": 1915567240
+      "\uC785\uBC8C\uB9AC\uB294\uAC70(\uC18D\uC0B4\uBC84\uC804)_2": -203485491
+      "\uC785\uBC8C\uB9AC\uB294\uAC70(\uC18D\uC0B4\uBC84\uC804)_3": 1378676096
+      "\uC785\uBC8C\uB9AC\uB294\uAC70(\uC18D\uC0B4\uBC84\uC804)_4": -534440280
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
