@@ -21,43 +21,40 @@ public class BossSkillEntry
     public float randomMoveDistanceMax = 5f;
     public float randomMoveAfterIdle = 1.5f;
 
-    public float jumpVelocityY = 6.5f;
-    public float jumpMoveSpeed = 4.5f;
     public float jumpDistanceMin = 2f;
     public float jumpDistanceMax = 5f;
-    public float jumpMaxAirTime = 0.7f;
+    [Min(0.01f)] public float jumpDuration = 1f;
+    [Min(0f)] public float jumpApexHeightMin = 1.5f;
+    [Min(0f)] public float jumpApexHeightPerUnit = 0.25f;
 
     public float dashSpeed = 10f;
-    public float dashDistance = 7f;
 
-    public float diveDownOffsetY = -3f;
-    public float diveDownTime = 0.12f;
-    public float undergroundDelay = 0.15f;
-    public float emergeTime = 0.12f;
+    public float undergroundWalkDeltaZ = 2f;
+    public float undergroundWalkSpeed = 3f;
 
-    public float fireHorizontalSpeed = 12f;
-    public float fireSpawnXOffset = 0.8f;
-    public float fireTopYOffset = 1.2f;
-    public float fireMidYOffset = 0.5f;
-    public float fireBottomYOffset = -1.2f;
+    [Min(0f)] public float undergroundDropY = 3f;
+    [Min(0.01f)] public float undergroundDropTime = 0.12f;
+
+    [Min(0f)] public float undergroundBeforeFireWait = 0f;
+    [Min(0f)] public float fireHorizontalSpeed = 12f;
+    [Min(0f)] public float undergroundAfterFireWait = 1.2f;
+
+    [Min(0.01f)] public float undergroundRiseTime = 0.12f;
 
     public float aimShotSpeed = 12f;
-    public float aimShotInterval = 0.5f;
-    public int aimShotCount = 2;
-    public float aimShotSpawnXOffset = 0.8f;
-    public float aimShotSpawnYOffset = 0.8f;
+    [Min(0f)] public float aimShotInterval = 0.5f;
+    [Min(1)] public int aimShotCount = 2;
 }
 
 [CreateAssetMenu(fileName = "BossData_", menuName = "Game/Boss Data")]
 public class BossEnemyDataSO : ScriptableObject
 {
-    [Header("Loop")]
     [Min(0f)] public float idleBetweenSkills = 1f;
     public BossSkillEntry[] skills;
 
-    [Header("Projectiles")]
     public GameObject fireballPrefab;
+    public int fireballDamage = 1;
+    [Min(0f)] public float fireballLifeTime = 5f;
 
-    [Header("Facing")]
     public float baseYawForLeft = 0f;
 }
