@@ -15,6 +15,11 @@ public class PrologManager : MonoBehaviour
 
     private void Start()
     {
+        
+    }
+
+    public void OnEndSceneFade()
+    {
         prologTimelime.Play();
     }
 
