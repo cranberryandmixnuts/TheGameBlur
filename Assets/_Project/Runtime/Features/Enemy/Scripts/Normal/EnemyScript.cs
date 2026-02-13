@@ -10,7 +10,7 @@ public enum EnemyState
 }
 
 [RequireComponent(typeof(Rigidbody))]
-public class EnemyScript : MonoBehaviour
+public class EnemyScript : MonoBehaviour, IDamageable
 {
     public EnemyData data;
     public EnemyVision vision;
@@ -276,6 +276,15 @@ public class EnemyScript : MonoBehaviour
     {
         currentHP -= amount;
         if (currentHP <= 0) Destroy(gameObject);
+    }
+
+    public void ApplyDamage(DamagePayload payload)
+    {
+        var rng = GetComponent<EnemyCombatRng>();
+        if (rng != null && rng.TryEvadeIncomingDamage())
+            return;
+
+        TakeDamage(payload.Amount);
     }
 
     void OnDisable()
