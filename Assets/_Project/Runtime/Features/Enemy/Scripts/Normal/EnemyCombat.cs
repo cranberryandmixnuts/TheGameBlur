@@ -21,7 +21,7 @@ public sealed class EnemyCombat : MonoBehaviour
     private Vector3 aimDir;
 
     private readonly Collider[] overlap = new Collider[32];
-    private readonly HashSet<PlayerHealth> hitPlayers = new HashSet<PlayerHealth>();
+    private readonly HashSet<PlayerStats> hitPlayers = new HashSet<PlayerStats>();
 
     public bool IsActionActive => active;
 
@@ -103,7 +103,7 @@ public sealed class EnemyCombat : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            PlayerHealth player = overlap[i].GetComponentInParent<PlayerHealth>();
+            PlayerStats player = overlap[i].GetComponentInParent<PlayerStats>();
             if (player == null) continue;
             if (!hitPlayers.Add(player)) continue;
 
