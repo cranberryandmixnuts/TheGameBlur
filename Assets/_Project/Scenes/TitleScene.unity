@@ -1002,11 +1002,11 @@ MonoBehaviour:
   - {fileID: 2528813217716875737}
   - {fileID: 2006530743}
   slotSprites:
-    sevenSprite: {fileID: 21300000, guid: ec86fdfa883e69a4ea043b82941b8411, type: 3}
-    cherrySprite: {fileID: 21300000, guid: 40f4a45e843a11444aa1def7273b05f3, type: 3}
-    lemonSprite: {fileID: 21300000, guid: 49d08e9044cdace408984447faf0e399, type: 3}
-    orangeSprite: {fileID: 21300000, guid: aafffa59048e44b498803402b444418f, type: 3}
-    poopSprite: {fileID: 21300000, guid: c667fc94fafded04d9da2f4b0bb2f462, type: 3}
+    sevenSprite: {fileID: 21300000, guid: 2d71007f7fd97df4883e3a8a92200ab3, type: 3}
+    cherrySprite: {fileID: 21300000, guid: 6f4844fed40e9be4793232146269ae19, type: 3}
+    lemonSprite: {fileID: 21300000, guid: 6626681e4c6023147b254a21d7b4736b, type: 3}
+    orangeSprite: {fileID: 21300000, guid: f8e56dd360514c4459d8782206795737, type: 3}
+    poopSprite: {fileID: 21300000, guid: e4e629cd90f2df24399782dd343ed1a8, type: 3}
   slotPlayDelay: 0.5
 --- !u!114 &1026392981
 MonoBehaviour:
