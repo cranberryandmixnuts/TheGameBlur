@@ -548,7 +548,7 @@ GameObject:
   - component: {fileID: 1405507637975615435}
   - component: {fileID: 2784677698932531536}
   - component: {fileID: 1992090318407668727}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Boss
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -678,24 +678,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossController
   bossData: {fileID: 11400000, guid: f10a0693f57c20a4f8a90534ba8ee21d, type: 2}
   player: {fileID: 0}
-  projectileOrigin: {fileID: 0}
   undergroundSpawner1: {fileID: 0}
   undergroundSpawner2: {fileID: 0}
   undergroundSpawner3: {fileID: 0}
-  lookBackYaw: 180
-  lookScreenYaw: 0
+  modelRoot: {fileID: 0}
   idleState: Idle
   moveState: Move
   jumpState: Jump
   runState: Run
   castState: Cast
-  diveState: Dive
-  emergeState: Emerge
-  waitGroundBeforeNextSkill: 1
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 128
-  groundCheckDistance: 0.25
+  undergroundBackYawOffset: 90
+  undergroundFrontYawOffset: -90
+  aimShotSpawnXOffset: 0.8
+  aimShotSpawnYOffset: 0.8
   dashStopOffsetX: 0.8
   crossFade: 0.08
   debugLog: 1

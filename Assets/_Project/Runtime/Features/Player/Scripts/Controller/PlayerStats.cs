@@ -17,7 +17,7 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
     public int DiceValue => diceA + diceB;
 
     public float DiceGauge => diceGauge;
-    public float DiceGaugeMax => combat.UltimateGaugeMax > 0f ? combat.UltimateGaugeMax : settings.DefaultUltimateGaugeMax;
+    public float DiceGaugeMax => combat.UltimateGaugeMax > 0f ? combat.UltimateGaugeMax : settings.defaultUltimateGaugeMax;
 
     public int Hp => hp;
     public int MaxHp => maxHp;
@@ -53,10 +53,10 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         settings = Player.Instance.Settings;
         combat = Player.Instance.Combat;
 
-        maxHp = settings.MaxHp;
+        maxHp = settings.maxHp;
         hp = maxHp;
 
-        maxMp = settings.MaxMp;
+        maxMp = settings.maxMp;
         mp = maxMp;
 
         diceRollRemaining = 0f;
@@ -74,9 +74,9 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         if (diceRollRemaining > 0f) return;
 
         RollDice();
-        AddDiceGauge(settings.DiceGaugeGainPerRoll);
+        AddDiceGauge(settings.diceGaugeGainPerRoll);
 
-        diceRollRemaining = UnityEngine.Random.Range(settings.DiceRollIntervalMin, settings.DiceRollIntervalMax);
+        diceRollRemaining = UnityEngine.Random.Range(settings.diceRollIntervalMin, settings.diceRollIntervalMax);
     }
 
     public void SetInvincible(bool value) => isInvincible = value;
@@ -219,7 +219,7 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         BattleChanged?.Invoke(isBattle);
 
         if (isBattle)
-            diceRollRemaining = UnityEngine.Random.Range(settings.DiceRollIntervalMin, settings.DiceRollIntervalMax);
+            diceRollRemaining = UnityEngine.Random.Range(settings.diceRollIntervalMin, settings.diceRollIntervalMax);
     }
 
     private void RollDice()
