@@ -19,8 +19,15 @@ public sealed class BossFireballProjectile : MonoBehaviour
 
     public void Init(int damage, GameObject owner, Vector3 velocity)
     {
-        this.damage = damage;
         this.owner = owner;
+
+        int finalDamage = damage;
+        if (owner != null)
+        {
+            var rng = owner.GetComponent<EnemyCombatRng>();
+            if (rng != null) finalDamage = rng.ApplyCritToOutgoingDamage(finalDamage);
+        }
+        this.damage = finalDamage;
 
         rb.linearVelocity = velocity;
 
@@ -44,8 +51,6 @@ public sealed class BossFireballProjectile : MonoBehaviour
         }
 
         if (!other.isTrigger)
-        {
             Destroy(gameObject);
-        }
     }
 }

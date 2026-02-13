@@ -12,6 +12,7 @@ public sealed class EnemyCombat : MonoBehaviour
     [SerializeField] private AttackHitboxVisualizer hitboxVisualizer;
 
     private EnemyScript enemy;
+    private EnemyCombatRng rng;
 
     private bool active;
     private float elapsed;
@@ -28,6 +29,7 @@ public sealed class EnemyCombat : MonoBehaviour
     private void Awake()
     {
         enemy = GetComponent<EnemyScript>();
+        rng = GetComponent<EnemyCombatRng>();
 
         if (hitOrigin == null)
             hitOrigin = transform;
@@ -71,13 +73,11 @@ public sealed class EnemyCombat : MonoBehaviour
         hitPlayers.Clear();
 
         enemy.BeginAttackLock(duration);
-
         enemy.PlayAttackAnimation();
 
         aimDir = (enemy.FacingDir >= 0) ? Vector3.right : Vector3.left;
         aimDir.z = 0f;
     }
-
 
     private void PerformHit()
     {
@@ -101,13 +101,16 @@ public sealed class EnemyCombat : MonoBehaviour
             QueryTriggerInteraction.Ignore
         );
 
+        int dmg = enemy.data.damage;
+        if (rng != null) dmg = rng.ApplyCritToOutgoingDamage(dmg);
+
         for (int i = 0; i < count; i++)
         {
             PlayerStats player = overlap[i].GetComponentInParent<PlayerStats>();
             if (player == null) continue;
             if (!hitPlayers.Add(player)) continue;
 
-            player.ApplyDamage(new DamagePayload(enemy.data.damage, gameObject));
+            player.ApplyDamage(new DamagePayload(dmg, gameObject));
         }
     }
 
