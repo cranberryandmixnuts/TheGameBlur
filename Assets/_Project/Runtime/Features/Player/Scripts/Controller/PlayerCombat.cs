@@ -6,6 +6,8 @@ public sealed class PlayerCombat : MonoBehaviour
     [SerializeField] private PlayerAttackRangeIndicator attackRangeIndicator;
 
     public bool IsSkillOrUltimateActive => skillLockRemaining > 0f || ultimateLockRemaining > 0f;
+    public bool IsUltimateActive => ultimateLockRemaining > 0f;
+
     public PlayerSkill EquippedSkill => equippedSkill;
     public PlayerUltimate EquippedUltimate => equippedUltimate;
 
@@ -97,7 +99,6 @@ public sealed class PlayerCombat : MonoBehaviour
         else AirAttack(mouseWorld);
 
         basicAttackCooldownRemaining = settings.basicAttackCooldown;
-        stats.NotifyCombatActivity();
     }
 
     private void GroundAttack(Vector3 mouseWorld)
@@ -189,8 +190,6 @@ public sealed class PlayerCombat : MonoBehaviour
 
         equippedSkill.Execute(Player.Instance, sign, mouseWorld);
         skillLockRemaining = equippedSkill.LockDuration;
-
-        stats.NotifyCombatActivity();
     }
 
     private void TryUseUltimate()
@@ -211,8 +210,6 @@ public sealed class PlayerCombat : MonoBehaviour
         stats.ConsumeAllDiceGauge();
         equippedUltimate.Execute(Player.Instance, sign, mouseWorld);
         ultimateLockRemaining = equippedUltimate.LockDuration;
-
-        stats.NotifyCombatActivity();
     }
 
     private bool IsSkillUnlocked(PlayerSkill skill)

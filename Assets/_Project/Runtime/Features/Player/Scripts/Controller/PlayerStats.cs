@@ -9,6 +9,8 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
     public event Action<int, int> MpChanged;
     public event Action<bool> BattleChanged;
 
+    [SerializeField] private bool isBattle;
+
     public bool IsBattle => isBattle;
     public bool IsInvincible => isInvincible;
 
@@ -41,12 +43,8 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
 
     private float diceGauge;
 
-    private bool isBattle;
-    private bool forcedBattle;
-    private bool bossBattle;
-    private bool proximityBattle;
-
     private float diceRollRemaining;
+    private bool lastBattle;
 
     private void Start()
     {
@@ -59,13 +57,22 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         maxMp = settings.maxMp;
         mp = maxMp;
 
-        diceRollRemaining = 0f;
         diceGauge = 0f;
-        SetBattleInternal(false);
+
+        lastBattle = isBattle;
+        if (isBattle) EnterBattle();
     }
 
     private void Update()
     {
+        if (isBattle != lastBattle)
+        {
+            lastBattle = isBattle;
+            BattleChanged?.Invoke(isBattle);
+
+            if (isBattle) EnterBattle();
+        }
+
         if (!isBattle) return;
 
         float dt = Time.deltaTime;
@@ -79,6 +86,17 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         diceRollRemaining = UnityEngine.Random.Range(settings.diceRollIntervalMin, settings.diceRollIntervalMax);
     }
 
+    public void SetBattle(bool value)
+    {
+        if (isBattle == value) return;
+
+        isBattle = value;
+    }
+
+    public void NotifyCombatActivity()
+    {
+    }
+
     public void SetInvincible(bool value) => isInvincible = value;
 
     public void ApplyDamage(DamagePayload payload)
@@ -89,11 +107,7 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         hp -= payload.Amount;
         if (hp < 0) hp = 0;
 
-        if (hp != before)
-        {
-            HpChanged?.Invoke(hp, maxHp);
-            NotifyCombatActivity();
-        }
+        if (hp != before) HpChanged?.Invoke(hp, maxHp);
     }
 
     public void Heal(int amount)
@@ -102,11 +116,7 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         hp += amount;
         if (hp > maxHp) hp = maxHp;
 
-        if (hp != before)
-        {
-            HpChanged?.Invoke(hp, maxHp);
-            NotifyCombatActivity();
-        }
+        if (hp != before) HpChanged?.Invoke(hp, maxHp);
     }
 
     public bool TrySpendMana(int amount)
@@ -116,7 +126,6 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
 
         mp -= amount;
         MpChanged?.Invoke(mp, maxMp);
-        NotifyCombatActivity();
         return true;
     }
 
@@ -126,11 +135,7 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         mp += amount;
         if (mp > maxMp) mp = maxMp;
 
-        if (mp != before)
-        {
-            MpChanged?.Invoke(mp, maxMp);
-            NotifyCombatActivity();
-        }
+        if (mp != before) MpChanged?.Invoke(mp, maxMp);
     }
 
     public void SetDice(int a, int b)
@@ -139,7 +144,6 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         diceB = Mathf.Clamp(b, 1, 6);
 
         DiceRolled?.Invoke(diceA, diceB);
-        NotifyCombatActivity();
     }
 
     public void AddDiceGauge(float amount)
@@ -152,10 +156,7 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         if (diceGauge < 0f) diceGauge = 0f;
 
         if (!Mathf.Approximately(before, diceGauge))
-        {
             DiceGaugeChanged?.Invoke(diceGauge, max);
-            NotifyCombatActivity();
-        }
     }
 
     public bool IsDiceGaugeFull()
@@ -175,51 +176,9 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
             DiceGaugeChanged?.Invoke(diceGauge, DiceGaugeMax);
     }
 
-    public void SetForcedBattle(bool value)
+    private void EnterBattle()
     {
-        forcedBattle = value;
-        RefreshBattleState();
-    }
-
-    public void SetBossBattle(bool value)
-    {
-        bossBattle = value;
-        RefreshBattleState();
-    }
-
-    public void SetProximityBattle(bool value)
-    {
-        proximityBattle = value;
-        RefreshBattleState();
-    }
-
-    public void NotifyCombatActivity()
-    {
-        bool autoBattle = EvaluateAutomaticBattle();
-
-        if (!isBattle && !autoBattle)
-        {
-            BattleChanged?.Invoke(true);
-            BattleChanged?.Invoke(false);
-            return;
-        }
-
-        SetBattleInternal(autoBattle);
-    }
-
-    private void RefreshBattleState() => SetBattleInternal(EvaluateAutomaticBattle());
-
-    private bool EvaluateAutomaticBattle() => forcedBattle || bossBattle || proximityBattle;
-
-    private void SetBattleInternal(bool value)
-    {
-        if (isBattle == value) return;
-
-        isBattle = value;
-        BattleChanged?.Invoke(isBattle);
-
-        if (isBattle)
-            diceRollRemaining = UnityEngine.Random.Range(settings.diceRollIntervalMin, settings.diceRollIntervalMax);
+        diceRollRemaining = UnityEngine.Random.Range(settings.diceRollIntervalMin, settings.diceRollIntervalMax);
     }
 
     private void RollDice()
