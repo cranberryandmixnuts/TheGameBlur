@@ -269,6 +269,11 @@ public class EnemyScript : MonoBehaviour, IDamageable
         lockedTarget = null;
     }
 
+    public void ResetHP()
+    {
+        currentHP = data.maxHP;
+    }
+
     public int GetCurrentHP() => currentHP;
     public EnemyState GetState() => state;
 

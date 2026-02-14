@@ -23,27 +23,27 @@ public class BossSkillEntry
 
     public float jumpDistanceMin = 2f;
     public float jumpDistanceMax = 5f;
-    [Min(0.01f)] public float jumpDuration = 1f;
-    [Min(0f)] public float jumpApexHeightMin = 1.5f;
-    [Min(0f)] public float jumpApexHeightPerUnit = 0.25f;
+    public float jumpDuration = 1f;
+    public float jumpApexHeightMin = 1.5f;
+    public float jumpApexHeightPerUnit = 0.25f;
 
     public float dashSpeed = 10f;
 
     public float undergroundWalkDeltaZ = 2f;
-    public float undergroundWalkSpeed = 3f;
+    public float undergroundWalkOutSpeed = 3f;
+    public float undergroundWalkInSpeed = 3f;
 
-    [Min(0f)] public float undergroundDropY = 3f;
-    [Min(0.01f)] public float undergroundDropTime = 0.12f;
+    public float undergroundDropY = 2f;
+    public float undergroundDropTime = 0.12f;
+    public float undergroundBeforeFireWait = 0.0f;
+    public float undergroundAfterFireWait = 1.2f;
+    public float undergroundRiseTime = 0.12f;
 
-    [Min(0f)] public float undergroundBeforeFireWait = 0f;
-    [Min(0f)] public float fireHorizontalSpeed = 12f;
-    [Min(0f)] public float undergroundAfterFireWait = 1.2f;
-
-    [Min(0.01f)] public float undergroundRiseTime = 0.12f;
+    public float fireHorizontalSpeed = 12f;
 
     public float aimShotSpeed = 12f;
-    [Min(0f)] public float aimShotInterval = 0.5f;
-    [Min(1)] public int aimShotCount = 2;
+    public float aimShotInterval = 0.5f;
+    public int aimShotCount = 2;
 }
 
 [CreateAssetMenu(fileName = "BossData_", menuName = "Game/Boss Data")]
@@ -53,8 +53,6 @@ public class BossEnemyDataSO : ScriptableObject
     public BossSkillEntry[] skills;
 
     public GameObject fireballPrefab;
-    public int fireballDamage = 1;
-    [Min(0f)] public float fireballLifeTime = 5f;
 
     public float baseYawForLeft = 0f;
 }

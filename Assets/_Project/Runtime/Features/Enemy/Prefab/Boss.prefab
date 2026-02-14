@@ -543,11 +543,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1488768678192106274}
-  - component: {fileID: 3919821501203112593}
   - component: {fileID: 9154539377352128151}
   - component: {fileID: 1405507637975615435}
   - component: {fileID: 2784677698932531536}
   - component: {fileID: 1992090318407668727}
+  - component: {fileID: 4964007735885098534}
   m_Layer: 9
   m_Name: Boss
   m_TagString: Untagged
@@ -572,29 +572,6 @@ Transform:
   - {fileID: 2401529745834945709}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 270, z: 0}
---- !u!136 &3919821501203112593
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4423219298157482014}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 1.4
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.65, z: 0}
 --- !u!95 &9154539377352128151
 Animator:
   serializedVersion: 7
@@ -693,7 +670,33 @@ MonoBehaviour:
   aimShotSpawnYOffset: 0.8
   dashStopOffsetX: 0.8
   crossFade: 0.08
+  wallMask:
+    serializedVersion: 2
+    m_Bits: 0
+  wallCheckDistance: 0.35
+  wallCheckHeightOffset: 0.3
   debugLog: 1
+--- !u!65 &4964007735885098534
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4423219298157482014}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.71, y: 1.72, z: 3.82}
+  m_Center: {x: 0, y: 0.86, z: 0}
 --- !u!1 &4463265215805611132
 GameObject:
   m_ObjectHideFlags: 0

@@ -83,32 +83,32 @@ public class BossEnemyDataSOEditor : Editor
 
                     case BossSkillType.RandomJumpMove:
                         Draw(entry,
-                            "jumpVelocityY",
-                            "jumpMoveSpeed",
                             "jumpDistanceMin",
                             "jumpDistanceMax",
-                            "jumpMaxAirTime"
+                            "jumpDuration",
+                            "jumpApexHeightMin",
+                            "jumpApexHeightPerUnit"
                         );
                         break;
 
                     case BossSkillType.DashToPlayerDir:
                         Draw(entry,
-                            "dashSpeed",
-                            "dashDistance"
+                            "dashSpeed"
                         );
                         break;
 
                     case BossSkillType.UndergroundDoubleFire:
                         Draw(entry,
-                            "diveDownOffsetY",
-                            "diveDownTime",
-                            "undergroundDelay",
-                            "emergeTime",
+                            "undergroundWalkDeltaZ",
+                            "undergroundWalkSpeed",
+                            "undergroundEnterTime",
+                            "undergroundDropY",
+                            "undergroundDropTime",
+                            "undergroundBeforeFireWait",
                             "fireHorizontalSpeed",
-                            "fireSpawnXOffset",
-                            "fireTopYOffset",
-                            "fireMidYOffset",
-                            "fireBottomYOffset"
+                            "undergroundAfterFireWait",
+                            "undergroundRiseTime",
+                            "undergroundExitTime"
                         );
                         break;
 
@@ -116,9 +116,7 @@ public class BossEnemyDataSOEditor : Editor
                         Draw(entry,
                             "aimShotSpeed",
                             "aimShotInterval",
-                            "aimShotCount",
-                            "aimShotSpawnXOffset",
-                            "aimShotSpawnYOffset"
+                            "aimShotCount"
                         );
                         break;
                 }
@@ -142,8 +140,9 @@ public class BossEnemyDataSOEditor : Editor
     {
         foreach (var n in names)
         {
-            SerializedProperty p = entry.FindPropertyRelative(n);
-            if (p != null) EditorGUILayout.PropertyField(p);
+            var p = entry.FindPropertyRelative(n);
+            if (p != null)
+                EditorGUILayout.PropertyField(p);
         }
     }
 }
