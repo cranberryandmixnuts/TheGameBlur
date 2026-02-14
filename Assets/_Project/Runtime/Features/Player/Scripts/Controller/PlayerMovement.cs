@@ -197,7 +197,10 @@ public sealed class PlayerMovement : MonoBehaviour
         isStandingUpFromChair = false;
     }
 
-    public void AddImpulse(Vector3 impulse) => pendingImpulse += impulse;
+    public void AddImpulse(Vector3 impulse)
+    {
+        pendingImpulse += impulse;
+    }
 
     public void SetVelocity(Vector3 velocity)
     {
@@ -205,20 +208,32 @@ public sealed class PlayerMovement : MonoBehaviour
         LockPlaneZ();
     }
 
+    public void RefreshAirDashUsage()
+    {
+        hasUsedAirDash = false;
+    }
+
+    public void ApplyAirPogoBounce()
+    {
+        Vector3 v = body.linearVelocity;
+
+        if (v.y < 0f) v.y = 0f;
+        if (v.y < settings.airPogoBounceVelocity) v.y = settings.airPogoBounceVelocity;
+
+        v.z = 0f;
+        body.linearVelocity = v;
+
+        LockPlaneZ();
+    }
+
     private void TryStartDash()
     {
         if (combat.IsSkillOrUltimateActive) return;
+        if (dashCooldownRemaining > 0f) return;
 
         bool grounded = IsGrounded;
 
-        if (grounded)
-        {
-            if (dashCooldownRemaining > 0f) return;
-        }
-        else
-        {
-            if (hasUsedAirDash) return;
-        }
+        if (!grounded && hasUsedAirDash) return;
 
         int sign = moveSign != 0 ? moveSign : LastMoveSign;
         if (sign == 0) sign = FacingSign;
@@ -285,10 +300,13 @@ public sealed class PlayerMovement : MonoBehaviour
 
             Vector3 endV = body.linearVelocity;
             endV.y = 0f;
+            endV.z = 0f;
             body.linearVelocity = endV;
 
             isAirDash = false;
         }
+
+        body.linearVelocity = Vector3.zero;
 
         stats.SetInvincible(false);
     }

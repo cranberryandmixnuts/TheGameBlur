@@ -156,8 +156,15 @@ public sealed class PlayerCombat : MonoBehaviour
         }
     }
 
-    public bool IsSkillUnlocked(PlayerSkill skill) => skill != null && unlockedSkills.Contains(skill);
-    public bool IsUltimateUnlocked(PlayerUltimate ultimate) => ultimate != null && unlockedUltimates.Contains(ultimate);
+    public bool IsSkillUnlocked(PlayerSkill skill)
+    {
+        return skill != null && unlockedSkills.Contains(skill);
+    }
+
+    public bool IsUltimateUnlocked(PlayerUltimate ultimate)
+    {
+        return ultimate != null && unlockedUltimates.Contains(ultimate);
+    }
 
     public void EquipSkill(PlayerSkill skill)
     {
@@ -186,11 +193,10 @@ public sealed class PlayerCombat : MonoBehaviour
     private void TryBasicAttack()
     {
         if (IsSkillOrUltimateActive) return;
+        if (basicAttackCooldownRemaining > 0f) return;
 
         if (movement.IsGrounded)
         {
-            if (basicAttackCooldownRemaining > 0f) return;
-
             if (!TryGetMouseWorldOnPlane(out Vector3 mouseWorld))
                 mouseWorld = transform.position + Vector3.right * movement.FacingSign;
 
@@ -202,10 +208,17 @@ public sealed class PlayerCombat : MonoBehaviour
 
         if (usedAirBasicAttackThisAirtime) return;
 
-        AirAttack();
+        bool hitAny = AirAttack();
 
         usedAirBasicAttackThisAirtime = true;
         basicAttackCooldownRemaining = settings.basicAttackCooldown;
+
+        if (hitAny)
+        {
+            usedAirBasicAttackThisAirtime = false;
+            movement.RefreshAirDashUsage();
+            movement.ApplyAirPogoBounce();
+        }
     }
 
     private void GroundAttack(Vector3 mouseWorld)
@@ -218,7 +231,8 @@ public sealed class PlayerCombat : MonoBehaviour
 
         Vector3 center = new Vector3(p.x + d.x * settings.groundAttackReach, p.y + d.y * settings.groundAttackReach, settings.planeZ);
 
-        if (attackRangeIndicator != null) attackRangeIndicator.ShowGroundCircle(center, settings.groundAttackRadius);
+        if (attackRangeIndicator != null)
+            attackRangeIndicator.ShowGroundCircle(center, settings.groundAttackRadius);
 
         int count = Physics.OverlapSphereNonAlloc(center, settings.groundAttackRadius, hitBuffer, settings.attackMask, QueryTriggerInteraction.Ignore);
         DealDamageFromHits(count, settings.groundAttackDamage);
@@ -226,22 +240,26 @@ public sealed class PlayerCombat : MonoBehaviour
         AnimationRequested?.Invoke(AnimRequest.Attack);
     }
 
-    private void AirAttack()
+    private bool AirAttack()
     {
         Vector3 p = transform.position;
         Vector3 center = new Vector3(p.x, p.y, settings.planeZ);
 
-        if (attackRangeIndicator != null) attackRangeIndicator.ShowAirCircle(center, settings.airAttackRadius);
+        if (attackRangeIndicator != null)
+            attackRangeIndicator.ShowAirCircle(center, settings.airAttackRadius);
 
         int count = Physics.OverlapSphereNonAlloc(center, settings.airAttackRadius, hitBuffer, settings.attackMask, QueryTriggerInteraction.Ignore);
-        DealDamageFromHits(count, settings.airAttackDamage);
+        bool hitAny = DealDamageFromHits(count, settings.airAttackDamage);
 
         AnimationRequested?.Invoke(AnimRequest.AirAttack);
+
+        return hitAny;
     }
 
-    private void DealDamageFromHits(int count, int amount)
+    private bool DealDamageFromHits(int count, int amount)
     {
         hitSet.Clear();
+        bool hitAny = false;
 
         for (int i = 0; i < count; i++)
         {
@@ -253,8 +271,13 @@ public sealed class PlayerCombat : MonoBehaviour
             if (d2 == null) continue;
 
             if (hitSet.Add(d2))
+            {
                 d2.ApplyDamage(new DamagePayload(amount, gameObject));
+                hitAny = true;
+            }
         }
+
+        return hitAny;
     }
 
     private void TryUseSkill()
