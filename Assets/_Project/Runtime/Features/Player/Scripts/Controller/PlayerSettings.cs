@@ -1,8 +1,23 @@
+using System;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Game/Player Settings", fileName = "PlayerSettings")]
 public sealed class PlayerSettings : ScriptableObject
 {
+    [Serializable]
+    public struct SkillUnlockEntry
+    {
+        public PlayerSkill skill;
+        public bool unlocked;
+    }
+
+    [Serializable]
+    public struct UltimateUnlockEntry
+    {
+        public PlayerUltimate ultimate;
+        public bool unlocked;
+    }
+
     [Header("Plane")]
     public float planeZ = 0f;
 
@@ -74,7 +89,31 @@ public sealed class PlayerSettings : ScriptableObject
     public PlayerSkill startingSkill;
     public PlayerUltimate startingUltimate;
 
-    [Header("Unlocks")]
-    public PlayerSkill[] unlockedSkills;
-    public PlayerUltimate[] unlockedUltimates;
+    [Header("Unlock Table")]
+    public SkillUnlockEntry[] skills;
+    public UltimateUnlockEntry[] ultimates;
+
+    [Header("UI - Dice Panel Animation")]
+    public float uiDiceFrameTime = 0.08f;
+
+    [Header("UI - Dice 3D Spin")]
+    public float uiDiceLowerStopDelay = 0.6f;
+    public float uiDiceUpperStopExtraDelay = 0.5f;
+    public float uiDiceStopTweenTime = 0.08f;
+
+    [Header("UI - Dice Face Rotations (Value 1..6 => Euler)")]
+    public Vector3[] uiDiceFaceForwardEuler = new Vector3[6];
+
+    [Header("UI - Dice Model Layer")]
+    public int uiDiceModelLayer = 10;
+
+    [Header("UI - Consumable")]
+    public int uiPotionMaxUses = 3;
+    public int uiPotionStartUses = 3;
+    public int uiHpPotionHealAmount = 30;
+    public int uiMpPotionHealAmount = 30;
+    public float uiPotionHoldTime = 0.35f;
+
+    [Header("UI - Skill")]
+    public Color uiSkillGreyColor = new Color(0.35f, 0.35f, 0.35f, 1f);
 }
