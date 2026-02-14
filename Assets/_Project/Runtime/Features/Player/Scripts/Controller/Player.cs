@@ -52,7 +52,7 @@ public sealed class Player : Singleton<Player, SceneScope>
         stats = GetComponent<PlayerStats>();
     }
 
-    private void Update() => stats.SetBattle(!IsSitting);
+    private void Update() => stats.SetBattle(!IsSitting); //임시코드
 
     public void Sit(ElectricChair chair, Vector3 seatWorldPosition)
     {
