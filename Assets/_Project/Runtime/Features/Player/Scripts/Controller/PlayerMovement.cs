@@ -5,13 +5,14 @@ public sealed class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform visualRoot;
     [SerializeField] private PlayerGroundSensor groundSensor;
 
-    [Header("Sitting Facing (Front)")]
-    [SerializeField] private float sittingFrontYawDeg = 90f;
-
     public bool IsGrounded { get; private set; }
     public bool IsDashing => dashRemaining > 0f;
+
     public int FacingSign { get; private set; } = 1;
     public int LastMoveSign { get; private set; } = 1;
+
+    public int MoveSign => moveSign;
+    public bool RunHeld => runHeld;
 
     private Player player;
     private Rigidbody body;
@@ -45,7 +46,7 @@ public sealed class PlayerMovement : MonoBehaviour
 
     private Vector3 pendingImpulse;
 
-    private bool isSittingFacing;
+    private bool isStandingUpFromChair;
 
     private void Start()
     {
@@ -76,7 +77,7 @@ public sealed class PlayerMovement : MonoBehaviour
 
         if (player.IsSitting)
         {
-            if (moveSign != 0) player.StandUpFromChair();
+            if (!isStandingUpFromChair && moveSign != 0) player.RequestStandUpFromChair();
 
             moveSign = 0;
 
@@ -182,14 +183,18 @@ public sealed class PlayerMovement : MonoBehaviour
         body.linearVelocity = Vector3.zero;
 
         FacingSign = 1;
-        isSittingFacing = true;
+        isStandingUpFromChair = false;
         ApplyVisualFacing();
+    }
+
+    public void BeginStandingUpFromChair()
+    {
+        isStandingUpFromChair = true;
     }
 
     public void ExitSitting()
     {
-        isSittingFacing = false;
-        ApplyVisualFacing();
+        isStandingUpFromChair = false;
     }
 
     public void AddImpulse(Vector3 impulse) => pendingImpulse += impulse;
@@ -202,12 +207,18 @@ public sealed class PlayerMovement : MonoBehaviour
 
     private void TryStartDash()
     {
-        if (dashCooldownRemaining > 0f) return;
         if (combat.IsSkillOrUltimateActive) return;
 
         bool grounded = IsGrounded;
 
-        if (!grounded && hasUsedAirDash) return;
+        if (grounded)
+        {
+            if (dashCooldownRemaining > 0f) return;
+        }
+        else
+        {
+            if (hasUsedAirDash) return;
+        }
 
         int sign = moveSign != 0 ? moveSign : LastMoveSign;
         if (sign == 0) sign = FacingSign;
@@ -287,7 +298,9 @@ public sealed class PlayerMovement : MonoBehaviour
         if (IsGrounded)
         {
             coyoteRemaining = settings.coyoteTime;
-            if (hasUsedAirDash) hasUsedAirDash = false;
+
+            if (hasUsedAirDash)
+                hasUsedAirDash = false;
         }
         else
         {
@@ -424,8 +437,6 @@ public sealed class PlayerMovement : MonoBehaviour
 
     private void UpdateFacing()
     {
-        if (isSittingFacing) return;
-
         int desired = FacingSign;
 
         if (stats.IsBattle)
@@ -472,12 +483,8 @@ public sealed class PlayerMovement : MonoBehaviour
         if (visualRoot == null) return;
 
         Vector3 s = visualRoot.localScale;
-        s.x = Mathf.Abs(s.x) * (isSittingFacing ? 1f : FacingSign);
+        s.x = Mathf.Abs(s.x) * FacingSign;
         visualRoot.localScale = s;
-
-        Vector3 e = visualRoot.localEulerAngles;
-        e.y = isSittingFacing ? sittingFrontYawDeg : 0f;
-        visualRoot.localEulerAngles = e;
     }
 
     private void ApplyPendingImpulse()

@@ -63,12 +63,13 @@ MonoBehaviour:
   attackMask:
     serializedVersion: 2
     m_Bits: 512
-  basicAttackCooldown: 0.08
+  basicAttackCooldown: 0.3
   groundAttackDamage: 10
   groundAttackReach: 1.6
   groundAttackRadius: 1.2
   airAttackDamage: 10
   airAttackRadius: 2.2
+  airAttackHalfAngleDeg: 75
   showAttackRangeOnAttack: 1
   attackRangeVisualDuration: 0.06
   attackRangeLineWidth: 0.03

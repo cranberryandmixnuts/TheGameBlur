@@ -1,8 +1,18 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public sealed class PlayerCombat : MonoBehaviour
 {
+    public enum AnimRequest
+    {
+        Attack,
+        AirAttack,
+        Technology
+    }
+
+    public event Action<AnimRequest> AnimationRequested;
+
     [SerializeField] private PlayerAttackRangeIndicator attackRangeIndicator;
 
     public PlayerAttackRangeIndicator AttackRangeIndicator => attackRangeIndicator;
@@ -37,13 +47,19 @@ public sealed class PlayerCombat : MonoBehaviour
 
     private bool ultimateInvincibleApplied;
 
+    private bool lastGrounded;
+    private bool usedAirBasicAttackThisAirtime;
+
     private readonly Collider[] hitBuffer = new Collider[48];
     private readonly HashSet<IDamageable> hitSet = new HashSet<IDamageable>();
 
     private readonly HashSet<PlayerSkill> unlockedSkills = new HashSet<PlayerSkill>();
     private readonly HashSet<PlayerUltimate> unlockedUltimates = new HashSet<PlayerUltimate>();
 
-    private void Reset() => attackRangeIndicator = GetComponent<PlayerAttackRangeIndicator>();
+    private void Reset()
+    {
+        attackRangeIndicator = GetComponent<PlayerAttackRangeIndicator>();
+    }
 
     private void Awake()
     {
@@ -66,6 +82,9 @@ public sealed class PlayerCombat : MonoBehaviour
 
         if (equippedSkill != null) unlockedSkills.Add(equippedSkill);
         if (equippedUltimate != null) unlockedUltimates.Add(equippedUltimate);
+
+        lastGrounded = movement.IsGrounded;
+        usedAirBasicAttackThisAirtime = false;
     }
 
     private void Update()
@@ -86,6 +105,12 @@ public sealed class PlayerCombat : MonoBehaviour
         }
 
         if (skillCooldownRemaining > 0f) skillCooldownRemaining -= dt;
+
+        bool grounded = movement.IsGrounded;
+        if (grounded && !lastGrounded)
+            usedAirBasicAttackThisAirtime = false;
+
+        lastGrounded = grounded;
 
         if (player.IsSitting) return;
         if (movement.IsDashing) return;
@@ -134,22 +159,6 @@ public sealed class PlayerCombat : MonoBehaviour
     public bool IsSkillUnlocked(PlayerSkill skill) => skill != null && unlockedSkills.Contains(skill);
     public bool IsUltimateUnlocked(PlayerUltimate ultimate) => ultimate != null && unlockedUltimates.Contains(ultimate);
 
-    public void SetSkillUnlocked(PlayerSkill skill, bool unlocked)
-    {
-        if (skill == null) return;
-
-        if (unlocked) unlockedSkills.Add(skill);
-        else unlockedSkills.Remove(skill);
-    }
-
-    public void SetUltimateUnlocked(PlayerUltimate ultimate, bool unlocked)
-    {
-        if (ultimate == null) return;
-
-        if (unlocked) unlockedUltimates.Add(ultimate);
-        else unlockedUltimates.Remove(ultimate);
-    }
-
     public void EquipSkill(PlayerSkill skill)
     {
         if (skill != null && !IsSkillUnlocked(skill)) return;
@@ -169,19 +178,33 @@ public sealed class PlayerCombat : MonoBehaviour
         else if (stats.DiceGauge > max) stats.AddDiceGauge(max - stats.DiceGauge);
     }
 
-    public void CancelForDash() => basicAttackCooldownRemaining = 0f;
+    public void CancelForDash()
+    {
+        basicAttackCooldownRemaining = 0f;
+    }
 
     private void TryBasicAttack()
     {
         if (IsSkillOrUltimateActive) return;
-        if (basicAttackCooldownRemaining > 0f) return;
 
-        if (!TryGetMouseWorldOnPlane(out Vector3 mouseWorld))
-            mouseWorld = transform.position + Vector3.right * movement.FacingSign;
+        if (movement.IsGrounded)
+        {
+            if (basicAttackCooldownRemaining > 0f) return;
 
-        if (movement.IsGrounded) GroundAttack(mouseWorld);
-        else AirAttack();
+            if (!TryGetMouseWorldOnPlane(out Vector3 mouseWorld))
+                mouseWorld = transform.position + Vector3.right * movement.FacingSign;
 
+            GroundAttack(mouseWorld);
+
+            basicAttackCooldownRemaining = settings.basicAttackCooldown;
+            return;
+        }
+
+        if (usedAirBasicAttackThisAirtime) return;
+
+        AirAttack();
+
+        usedAirBasicAttackThisAirtime = true;
         basicAttackCooldownRemaining = settings.basicAttackCooldown;
     }
 
@@ -199,6 +222,8 @@ public sealed class PlayerCombat : MonoBehaviour
 
         int count = Physics.OverlapSphereNonAlloc(center, settings.groundAttackRadius, hitBuffer, settings.attackMask, QueryTriggerInteraction.Ignore);
         DealDamageFromHits(count, settings.groundAttackDamage);
+
+        AnimationRequested?.Invoke(AnimRequest.Attack);
     }
 
     private void AirAttack()
@@ -210,6 +235,8 @@ public sealed class PlayerCombat : MonoBehaviour
 
         int count = Physics.OverlapSphereNonAlloc(center, settings.airAttackRadius, hitBuffer, settings.attackMask, QueryTriggerInteraction.Ignore);
         DealDamageFromHits(count, settings.airAttackDamage);
+
+        AnimationRequested?.Invoke(AnimRequest.AirAttack);
     }
 
     private void DealDamageFromHits(int count, int amount)
@@ -247,6 +274,8 @@ public sealed class PlayerCombat : MonoBehaviour
 
         skillLockRemaining = equippedSkill.LockDuration;
         skillCooldownRemaining = equippedSkill.Cooldown;
+
+        AnimationRequested?.Invoke(AnimRequest.Technology);
     }
 
     private void TryUseUltimate()

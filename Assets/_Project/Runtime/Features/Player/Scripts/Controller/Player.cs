@@ -6,6 +6,14 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerStats))]
 public sealed class Player : Singleton<Player, SceneScope>
 {
+    public enum ChairState
+    {
+        None,
+        SittingDown,
+        Idle,
+        StandingUp
+    }
+
     [Header("Settings")]
     [SerializeField] private PlayerSettings settings;
 
@@ -20,24 +28,19 @@ public sealed class Player : Singleton<Player, SceneScope>
     [SerializeField] private PlayerStats stats;
 
     public PlayerSettings Settings => settings;
-
     public Rigidbody Body => body;
-
     public Collider BodyCollider => bodyCollider;
-
     public Animator Animator => animator;
-
     public PlayerMovement Movement => movement;
-
     public PlayerCombat Combat => combat;
-
     public PlayerStats Stats => stats;
-
     public InputManager Input => InputManager.Instance;
 
-    public bool IsSitting => currentChair != null;
+    public bool IsSitting => chairState != ChairState.None;
+    public ChairState CurrentChairState => chairState;
 
     private ElectricChair currentChair;
+    private ChairState chairState = ChairState.None;
 
     private void Reset()
     {
@@ -54,6 +57,7 @@ public sealed class Player : Singleton<Player, SceneScope>
         if (IsSitting) return;
 
         currentChair = chair;
+        chairState = ChairState.SittingDown;
 
         Vector3 p = seatWorldPosition;
         p.z = settings.planeZ;
@@ -66,10 +70,25 @@ public sealed class Player : Singleton<Player, SceneScope>
         stats.RestoreHpMpToFull();
     }
 
-    public void StandUpFromChair()
+    public void RequestStandUpFromChair()
     {
         if (!IsSitting) return;
+        if (chairState != ChairState.Idle) return;
 
+        chairState = ChairState.StandingUp;
+        movement.BeginStandingUpFromChair();
+    }
+
+    public void NotifyChairSittingAnimationCompleted()
+    {
+        if (chairState == ChairState.SittingDown) chairState = ChairState.Idle;
+    }
+
+    public void NotifyChairStandingAnimationCompleted()
+    {
+        if (chairState != ChairState.StandingUp) return;
+
+        chairState = ChairState.None;
         currentChair = null;
         movement.ExitSitting();
     }
