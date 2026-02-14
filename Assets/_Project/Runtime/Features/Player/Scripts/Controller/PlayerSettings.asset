@@ -86,11 +86,10 @@ MonoBehaviour:
   ultimates:
   - ultimate: {fileID: 11400000, guid: 1b0105a21bc733e42b43ac97b6032b9e, type: 2}
     unlocked: 1
-  uiDiceFrameTime: 0.1
-  uiDiceSpinLoopDuration: 0.08
-  uiDiceLowerStopDelay: 0.6
+  uiDiceFrameTime: 0.15
+  uiDiceLowerStopDelay: 0.5
   uiDiceUpperStopExtraDelay: 0.5
-  uiDiceStopTweenTime: 0.08
+  uiDiceStopTweenTime: 0.1
   uiDiceFaceForwardEuler:
   - {x: -90, y: 0, z: 0}
   - {x: -90, y: 90, z: 0}
@@ -98,9 +97,10 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: -90, z: 0}
   - {x: 90, y: 0, z: 0}
+  uiDiceModelLayer: 10
   uiPotionMaxUses: 3
   uiPotionStartUses: 3
   uiHpPotionHealAmount: 30
   uiMpPotionHealAmount: 30
-  uiPotionHoldTime: 0.35
+  uiPotionHoldTime: 0.3
   uiSkillGreyColor: {r: 0.35, g: 0.35, b: 0.35, a: 1}
