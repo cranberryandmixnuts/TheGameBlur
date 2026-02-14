@@ -1,4 +1,3 @@
-// BossController.cs
 using System.Collections;
 using UnityEngine;
 
@@ -6,7 +5,6 @@ using UnityEngine;
 public sealed class BossController : MonoBehaviour
 {
     public BossEnemyDataSO bossData;
-
     public Transform player;
 
     [Header("Underground Spawners")]
@@ -35,6 +33,12 @@ public sealed class BossController : MonoBehaviour
     [Header("Dash")]
     public float dashStopOffsetX = 0.8f;
 
+    [Header("Wall Check")]
+    public LayerMask wallMask;
+    public float wallCheckDistance = 0.4f;
+    public float wallCheckHeight = 0.6f;
+    public float stopIfWallSeconds = 0.15f;
+
     [Header("Anim Smooth")]
     public float crossFade = 0.08f;
 
@@ -42,16 +46,22 @@ public sealed class BossController : MonoBehaviour
 
     Rigidbody rb;
     Animator anim;
+    EnemyScript enemy;
 
     int facingDir = -1;
     Coroutine loop;
+    bool active;
 
     int idleHash, moveHash, jumpHash, runHash, castHash;
+
+    Vector3 spawnPos;
+    Quaternion spawnRot;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         anim = GetComponentInChildren<Animator>();
+        enemy = GetComponent<EnemyScript>();
 
         rb.useGravity = true;
         rb.constraints =
@@ -59,12 +69,6 @@ public sealed class BossController : MonoBehaviour
             RigidbodyConstraints.FreezeRotationX |
             RigidbodyConstraints.FreezeRotationY |
             RigidbodyConstraints.FreezeRotationZ;
-
-        if (player == null)
-        {
-            var go = GameObject.FindGameObjectWithTag("Player");
-            if (go != null) player = go.transform;
-        }
 
         if (modelRoot == null)
             modelRoot = (anim != null) ? anim.transform : transform;
@@ -85,19 +89,95 @@ public sealed class BossController : MonoBehaviour
             return;
         }
 
+        spawnPos = transform.position;
+        spawnRot = transform.rotation;
+
+        active = false;
+        facingDir = -1;
+        ApplyFacingRotation();
+        PlayStateForce(idleHash);
+    }
+
+
+    public void ActivateBoss(Transform playerOverride = null)
+    {
+        if (bossData == null) return;
+
+        if (playerOverride != null) player = playerOverride;
+
+        if (player == null)
+        {
+            var go = GameObject.FindGameObjectWithTag("Player");
+            if (go != null) player = go.transform;
+        }
+
+        transform.position = spawnPos;
+        transform.rotation = spawnRot;
+
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        if (enemy != null)
+            enemy.ResetHP();
+
         facingDir = -1;
         ApplyFacingRotation();
 
+        active = true;
+
         if (loop != null) StopCoroutine(loop);
         loop = StartCoroutine(SkillLoop());
+
+        if (debugLog) Debug.Log("[Boss] ActivateBoss()");
     }
+
+    public void DeactivateBoss()
+    {
+        active = false;
+
+        if (loop != null)
+        {
+            StopCoroutine(loop);
+            loop = null;
+        }
+
+        StopAllCoroutines();
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.useGravity = true;
+
+            rb.constraints =
+                RigidbodyConstraints.FreezePositionZ |
+                RigidbodyConstraints.FreezeRotationX |
+                RigidbodyConstraints.FreezeRotationY |
+                RigidbodyConstraints.FreezeRotationZ;
+        }
+
+        transform.position = spawnPos;
+        transform.rotation = spawnRot;
+
+        facingDir = -1;
+        ApplyFacingRotation();
+
+        PlayStateForce(idleHash);
+
+        if (debugLog) Debug.Log("[Boss] DeactivateBoss() Reset Done");
+    }
+
 
     IEnumerator SkillLoop()
     {
-        while (true)
+        while (active)
         {
+            
+
             PlayStateForce(idleHash);
             yield return WaitSeconds(bossData.idleBetweenSkills);
+
+            if (!active) yield break;
 
             var skill = PickSkill();
             if (skill == null)
@@ -137,7 +217,7 @@ public sealed class BossController : MonoBehaviour
 
     IEnumerator RunSkill(BossSkillEntry s)
     {
-        if (debugLog) Debug.Log($"[Boss] Skill: {s.type}");
+        if (!active) yield break;
 
         switch (s.type)
         {
@@ -167,11 +247,24 @@ public sealed class BossController : MonoBehaviour
         PlayStateForce(moveHash);
 
         float dist = Random.Range(s.randomMoveDistanceMin, s.randomMoveDistanceMax);
-        float targetX = rb.position.x + dir * dist;
+        float startX = rb.position.x;
+        float targetX = startX + dir * dist;
 
-        while (Mathf.Abs(rb.position.x - targetX) > 0.01f)
+        float stuckT = 0f;
+
+        while (Mathf.Abs(rb.position.x - targetX) > 0.01f && active)
         {
-            MoveX(targetX, s.randomMoveSpeed);
+            if (IsWallAhead(dir))
+            {
+                stuckT += Time.fixedDeltaTime;
+                if (stuckT >= stopIfWallSeconds) break;
+            }
+            else
+            {
+                stuckT = 0f;
+                MoveX(targetX, s.randomMoveSpeed);
+            }
+
             yield return new WaitForFixedUpdate();
         }
 
@@ -200,7 +293,7 @@ public sealed class BossController : MonoBehaviour
         rb.useGravity = false;
 
         float t = 0f;
-        while (t < duration)
+        while (t < duration && active)
         {
             t += Time.fixedDeltaTime;
             float u = Mathf.Clamp01(t / duration);
@@ -230,8 +323,11 @@ public sealed class BossController : MonoBehaviour
         PlayStateForce(runHash);
 
         float safe = 2.5f;
-        while (safe > 0f && Mathf.Abs(rb.position.x - targetX) > 0.02f)
+        while (safe > 0f && Mathf.Abs(rb.position.x - targetX) > 0.02f && active)
         {
+            if (IsWallAhead(dashDir >= 0f ? 1 : -1))
+                break;
+
             MoveX(targetX, s.dashSpeed);
             safe -= Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
@@ -246,6 +342,7 @@ public sealed class BossController : MonoBehaviour
 
         Vector3 startPos = rb.position;
         float startZ = startPos.z;
+
         float outZ = startZ + s.undergroundWalkDeltaZ;
 
         var savedConstraints = rb.constraints;
@@ -255,7 +352,7 @@ public sealed class BossController : MonoBehaviour
         SetModelYaw(backYaw);
 
         PlayStateForce(moveHash);
-        yield return MoveZ(outZ, s.undergroundWalkSpeed);
+        yield return MoveZ(outZ, s.undergroundWalkOutSpeed);
 
         bool prevGravity = rb.useGravity;
         rb.useGravity = false;
@@ -268,9 +365,9 @@ public sealed class BossController : MonoBehaviour
 
         PlayStateForce(castHash);
 
-        bool patternA = Random.value < 0.5f;
+        bool use12 = Random.value < 0.5f;
         Transform a = undergroundSpawner1;
-        Transform b = patternA ? undergroundSpawner2 : undergroundSpawner3;
+        Transform b = use12 ? undergroundSpawner2 : undergroundSpawner3;
 
         Vector3 vel = Vector3.left * Mathf.Max(0f, s.fireHorizontalSpeed);
 
@@ -281,14 +378,13 @@ public sealed class BossController : MonoBehaviour
         yield return WaitSeconds(s.undergroundAfterFireWait);
 
         yield return MoveY(startPos.y, Mathf.Max(0.01f, s.undergroundRiseTime));
-
         rb.useGravity = prevGravity;
 
         float frontYaw = bossData.baseYawForLeft + undergroundFrontYawOffset;
         SetModelYaw(frontYaw);
 
         PlayStateForce(moveHash);
-        yield return MoveZ(startZ, s.undergroundWalkSpeed);
+        yield return MoveZ(startZ, s.undergroundWalkInSpeed);
 
         rb.constraints = savedConstraints;
 
@@ -300,30 +396,23 @@ public sealed class BossController : MonoBehaviour
     {
         PlayStateForce(castHash);
 
-        Vector3 lockedTarget = player != null
-            ? player.position
-            : (rb.position + Vector3.left);
-
+        Vector3 lockedTarget = player != null ? player.position : (rb.position + Vector3.left);
         lockedTarget.z = rb.position.z;
 
         int count = Mathf.Max(1, s.aimShotCount);
         float interval = Mathf.Max(0f, s.aimShotInterval);
         float speed = Mathf.Max(0f, s.aimShotSpeed);
 
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < count && active; i++)
         {
             Vector3 spawn = rb.position + new Vector3(facingDir * aimShotSpawnXOffset, aimShotSpawnYOffset, 0f);
 
             Vector3 dir = lockedTarget - spawn;
             dir.z = 0f;
-
-            if (dir.sqrMagnitude < 0.0001f)
-                dir = Vector3.left;
-
+            if (dir.sqrMagnitude < 0.0001f) dir = Vector3.left;
             dir.Normalize();
 
             SetFacing(dir.x >= 0f ? 1 : -1);
-
             spawn = rb.position + new Vector3(facingDir * aimShotSpawnXOffset, aimShotSpawnYOffset, 0f);
 
             SpawnFireball(spawn, dir * speed);
@@ -337,7 +426,7 @@ public sealed class BossController : MonoBehaviour
 
     IEnumerator MoveZ(float targetZ, float speed)
     {
-        while (Mathf.Abs(rb.position.z - targetZ) > 0.01f)
+        while (Mathf.Abs(rb.position.z - targetZ) > 0.01f && active)
         {
             Vector3 p = rb.position;
             float nz = Mathf.MoveTowards(p.z, targetZ, Mathf.Max(0f, speed) * Time.fixedDeltaTime);
@@ -354,7 +443,7 @@ public sealed class BossController : MonoBehaviour
         float startY = rb.position.y;
 
         float t = 0f;
-        while (t < duration)
+        while (t < duration && active)
         {
             t += Time.fixedDeltaTime;
             float a = Mathf.Clamp01(t / duration);
@@ -380,11 +469,21 @@ public sealed class BossController : MonoBehaviour
     IEnumerator WaitSeconds(float seconds)
     {
         float t = Mathf.Max(0f, seconds);
-        while (t > 0f)
+        while (t > 0f && active)
         {
             t -= Time.deltaTime;
             yield return null;
         }
+    }
+
+    bool IsWallAhead(int dir)
+    {
+        if (wallMask.value == 0) return false;
+
+        Vector3 origin = rb.position + Vector3.up * wallCheckHeight;
+        Vector3 d = (dir >= 0) ? Vector3.right : Vector3.left;
+
+        return Physics.Raycast(origin, d, wallCheckDistance, wallMask, QueryTriggerInteraction.Ignore);
     }
 
     void SpawnFireball(Vector3 pos, Vector3 velocity)
@@ -442,6 +541,6 @@ public sealed class BossController : MonoBehaviour
 
     void OnDisable()
     {
-        if (loop != null) StopCoroutine(loop);
+        DeactivateBoss();
     }
 }
