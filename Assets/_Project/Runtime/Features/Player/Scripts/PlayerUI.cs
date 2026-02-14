@@ -63,6 +63,7 @@ public sealed class PlayerUI : MonoBehaviour
     [Header("Dice Value Text")]
     [SerializeField] private TMP_Text diceSumValueText;
 
+    private Player player;
     private PlayerSettings settings;
     private PlayerStats stats;
     private PlayerCombat combat;
@@ -96,7 +97,7 @@ public sealed class PlayerUI : MonoBehaviour
 
     private void Start()
     {
-        Player player = Player.Instance;
+        player = Player.Instance;
 
         settings = player.Settings;
         stats = player.Stats;
@@ -141,7 +142,20 @@ public sealed class PlayerUI : MonoBehaviour
         float dt = Time.deltaTime;
 
         RefreshHpMpUi();
-        TickPotionInput(dt);
+
+        if (player.IsSitting)
+        {
+            potionType = PotionType.Hp;
+
+            wasHealHeld = false;
+            healHoldElapsed = 0f;
+            potionConsumedThisHold = false;
+        }
+        else
+        {
+            TickPotionInput(dt);
+        }
+
         RefreshPotionUi();
         RefreshSkillUi();
         TickDicePanelAnimation(dt);
@@ -231,6 +245,7 @@ public sealed class PlayerUI : MonoBehaviour
     private void TryConsumePotion()
     {
         if (potionUses <= 0) return;
+        if (player.IsSitting) return;
 
         if (potionType == PotionType.Hp)
         {

@@ -26,6 +26,7 @@ public sealed class PlayerVisual : MonoBehaviour
     [Range(0f, 1f)]
     [SerializeField] private float clampWeight = 0.6f;
 
+    private Player player;
     private PlayerSettings settings;
     private PlayerStats stats;
     private PlayerMovement movement;
@@ -39,7 +40,7 @@ public sealed class PlayerVisual : MonoBehaviour
 
     private void Start()
     {
-        Player player = Player.Instance;
+        player = Player.Instance;
 
         settings = player.Settings;
         stats = player.Stats;
@@ -64,7 +65,7 @@ public sealed class PlayerVisual : MonoBehaviour
             ApplyBattleVisibility(battle);
         }
 
-        lookActive = battle && !movement.IsDashing && !combat.IsUltimateActive;
+        lookActive = battle && !movement.IsDashing && !combat.IsUltimateActive && !player.IsSitting;
 
         if (!lookActive) return;
 

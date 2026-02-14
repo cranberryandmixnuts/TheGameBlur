@@ -110,6 +110,17 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         diceRollRemaining = UnityEngine.Random.Range(settings.diceRollIntervalMin, settings.diceRollIntervalMax);
     }
 
+    public void RestoreHpMpToFull()
+    {
+        bool hpChanged = hp != maxHp;
+        hp = maxHp;
+        if (hpChanged) HpChanged?.Invoke(hp, maxHp);
+
+        bool mpChanged = mp != maxMp;
+        mp = maxMp;
+        if (mpChanged) MpChanged?.Invoke(mp, maxMp);
+    }
+
     public void SetBattle(bool value)
     {
         if (isBattle == value) return;
@@ -188,17 +199,6 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
     public void AddDiceGauge(float amount)
     {
         float max = DiceGaugeMax;
-
-        if (max <= 0f)
-        {
-            float before2 = diceGauge;
-            diceGauge = 0f;
-
-            if (!Mathf.Approximately(before2, diceGauge))
-                DiceGaugeChanged?.Invoke(diceGauge, 0f);
-
-            return;
-        }
 
         float before = diceGauge;
         diceGauge += amount;

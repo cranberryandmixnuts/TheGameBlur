@@ -5,6 +5,8 @@ public sealed class PlayerCombat : MonoBehaviour
 {
     [SerializeField] private PlayerAttackRangeIndicator attackRangeIndicator;
 
+    public PlayerAttackRangeIndicator AttackRangeIndicator => attackRangeIndicator;
+
     public bool IsSkillOrUltimateActive => skillLockRemaining > 0f || ultimateLockRemaining > 0f;
     public bool IsUltimateActive => ultimateLockRemaining > 0f;
 
@@ -19,8 +21,7 @@ public sealed class PlayerCombat : MonoBehaviour
 
     public float UltimateGaugeMax => equippedUltimate != null ? equippedUltimate.GaugeMax : 0f;
 
-    public PlayerAttackRangeIndicator AttackRangeIndicator => attackRangeIndicator;
-
+    private Player player;
     private PlayerSettings settings;
     private PlayerStats stats;
     private PlayerMovement movement;
@@ -44,10 +45,13 @@ public sealed class PlayerCombat : MonoBehaviour
 
     private void Reset() => attackRangeIndicator = GetComponent<PlayerAttackRangeIndicator>();
 
+    private void Awake()
+    {
+        player = GetComponent<Player>();
+    }
+
     private void Start()
     {
-        Player player = Player.Instance;
-
         settings = player.Settings;
         stats = player.Stats;
         movement = player.Movement;
@@ -70,27 +74,39 @@ public sealed class PlayerCombat : MonoBehaviour
 
         if (basicAttackCooldownRemaining > 0f) basicAttackCooldownRemaining -= dt;
         if (skillLockRemaining > 0f) skillLockRemaining -= dt;
-        if (ultimateLockRemaining > 0f) ultimateLockRemaining -= dt;
+
+        if (ultimateLockRemaining > 0f)
+        {
+            ultimateLockRemaining -= dt;
+            if (ultimateLockRemaining <= 0f && ultimateInvincibleApplied)
+            {
+                ultimateInvincibleApplied = false;
+                stats.SetInvincible(false);
+            }
+        }
+
         if (skillCooldownRemaining > 0f) skillCooldownRemaining -= dt;
 
-        bool ultimateActive = IsUltimateActive;
-
-        if (ultimateActive && !ultimateInvincibleApplied)
-        {
-            ultimateInvincibleApplied = true;
-            stats.SetInvincible(true);
-        }
-        else if (!ultimateActive && ultimateInvincibleApplied)
-        {
-            ultimateInvincibleApplied = false;
-            stats.SetInvincible(false);
-        }
-
+        if (player.IsSitting) return;
         if (movement.IsDashing) return;
 
         if (input.AttackDown) TryBasicAttack();
         if (input.SkillDown) TryUseSkill();
         if (input.DiceSkillDown) TryUseUltimate();
+    }
+
+    public void ResetSkillCooldown()
+    {
+        basicAttackCooldownRemaining = 0f;
+        skillLockRemaining = 0f;
+        ultimateLockRemaining = 0f;
+        skillCooldownRemaining = 0f;
+
+        if (ultimateInvincibleApplied)
+        {
+            ultimateInvincibleApplied = false;
+            stats.SetInvincible(false);
+        }
     }
 
     public void RebuildUnlockCache()
@@ -149,14 +165,8 @@ public sealed class PlayerCombat : MonoBehaviour
         equippedUltimate = ultimate;
 
         float max = UltimateGaugeMax;
-
-        if (max <= 0f)
-        {
-            if (stats.DiceGauge > 0f) stats.AddDiceGauge(-stats.DiceGauge);
-            return;
-        }
-
-        if (stats.DiceGauge > max) stats.AddDiceGauge(max - stats.DiceGauge);
+        if (max <= 0f) stats.ConsumeAllDiceGauge();
+        else if (stats.DiceGauge > max) stats.AddDiceGauge(max - stats.DiceGauge);
     }
 
     public void CancelForDash() => basicAttackCooldownRemaining = 0f;
@@ -233,7 +243,7 @@ public sealed class PlayerCombat : MonoBehaviour
 
         if (!stats.TrySpendMana(equippedSkill.ManaCost)) return;
 
-        equippedSkill.Execute(Player.Instance, sign, mouseWorld);
+        equippedSkill.Execute(player, sign, mouseWorld);
 
         skillLockRemaining = equippedSkill.LockDuration;
         skillCooldownRemaining = equippedSkill.Cooldown;
@@ -256,14 +266,14 @@ public sealed class PlayerCombat : MonoBehaviour
         stats.ConsumeAllDiceGauge();
         stats.RollDiceForUltimate();
 
-        float lockDuration = equippedUltimate.GetLockDuration(Player.Instance, sign, mouseWorld);
+        float lockDuration = equippedUltimate.GetLockDuration(player, sign, mouseWorld);
         if (lockDuration < 0f) lockDuration = 0f;
 
         ultimateLockRemaining = lockDuration;
         ultimateInvincibleApplied = true;
         stats.SetInvincible(true);
 
-        equippedUltimate.Execute(Player.Instance, sign, mouseWorld);
+        equippedUltimate.Execute(player, sign, mouseWorld);
     }
 
     private bool TryGetMouseWorldOnPlane(out Vector3 world)

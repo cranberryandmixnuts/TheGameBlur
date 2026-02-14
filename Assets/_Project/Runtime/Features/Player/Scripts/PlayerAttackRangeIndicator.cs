@@ -4,8 +4,7 @@ public sealed class PlayerAttackRangeIndicator : MonoBehaviour
 {
     [SerializeField] private LineRenderer groundCircle;
     [SerializeField] private LineRenderer airCircle;
-
-    [Header("Ultimate Box")]
+    [SerializeField] private LineRenderer airSector;
     [SerializeField] private LineRenderer ultimateRect;
 
     private PlayerSettings settings;
@@ -16,7 +15,8 @@ public sealed class PlayerAttackRangeIndicator : MonoBehaviour
         settings = Player.Instance.Settings;
 
         if (groundCircle == null) groundCircle = CreateLineRenderer("GroundAttackRange");
-        if (airCircle == null) airCircle = CreateLineRenderer("AirAttackRange");
+        if (airCircle == null) airCircle = CreateLineRenderer("AirAttackRange_Circle");
+        if (airSector == null) airSector = CreateLineRenderer("AirAttackRange_Sector");
         if (ultimateRect == null) ultimateRect = CreateLineRenderer("UltimateBoxRange");
 
         DisableAll();
@@ -49,6 +49,7 @@ public sealed class PlayerAttackRangeIndicator : MonoBehaviour
 
         groundCircle.enabled = true;
         airCircle.enabled = false;
+        airSector.enabled = false;
         ultimateRect.enabled = false;
 
         remaining = duration;
@@ -70,6 +71,29 @@ public sealed class PlayerAttackRangeIndicator : MonoBehaviour
 
         airCircle.enabled = true;
         groundCircle.enabled = false;
+        airSector.enabled = false;
+        ultimateRect.enabled = false;
+
+        remaining = duration;
+    }
+
+    public void ShowAirSector(Vector3 origin, float radius, float halfAngleDeg, int sign) => ShowAirSector(origin, radius, halfAngleDeg, sign, settings.attackRangeVisualDuration);
+
+    public void ShowAirSector(Vector3 origin, float radius, float halfAngleDeg, int sign, float duration)
+    {
+        if (!settings.showAttackRangeOnAttack) return;
+
+        origin.z = settings.planeZ;
+
+        int seg = Mathf.Max(6, settings.attackRangeSegments);
+        EnsureSector(airSector, origin, radius, halfAngleDeg, sign, seg);
+
+        airSector.startWidth = settings.attackRangeLineWidth;
+        airSector.endWidth = settings.attackRangeLineWidth;
+
+        airSector.enabled = true;
+        groundCircle.enabled = false;
+        airCircle.enabled = false;
         ultimateRect.enabled = false;
 
         remaining = duration;
@@ -90,6 +114,7 @@ public sealed class PlayerAttackRangeIndicator : MonoBehaviour
         ultimateRect.enabled = true;
         groundCircle.enabled = false;
         airCircle.enabled = false;
+        airSector.enabled = false;
 
         remaining = duration;
     }
@@ -98,6 +123,7 @@ public sealed class PlayerAttackRangeIndicator : MonoBehaviour
     {
         groundCircle.enabled = false;
         airCircle.enabled = false;
+        airSector.enabled = false;
         ultimateRect.enabled = false;
     }
 
@@ -116,6 +142,34 @@ public sealed class PlayerAttackRangeIndicator : MonoBehaviour
 
             lr.SetPosition(i, center + new Vector3(x, y, 0f));
         }
+    }
+
+    private static void EnsureSector(LineRenderer lr, Vector3 origin, float radius, float halfAngleDeg, int sign, int segments)
+    {
+        lr.loop = false;
+
+        int arcCount = segments + 1;
+        int total = 1 + arcCount + 1;
+
+        lr.positionCount = total;
+
+        lr.SetPosition(0, origin);
+
+        float step = (halfAngleDeg * 2f) / segments;
+
+        for (int i = 0; i <= segments; i++)
+        {
+            float a = -halfAngleDeg + step * i;
+            float rad = a * Mathf.Deg2Rad;
+
+            float x = Mathf.Cos(rad) * sign;
+            float y = Mathf.Sin(rad);
+
+            Vector3 p = origin + new Vector3(x, y, 0f) * radius;
+            lr.SetPosition(1 + i, p);
+        }
+
+        lr.SetPosition(total - 1, origin);
     }
 
     private static void EnsureRect(LineRenderer lr, Vector3 center, Vector2 halfExtents)

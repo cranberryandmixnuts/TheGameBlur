@@ -5,11 +5,15 @@ public sealed class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform visualRoot;
     [SerializeField] private PlayerGroundSensor groundSensor;
 
+    [Header("Sitting Facing (Front)")]
+    [SerializeField] private float sittingFrontYawDeg = 90f;
+
     public bool IsGrounded { get; private set; }
     public bool IsDashing => dashRemaining > 0f;
     public int FacingSign { get; private set; } = 1;
     public int LastMoveSign { get; private set; } = 1;
 
+    private Player player;
     private Rigidbody body;
     private Collider bodyCollider;
     private PlayerSettings settings;
@@ -41,9 +45,11 @@ public sealed class PlayerMovement : MonoBehaviour
 
     private Vector3 pendingImpulse;
 
+    private bool isSittingFacing;
+
     private void Start()
     {
-        Player player = Player.Instance;
+        player = Player.Instance;
 
         body = player.Body;
         bodyCollider = player.BodyCollider;
@@ -68,6 +74,21 @@ public sealed class PlayerMovement : MonoBehaviour
         if (axis > settings.moveDeadZone) moveSign = 1;
         else if (axis < -settings.moveDeadZone) moveSign = -1;
 
+        if (player.IsSitting)
+        {
+            if (moveSign != 0) player.StandUpFromChair();
+
+            moveSign = 0;
+
+            runHeld = false;
+            jumpDown = false;
+            jumpUp = false;
+            jumpHeld = false;
+            dashDown = false;
+
+            return;
+        }
+
         if (moveSign != 0) LastMoveSign = moveSign;
 
         runHeld = input.RunHeld;
@@ -88,6 +109,14 @@ public sealed class PlayerMovement : MonoBehaviour
         UpdateGrounded();
 
         if (dashCooldownRemaining > 0f) dashCooldownRemaining -= dt;
+
+        if (player.IsSitting)
+        {
+            body.linearVelocity = Vector3.zero;
+            pendingImpulse = Vector3.zero;
+            LockPlaneZ();
+            return;
+        }
 
         if (combat.IsUltimateActive)
         {
@@ -129,6 +158,38 @@ public sealed class PlayerMovement : MonoBehaviour
         dashDown = false;
         jumpDown = false;
         jumpUp = false;
+    }
+
+    public void EnterSitting()
+    {
+        if (IsDashing)
+        {
+            dashRemaining = 0f;
+
+            if (isAirDash)
+            {
+                body.constraints = dashPrevConstraints;
+                isAirDash = false;
+            }
+        }
+
+        dashCooldownRemaining = 0f;
+        jumpHoldActive = false;
+        jumpHoldElapsed = 0f;
+        coyoteRemaining = 0f;
+
+        pendingImpulse = Vector3.zero;
+        body.linearVelocity = Vector3.zero;
+
+        FacingSign = 1;
+        isSittingFacing = true;
+        ApplyVisualFacing();
+    }
+
+    public void ExitSitting()
+    {
+        isSittingFacing = false;
+        ApplyVisualFacing();
     }
 
     public void AddImpulse(Vector3 impulse) => pendingImpulse += impulse;
@@ -363,6 +424,8 @@ public sealed class PlayerMovement : MonoBehaviour
 
     private void UpdateFacing()
     {
+        if (isSittingFacing) return;
+
         int desired = FacingSign;
 
         if (stats.IsBattle)
@@ -409,8 +472,12 @@ public sealed class PlayerMovement : MonoBehaviour
         if (visualRoot == null) return;
 
         Vector3 s = visualRoot.localScale;
-        s.x = Mathf.Abs(s.x) * FacingSign;
+        s.x = Mathf.Abs(s.x) * (isSittingFacing ? 1f : FacingSign);
         visualRoot.localScale = s;
+
+        Vector3 e = visualRoot.localEulerAngles;
+        e.y = isSittingFacing ? sittingFrontYawDeg : 0f;
+        visualRoot.localEulerAngles = e;
     }
 
     private void ApplyPendingImpulse()

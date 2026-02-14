@@ -35,6 +35,10 @@ public sealed class Player : Singleton<Player, SceneScope>
 
     public InputManager Input => InputManager.Instance;
 
+    public bool IsSitting => currentChair != null;
+
+    private ElectricChair currentChair;
+
     private void Reset()
     {
         body = GetComponent<Rigidbody>();
@@ -43,5 +47,30 @@ public sealed class Player : Singleton<Player, SceneScope>
         movement = GetComponent<PlayerMovement>();
         combat = GetComponent<PlayerCombat>();
         stats = GetComponent<PlayerStats>();
+    }
+
+    public void Sit(ElectricChair chair, Vector3 seatWorldPosition)
+    {
+        if (IsSitting) return;
+
+        currentChair = chair;
+
+        Vector3 p = seatWorldPosition;
+        p.z = settings.planeZ;
+
+        body.position = p;
+        body.linearVelocity = Vector3.zero;
+
+        movement.EnterSitting();
+        combat.ResetSkillCooldown();
+        stats.RestoreHpMpToFull();
+    }
+
+    public void StandUpFromChair()
+    {
+        if (!IsSitting) return;
+
+        currentChair = null;
+        movement.ExitSitting();
     }
 }

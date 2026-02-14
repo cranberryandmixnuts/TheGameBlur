@@ -4091,6 +4091,63 @@ Transform:
   - {fileID: 949546200}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &2391768405508806983
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1043368203609727886, guid: b55fceeccf68c5645a0a1dab04a51711, type: 3}
+      propertyPath: m_Name
+      value: ElectricChair
+      objectReference: {fileID: 0}
+    - target: {fileID: 4730950801759067938, guid: b55fceeccf68c5645a0a1dab04a51711, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4730950801759067938, guid: b55fceeccf68c5645a0a1dab04a51711, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4730950801759067938, guid: b55fceeccf68c5645a0a1dab04a51711, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4730950801759067938, guid: b55fceeccf68c5645a0a1dab04a51711, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -4.329781e-17
+      objectReference: {fileID: 0}
+    - target: {fileID: 4730950801759067938, guid: b55fceeccf68c5645a0a1dab04a51711, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -4.3297803e-17
+      objectReference: {fileID: 0}
+    - target: {fileID: 4730950801759067938, guid: b55fceeccf68c5645a0a1dab04a51711, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.70710677
+      objectReference: {fileID: 0}
+    - target: {fileID: 4730950801759067938, guid: b55fceeccf68c5645a0a1dab04a51711, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.7071069
+      objectReference: {fileID: 0}
+    - target: {fileID: 4730950801759067938, guid: b55fceeccf68c5645a0a1dab04a51711, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 4730950801759067938, guid: b55fceeccf68c5645a0a1dab04a51711, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -180
+      objectReference: {fileID: 0}
+    - target: {fileID: 4730950801759067938, guid: b55fceeccf68c5645a0a1dab04a51711, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b55fceeccf68c5645a0a1dab04a51711, type: 3}
 --- !u!136 &3254561860921889861
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -4177,6 +4234,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   visualRoot: {fileID: 1486953297}
   groundSensor: {fileID: 949546202}
+  sittingFrontYawDeg: 90
 --- !u!114 &8831758561826424472
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4210,6 +4268,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttackRangeIndicator
   groundCircle: {fileID: 0}
   airCircle: {fileID: 0}
+  airSector: {fileID: 0}
   ultimateRect: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
@@ -4223,3 +4282,4 @@ SceneRoots:
   - {fileID: 851461199}
   - {fileID: 1052119943}
   - {fileID: 213939022}
+  - {fileID: 2391768405508806983}
