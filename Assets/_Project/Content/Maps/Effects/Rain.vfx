@@ -190,7 +190,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 400000
+      m_SerializableObject: 200000
     m_Space: -1
   m_Property:
     name: Rate
@@ -294,7 +294,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614662}
   - {fileID: 8926484042661614984}
   dataType: 0
-  capacity: 4000000
+  capacity: 40000000
   stripCapacity: 1
   particlePerStripCount: 32
   needsComputeBounds: 0
@@ -794,7 +794,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614785}
   - {fileID: 8926484042661614786}
   m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 1
+  m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_MasterSlot: {fileID: 8926484042661614783}
   m_MasterData:
@@ -1226,7 +1226,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEditor.VFX.Vector, Unity.VisualEffectGraph.Editor,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"vector":{"x":0.0,"y":-9.8100004196167,"z":0.0}}'
+      m_SerializableObject: '{"vector":{"x":0.0,"y":-50.0,"z":0.0}}'
     m_Space: 1
   m_Property:
     name: Force

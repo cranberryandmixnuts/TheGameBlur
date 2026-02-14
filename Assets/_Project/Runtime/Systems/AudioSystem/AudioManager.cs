@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
@@ -85,6 +86,22 @@ public class AudioManager : MonoBehaviour
         audioSource.clip = audioRegistry.GetAudioClip(audioName);
         audioSource.volume = sfxVolume;
         audioSource.Play();
+    }
+
+    public void PlaySFX(string audioName, float duration)
+    {
+        AudioSource audioSource = GetAvailableSFXSource();
+        audioSource.clip = audioRegistry.GetAudioClip(audioName);
+        audioSource.volume = sfxVolume;
+        audioSource.Play();
+
+        StartCoroutine(StopPlay(audioSource, duration));
+    }
+
+    private IEnumerator StopPlay(AudioSource audioSource, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        audioSource.Stop();
     }
 
     private AudioSource GetAvailableSFXSource()

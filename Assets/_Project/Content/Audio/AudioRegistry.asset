@@ -14,3 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AudioRegistry
   audioClips:
   - {fileID: 8300000, guid: f8e7583790fd6194ca5a4cabfaab4048, type: 3}
+  - {fileID: 8300000, guid: cfbea483c0945834493755c8cd480d22, type: 3}
+  - {fileID: 8300000, guid: 430cd71decc43df45bc8b54d5e57dd3e, type: 3}
+  - {fileID: 8300000, guid: 332120dea4fb38d40a64cdec2921b44e, type: 3}
+  - {fileID: 8300000, guid: a483825b811cd234c9169c17c6f5551e, type: 3}
+  - {fileID: 8300000, guid: 35a92aacbf3f1d24397b409067032964, type: 3}
