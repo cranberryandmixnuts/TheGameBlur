@@ -22,7 +22,7 @@ public sealed class PlayerCombat : MonoBehaviour
         get
         {
             if (equippedUltimate != null) return equippedUltimate.GaugeMax;
-            return settings.defaultUltimateGaugeMax;
+            return 0f;
         }
     }
 
@@ -139,7 +139,7 @@ public sealed class PlayerCombat : MonoBehaviour
         equippedUltimate = ultimate;
 
         float max = UltimateGaugeMax;
-        if (stats.DiceGauge > max) stats.AddDiceGauge(max - stats.DiceGauge);
+        if (max > 0f && stats.DiceGauge > max) stats.AddDiceGauge(max - stats.DiceGauge);
     }
 
     public void CancelForDash() => basicAttackCooldownRemaining = 0f;

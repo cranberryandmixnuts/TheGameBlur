@@ -104,6 +104,7 @@ public sealed class PlayerUI : MonoBehaviour
 
         stats.BattleChanged += OnBattleChanged;
         stats.DiceRolled += OnDiceRolled;
+        stats.DiceSettled += OnDiceSettled;
 
         ApplyBattleUi(stats.IsBattle, true);
         StartDicePanelLoop(stats.IsBattle);
@@ -121,6 +122,7 @@ public sealed class PlayerUI : MonoBehaviour
     {
         stats.BattleChanged -= OnBattleChanged;
         stats.DiceRolled -= OnDiceRolled;
+        stats.DiceSettled -= OnDiceSettled;
 
         KillDiceTweens();
     }
@@ -408,10 +410,7 @@ public sealed class PlayerUI : MonoBehaviour
         pendingDiceB = b;
 
         if (lowerDiceModel == null || upperDiceModel == null)
-        {
-            ApplyDiceSumText(a + b);
             return;
-        }
 
         KillDiceTweens();
 
@@ -425,8 +424,10 @@ public sealed class PlayerUI : MonoBehaviour
         diceRollSequence.AppendInterval(lowerDuration);
         diceRollSequence.AppendCallback(StopLowerDiceToValue);
         diceRollSequence.AppendInterval(settings.uiDiceUpperStopExtraDelay);
-        diceRollSequence.AppendCallback(StopUpperDiceToValueAndApplySum);
+        diceRollSequence.AppendCallback(StopUpperDiceToValue);
     }
+
+    private void OnDiceSettled(int a, int b) => ApplyDiceSumText(a + b);
 
     private void StartSpinDecel(Transform t, float duration, ref Tween tween)
     {
@@ -446,7 +447,7 @@ public sealed class PlayerUI : MonoBehaviour
         lowerDiceModel.DOLocalRotateQuaternion(target, settings.uiDiceStopTweenTime).SetEase(Ease.OutQuad);
     }
 
-    private void StopUpperDiceToValueAndApplySum()
+    private void StopUpperDiceToValue()
     {
         if (upperDiceModel == null) return;
 
@@ -454,8 +455,6 @@ public sealed class PlayerUI : MonoBehaviour
 
         Quaternion target = GetDiceFaceRotation(pendingDiceB);
         upperDiceModel.DOLocalRotateQuaternion(target, settings.uiDiceStopTweenTime).SetEase(Ease.OutQuad);
-
-        ApplyDiceSumText(pendingDiceA + pendingDiceB);
     }
 
     private Quaternion GetDiceFaceRotation(int value)
@@ -501,8 +500,8 @@ public sealed class PlayerUI : MonoBehaviour
             upperDiceModel = upperDiceRoot.childCount > 0 ? upperDiceRoot.GetChild(0) : null;
         }
 
-        int a = stats.DiceA;
-        int b = stats.DiceB;
+        int a = stats.SettledDiceA;
+        int b = stats.SettledDiceB;
 
         if (lowerDiceModel != null) lowerDiceModel.localRotation = GetDiceFaceRotation(a);
         if (upperDiceModel != null) upperDiceModel.localRotation = GetDiceFaceRotation(b);

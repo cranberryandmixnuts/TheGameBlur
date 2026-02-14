@@ -83,7 +83,6 @@ public sealed class PlayerSettings : ScriptableObject
     public float diceRollIntervalMin = 7f;
     public float diceRollIntervalMax = 10f;
     public float diceGaugeGainPerRoll = 30f;
-    public float defaultUltimateGaugeMax = 100f;
 
     [Header("Loadout")]
     public PlayerSkill startingSkill;
