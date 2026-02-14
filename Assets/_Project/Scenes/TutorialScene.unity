@@ -9982,18 +9982,6 @@ PrefabInstance:
       value: Old_Electric_Chair
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: da7aa4bd6961e5d4a817f614b4584444, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1.8771647
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: da7aa4bd6961e5d4a817f614b4584444, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1.6870359
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: da7aa4bd6961e5d4a817f614b4584444, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1.6870359
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: da7aa4bd6961e5d4a817f614b4584444, type: 3}
       propertyPath: m_LocalPosition.x
       value: 90.65396
       objectReference: {fileID: 0}
