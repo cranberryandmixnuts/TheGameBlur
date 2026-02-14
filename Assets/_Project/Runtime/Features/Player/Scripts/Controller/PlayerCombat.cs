@@ -17,14 +17,9 @@ public sealed class PlayerCombat : MonoBehaviour
     public PlayerSkill EquippedSkill => equippedSkill;
     public PlayerUltimate EquippedUltimate => equippedUltimate;
 
-    public float UltimateGaugeMax
-    {
-        get
-        {
-            if (equippedUltimate != null) return equippedUltimate.GaugeMax;
-            return 0f;
-        }
-    }
+    public float UltimateGaugeMax => equippedUltimate != null ? equippedUltimate.GaugeMax : 0f;
+
+    public PlayerAttackRangeIndicator AttackRangeIndicator => attackRangeIndicator;
 
     private PlayerSettings settings;
     private PlayerStats stats;
@@ -38,6 +33,8 @@ public sealed class PlayerCombat : MonoBehaviour
     private float skillLockRemaining;
     private float ultimateLockRemaining;
     private float skillCooldownRemaining;
+
+    private bool ultimateInvincibleApplied;
 
     private readonly Collider[] hitBuffer = new Collider[48];
     private readonly HashSet<IDamageable> hitSet = new HashSet<IDamageable>();
@@ -75,6 +72,19 @@ public sealed class PlayerCombat : MonoBehaviour
         if (skillLockRemaining > 0f) skillLockRemaining -= dt;
         if (ultimateLockRemaining > 0f) ultimateLockRemaining -= dt;
         if (skillCooldownRemaining > 0f) skillCooldownRemaining -= dt;
+
+        bool ultimateActive = IsUltimateActive;
+
+        if (ultimateActive && !ultimateInvincibleApplied)
+        {
+            ultimateInvincibleApplied = true;
+            stats.SetInvincible(true);
+        }
+        else if (!ultimateActive && ultimateInvincibleApplied)
+        {
+            ultimateInvincibleApplied = false;
+            stats.SetInvincible(false);
+        }
 
         if (movement.IsDashing) return;
 
@@ -139,7 +149,14 @@ public sealed class PlayerCombat : MonoBehaviour
         equippedUltimate = ultimate;
 
         float max = UltimateGaugeMax;
-        if (max > 0f && stats.DiceGauge > max) stats.AddDiceGauge(max - stats.DiceGauge);
+
+        if (max <= 0f)
+        {
+            if (stats.DiceGauge > 0f) stats.AddDiceGauge(-stats.DiceGauge);
+            return;
+        }
+
+        if (stats.DiceGauge > max) stats.AddDiceGauge(max - stats.DiceGauge);
     }
 
     public void CancelForDash() => basicAttackCooldownRemaining = 0f;
@@ -153,7 +170,7 @@ public sealed class PlayerCombat : MonoBehaviour
             mouseWorld = transform.position + Vector3.right * movement.FacingSign;
 
         if (movement.IsGrounded) GroundAttack(mouseWorld);
-        else AirAttack(mouseWorld);
+        else AirAttack();
 
         basicAttackCooldownRemaining = settings.basicAttackCooldown;
     }
@@ -174,43 +191,15 @@ public sealed class PlayerCombat : MonoBehaviour
         DealDamageFromHits(count, settings.groundAttackDamage);
     }
 
-    private void AirAttack(Vector3 mouseWorld)
+    private void AirAttack()
     {
         Vector3 p = transform.position;
+        Vector3 center = new Vector3(p.x, p.y, settings.planeZ);
 
-        int sign = mouseWorld.x >= p.x ? 1 : -1;
+        if (attackRangeIndicator != null) attackRangeIndicator.ShowAirCircle(center, settings.airAttackRadius);
 
-        if (attackRangeIndicator != null)
-            attackRangeIndicator.ShowAirSector(new Vector3(p.x, p.y, settings.planeZ), settings.airAttackRadius, settings.airAttackHalfAngleDeg, sign);
-
-        int count = Physics.OverlapSphereNonAlloc(new Vector3(p.x, p.y, settings.planeZ), settings.airAttackRadius, hitBuffer, settings.attackMask, QueryTriggerInteraction.Ignore);
-
-        hitSet.Clear();
-
-        Vector2 forward = new Vector2(sign, 0f);
-        float halfAngle = settings.airAttackHalfAngleDeg;
-
-        for (int i = 0; i < count; i++)
-        {
-            Collider c = hitBuffer[i];
-            if (c == null) continue;
-            if (c.transform.IsChildOf(transform)) continue;
-
-            Vector3 cp = c.bounds.center;
-            Vector2 v = new Vector2(cp.x - p.x, cp.y - p.y);
-
-            if (v.sqrMagnitude < 0.0001f) continue;
-            if (v.x * sign <= 0f) continue;
-
-            float ang = Vector2.Angle(forward, v);
-            if (ang > halfAngle) continue;
-
-            IDamageable d2 = c.GetComponentInParent<IDamageable>();
-            if (d2 == null) continue;
-
-            if (hitSet.Add(d2))
-                d2.ApplyDamage(new DamagePayload(settings.airAttackDamage, gameObject));
-        }
+        int count = Physics.OverlapSphereNonAlloc(center, settings.airAttackRadius, hitBuffer, settings.attackMask, QueryTriggerInteraction.Ignore);
+        DealDamageFromHits(count, settings.airAttackDamage);
     }
 
     private void DealDamageFromHits(int count, int amount)
@@ -265,8 +254,16 @@ public sealed class PlayerCombat : MonoBehaviour
         int sign = mouseWorld.x >= transform.position.x ? 1 : -1;
 
         stats.ConsumeAllDiceGauge();
+        stats.RollDiceForUltimate();
+
+        float lockDuration = equippedUltimate.GetLockDuration(Player.Instance, sign, mouseWorld);
+        if (lockDuration < 0f) lockDuration = 0f;
+
+        ultimateLockRemaining = lockDuration;
+        ultimateInvincibleApplied = true;
+        stats.SetInvincible(true);
+
         equippedUltimate.Execute(Player.Instance, sign, mouseWorld);
-        ultimateLockRemaining = equippedUltimate.LockDuration;
     }
 
     private bool TryGetMouseWorldOnPlane(out Vector3 world)

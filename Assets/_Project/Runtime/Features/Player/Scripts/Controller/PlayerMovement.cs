@@ -89,6 +89,18 @@ public sealed class PlayerMovement : MonoBehaviour
 
         if (dashCooldownRemaining > 0f) dashCooldownRemaining -= dt;
 
+        if (combat.IsUltimateActive)
+        {
+            body.linearVelocity = Vector3.zero;
+            pendingImpulse = Vector3.zero;
+            LockPlaneZ();
+
+            dashDown = false;
+            jumpDown = false;
+            jumpUp = false;
+            return;
+        }
+
         if (IsDashing)
         {
             TickDash(dt);

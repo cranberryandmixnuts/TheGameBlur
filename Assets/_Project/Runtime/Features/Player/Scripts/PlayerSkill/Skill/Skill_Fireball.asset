@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29c06ba5a3b9de741b7b20dc160fea72, type: 3}
+  m_Name: Skill_Fireball
+  m_EditorClassIdentifier: Assembly-CSharp::FireballPlayerSkill
+  icon: {fileID: 21300000, guid: 3cc12547cdbd3da4fa46e733c174aece, type: 3}
+  manaCost: 20
+  lockDuration: 0.2
+  cooldown: 1
+  projectilePrefab: {fileID: 2275904855793171323, guid: 7d21e3356ad94dd45835632953900131, type: 3}
+  speed: 12
+  maxDistance: 12
+  spawnOffset: 1
+  damage: 12
+  hitRadius: 0.35

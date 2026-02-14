@@ -10,5 +10,7 @@ public abstract class PlayerUltimate : ScriptableObject
     public float GaugeMax => gaugeMax;
     public float LockDuration => lockDuration;
 
+    public virtual float GetLockDuration(Player player, int directionSign, Vector3 mouseWorld) => lockDuration;
+
     public abstract void Execute(Player player, int directionSign, Vector3 mouseWorld);
 }

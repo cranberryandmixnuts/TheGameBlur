@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public sealed class PlayerUI : MonoBehaviour
 {
+    private const float UltimateGaugeMinY = -9f;
+    private const float UltimateGaugeMaxY = 0f;
+
     private enum DicePanelState
     {
         IdleLoop,
@@ -26,6 +29,9 @@ public sealed class PlayerUI : MonoBehaviour
     [Header("HP / MP")]
     [SerializeField] private Image hpFillImage;
     [SerializeField] private Image mpFillImage;
+
+    [Header("Ultimate Gauge (Move Y -9 ~ 0)")]
+    [SerializeField] private Transform ultimateGauge;
 
     [Header("Consumable (Potion)")]
     [SerializeField] private Image potionIconImage;
@@ -105,6 +111,7 @@ public sealed class PlayerUI : MonoBehaviour
         stats.BattleChanged += OnBattleChanged;
         stats.DiceRolled += OnDiceRolled;
         stats.DiceSettled += OnDiceSettled;
+        stats.DiceGaugeChanged += OnDiceGaugeChanged;
 
         ApplyBattleUi(stats.IsBattle, true);
         StartDicePanelLoop(stats.IsBattle);
@@ -116,6 +123,7 @@ public sealed class PlayerUI : MonoBehaviour
         RefreshPotionUi();
         RefreshHpMpUi();
         ApplyDiceSumText(stats.DiceValue);
+        ApplyUltimateGauge(stats.DiceGauge, stats.DiceGaugeMax);
     }
 
     private void OnDestroy()
@@ -123,6 +131,7 @@ public sealed class PlayerUI : MonoBehaviour
         stats.BattleChanged -= OnBattleChanged;
         stats.DiceRolled -= OnDiceRolled;
         stats.DiceSettled -= OnDiceSettled;
+        stats.DiceGaugeChanged -= OnDiceGaugeChanged;
 
         KillDiceTweens();
     }
@@ -143,6 +152,7 @@ public sealed class PlayerUI : MonoBehaviour
         {
             lastUltimate = nowUltimate;
             RebuildDiceModels(nowUltimate);
+            ApplyUltimateGauge(stats.DiceGauge, stats.DiceGaugeMax);
         }
     }
 
@@ -409,8 +419,7 @@ public sealed class PlayerUI : MonoBehaviour
         pendingDiceA = a;
         pendingDiceB = b;
 
-        if (lowerDiceModel == null || upperDiceModel == null)
-            return;
+        if (lowerDiceModel == null || upperDiceModel == null) return;
 
         KillDiceTweens();
 
@@ -439,8 +448,6 @@ public sealed class PlayerUI : MonoBehaviour
 
     private void StopLowerDiceToValue()
     {
-        if (lowerDiceModel == null) return;
-
         if (lowerSpinTween != null) lowerSpinTween.Kill();
 
         Quaternion target = GetDiceFaceRotation(pendingDiceA);
@@ -449,8 +456,6 @@ public sealed class PlayerUI : MonoBehaviour
 
     private void StopUpperDiceToValue()
     {
-        if (upperDiceModel == null) return;
-
         if (upperSpinTween != null) upperSpinTween.Kill();
 
         Quaternion target = GetDiceFaceRotation(pendingDiceB);
@@ -464,6 +469,20 @@ public sealed class PlayerUI : MonoBehaviour
     }
 
     private void ApplyDiceSumText(int sum) => diceSumValueText.text = sum.ToString();
+
+    private void OnDiceGaugeChanged(float current, float max) => ApplyUltimateGauge(current, max);
+
+    private void ApplyUltimateGauge(float current, float max)
+    {
+        if (ultimateGauge == null) return;
+
+        float ratio = 0f;
+        if (max > 0f) ratio = Mathf.Clamp01(current / max);
+
+        Vector3 p = ultimateGauge.localPosition;
+        p.y = Mathf.Lerp(UltimateGaugeMinY, UltimateGaugeMaxY, ratio);
+        ultimateGauge.localPosition = p;
+    }
 
     private void RebuildDiceModels(PlayerUltimate ultimate)
     {

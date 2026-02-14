@@ -17,10 +17,11 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
 
     public int DiceA => diceA;
     public int DiceB => diceB;
-    public int DiceValue => settledDiceA + settledDiceB;
 
     public int SettledDiceA => settledDiceA;
     public int SettledDiceB => settledDiceB;
+
+    public int DiceValue => settledDiceA + settledDiceB;
 
     public float DiceGauge => diceGauge;
     public float DiceGaugeMax => combat.UltimateGaugeMax;
@@ -57,11 +58,16 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
     private float diceSettleRemaining;
     private bool lastBattle;
 
+    private void Awake()
+    {
+        Player player = GetComponent<Player>();
+
+        settings = player.Settings;
+        combat = player.Combat;
+    }
+
     private void Start()
     {
-        settings = Player.Instance.Settings;
-        combat = Player.Instance.Combat;
-
         maxHp = settings.maxHp;
         hp = maxHp;
 
@@ -88,8 +94,6 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
 
         float dt = Time.deltaTime;
 
-        diceRollRemaining -= dt;
-
         if (diceSettleRemaining > 0f)
         {
             diceSettleRemaining -= dt;
@@ -97,9 +101,10 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
             return;
         }
 
+        diceRollRemaining -= dt;
         if (diceRollRemaining > 0f) return;
 
-        RollDice();
+        RollDiceInternal();
         AddDiceGauge(settings.diceGaugeGainPerRoll);
 
         diceRollRemaining = UnityEngine.Random.Range(settings.diceRollIntervalMin, settings.diceRollIntervalMax);
@@ -174,22 +179,29 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         DiceSettled?.Invoke(settledDiceA, settledDiceB);
     }
 
+    public void RollDiceForUltimate()
+    {
+        RollDiceInternal();
+        diceRollRemaining = UnityEngine.Random.Range(settings.diceRollIntervalMin, settings.diceRollIntervalMax);
+    }
+
     public void AddDiceGauge(float amount)
     {
-        float before = diceGauge;
-        diceGauge += amount;
-
         float max = DiceGaugeMax;
 
         if (max <= 0f)
         {
+            float before2 = diceGauge;
             diceGauge = 0f;
 
-            if (!Mathf.Approximately(before, diceGauge))
+            if (!Mathf.Approximately(before2, diceGauge))
                 DiceGaugeChanged?.Invoke(diceGauge, 0f);
 
             return;
         }
+
+        float before = diceGauge;
+        diceGauge += amount;
 
         if (diceGauge > max) diceGauge = max;
         if (diceGauge < 0f) diceGauge = 0f;
@@ -221,7 +233,7 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         diceSettleRemaining = 0f;
     }
 
-    private void RollDice()
+    private void RollDiceInternal()
     {
         diceA = UnityEngine.Random.Range(1, 7);
         diceB = UnityEngine.Random.Range(1, 7);
@@ -231,16 +243,23 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
 
         DiceRolled?.Invoke(diceA, diceB);
 
-        float delay = settings.uiDiceLowerStopDelay + settings.uiDiceUpperStopExtraDelay + settings.uiDiceStopTweenTime;
-        if (delay < 0f) delay = 0f;
+        diceSettleRemaining = GetDiceSettleDelay();
+    }
 
-        diceSettleRemaining = delay;
+    private float GetDiceSettleDelay()
+    {
+        float d = settings.uiDiceLowerStopDelay + settings.uiDiceUpperStopExtraDelay + settings.uiDiceStopTweenTime;
+        if (d < 0f) d = 0f;
+        return d;
     }
 
     private void ApplySettledDice()
     {
+        diceSettleRemaining = 0f;
+
         settledDiceA = pendingSettledDiceA;
         settledDiceB = pendingSettledDiceB;
+
         DiceSettled?.Invoke(settledDiceA, settledDiceB);
     }
 }
