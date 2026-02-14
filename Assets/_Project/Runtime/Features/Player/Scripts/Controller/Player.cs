@@ -52,6 +52,8 @@ public sealed class Player : Singleton<Player, SceneScope>
         stats = GetComponent<PlayerStats>();
     }
 
+    private void Update() => stats.SetBattle(!IsSitting);
+
     public void Sit(ElectricChair chair, Vector3 seatWorldPosition)
     {
         if (IsSitting) return;

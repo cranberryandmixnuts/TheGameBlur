@@ -384,7 +384,7 @@ public sealed class PlayerMovement : MonoBehaviour
         float targetSpeed = settings.baseMoveSpeed;
         if (runHeld) targetSpeed *= settings.runSpeedMultiplier;
 
-        if (!runHeld && moveSign != 0 && moveSign != FacingSign)
+        if (IsGrounded && !runHeld && moveSign != 0 && moveSign != FacingSign)
             targetSpeed *= settings.backwardMoveSpeedMultiplier;
 
         float current = body.linearVelocity.x;
