@@ -3,7 +3,11 @@ using UnityEngine;
 
 public sealed class PlayerCombat : MonoBehaviour
 {
+    [SerializeField] private PlayerAttackRangeIndicator attackRangeIndicator;
+
     public bool IsSkillOrUltimateActive => skillLockRemaining > 0f || ultimateLockRemaining > 0f;
+    public bool IsUltimateActive => ultimateLockRemaining > 0f;
+
     public PlayerSkill EquippedSkill => equippedSkill;
     public PlayerUltimate EquippedUltimate => equippedUltimate;
 
@@ -12,7 +16,7 @@ public sealed class PlayerCombat : MonoBehaviour
         get
         {
             if (equippedUltimate != null) return equippedUltimate.GaugeMax;
-            return settings.DefaultUltimateGaugeMax;
+            return settings.defaultUltimateGaugeMax;
         }
     }
 
@@ -31,6 +35,11 @@ public sealed class PlayerCombat : MonoBehaviour
     private readonly Collider[] hitBuffer = new Collider[48];
     private readonly HashSet<IDamageable> hitSet = new HashSet<IDamageable>();
 
+    private void Reset()
+    {
+        attackRangeIndicator = GetComponent<PlayerAttackRangeIndicator>();
+    }
+
     private void Start()
     {
         Player player = Player.Instance;
@@ -40,8 +49,10 @@ public sealed class PlayerCombat : MonoBehaviour
         movement = player.Movement;
         input = player.Input;
 
-        equippedSkill = settings.StartingSkill;
-        equippedUltimate = settings.StartingUltimate;
+        if (attackRangeIndicator == null) attackRangeIndicator = GetComponent<PlayerAttackRangeIndicator>();
+
+        equippedSkill = settings.startingSkill;
+        equippedUltimate = settings.startingUltimate;
     }
 
     private void Update()
@@ -59,10 +70,7 @@ public sealed class PlayerCombat : MonoBehaviour
         if (input.DiceSkillDown) TryUseUltimate();
     }
 
-    public void CancelForDash()
-    {
-        basicAttackCooldownRemaining = 0f;
-    }
+    public void CancelForDash() => basicAttackCooldownRemaining = 0f;
 
     public void EquipSkill(PlayerSkill skill)
     {
@@ -90,8 +98,7 @@ public sealed class PlayerCombat : MonoBehaviour
         if (movement.IsGrounded) GroundAttack(mouseWorld);
         else AirAttack(mouseWorld);
 
-        basicAttackCooldownRemaining = settings.BasicAttackCooldown;
-        stats.NotifyCombatActivity();
+        basicAttackCooldownRemaining = settings.basicAttackCooldown;
     }
 
     private void GroundAttack(Vector3 mouseWorld)
@@ -102,10 +109,13 @@ public sealed class PlayerCombat : MonoBehaviour
         if (d.sqrMagnitude < 0.0001f) d = new Vector2(movement.FacingSign, 0f);
         d.Normalize();
 
-        Vector3 center = new Vector3(p.x + d.x * settings.GroundAttackReach, p.y + d.y * settings.GroundAttackReach, settings.PlaneZ);
+        Vector3 center = new Vector3(p.x + d.x * settings.groundAttackReach, p.y + d.y * settings.groundAttackReach, settings.planeZ);
 
-        int count = Physics.OverlapSphereNonAlloc(center, settings.GroundAttackRadius, hitBuffer, settings.AttackMask, QueryTriggerInteraction.Ignore);
-        DealDamageFromHits(count, settings.GroundAttackDamage);
+        if (attackRangeIndicator != null)
+            attackRangeIndicator.ShowGroundCircle(center, settings.groundAttackRadius);
+
+        int count = Physics.OverlapSphereNonAlloc(center, settings.groundAttackRadius, hitBuffer, settings.attackMask, QueryTriggerInteraction.Ignore);
+        DealDamageFromHits(count, settings.groundAttackDamage);
     }
 
     private void AirAttack(Vector3 mouseWorld)
@@ -114,12 +124,15 @@ public sealed class PlayerCombat : MonoBehaviour
 
         int sign = mouseWorld.x >= p.x ? 1 : -1;
 
-        int count = Physics.OverlapSphereNonAlloc(new Vector3(p.x, p.y, settings.PlaneZ), settings.AirAttackRadius, hitBuffer, settings.AttackMask, QueryTriggerInteraction.Ignore);
+        if (attackRangeIndicator != null)
+            attackRangeIndicator.ShowAirSector(new Vector3(p.x, p.y, settings.planeZ), settings.airAttackRadius, settings.airAttackHalfAngleDeg, sign);
+
+        int count = Physics.OverlapSphereNonAlloc(new Vector3(p.x, p.y, settings.planeZ), settings.airAttackRadius, hitBuffer, settings.attackMask, QueryTriggerInteraction.Ignore);
 
         hitSet.Clear();
 
         Vector2 forward = new Vector2(sign, 0f);
-        float halfAngle = settings.AirAttackHalfAngleDeg;
+        float halfAngle = settings.airAttackHalfAngleDeg;
 
         for (int i = 0; i < count; i++)
         {
@@ -140,7 +153,7 @@ public sealed class PlayerCombat : MonoBehaviour
             if (d == null) continue;
 
             if (hitSet.Add(d))
-                d.ApplyDamage(new DamagePayload(settings.AirAttackDamage, gameObject));
+                d.ApplyDamage(new DamagePayload(settings.airAttackDamage, gameObject));
         }
     }
 
@@ -177,8 +190,6 @@ public sealed class PlayerCombat : MonoBehaviour
 
         equippedSkill.Execute(Player.Instance, sign, mouseWorld);
         skillLockRemaining = equippedSkill.LockDuration;
-
-        stats.NotifyCombatActivity();
     }
 
     private void TryUseUltimate()
@@ -199,13 +210,11 @@ public sealed class PlayerCombat : MonoBehaviour
         stats.ConsumeAllDiceGauge();
         equippedUltimate.Execute(Player.Instance, sign, mouseWorld);
         ultimateLockRemaining = equippedUltimate.LockDuration;
-
-        stats.NotifyCombatActivity();
     }
 
     private bool IsSkillUnlocked(PlayerSkill skill)
     {
-        PlayerSkill[] list = settings.UnlockedSkills;
+        PlayerSkill[] list = settings.unlockedSkills;
         for (int i = 0; i < list.Length; i++)
             if (list[i] == skill) return true;
 
@@ -214,7 +223,7 @@ public sealed class PlayerCombat : MonoBehaviour
 
     private bool IsUltimateUnlocked(PlayerUltimate ultimate)
     {
-        PlayerUltimate[] list = settings.UnlockedUltimates;
+        PlayerUltimate[] list = settings.unlockedUltimates;
         for (int i = 0; i < list.Length; i++)
             if (list[i] == ultimate) return true;
 
@@ -226,7 +235,7 @@ public sealed class PlayerCombat : MonoBehaviour
         Camera cam = Camera.main;
 
         Ray ray = cam.ScreenPointToRay(UnityEngine.Input.mousePosition);
-        Plane plane = new Plane(Vector3.forward, new Vector3(0f, 0f, settings.PlaneZ));
+        Plane plane = new Plane(Vector3.forward, new Vector3(0f, 0f, settings.planeZ));
 
         float enter;
         if (!plane.Raycast(ray, out enter))

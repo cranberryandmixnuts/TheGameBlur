@@ -1,6 +1,9 @@
 using UnityEngine;
 
 [DefaultExecutionOrder(-29900)]
+[RequireComponent(typeof(PlayerMovement))]
+[RequireComponent(typeof(PlayerCombat))]
+[RequireComponent(typeof(PlayerStats))]
 public sealed class Player : Singleton<Player, SceneScope>
 {
     [Header("Settings")]

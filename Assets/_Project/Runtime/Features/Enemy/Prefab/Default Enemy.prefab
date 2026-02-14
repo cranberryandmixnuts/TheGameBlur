@@ -845,7 +845,7 @@ GameObject:
   - component: {fileID: 4508202383446449589}
   - component: {fileID: 773161299504954540}
   - component: {fileID: 4606927101237902647}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Default Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -955,6 +955,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyScript
   data: {fileID: 11400000, guid: d080f609735419441a7df0e61e793bb7, type: 2}
   vision: {fileID: 773161299504954540}
+  enableNormalAI: 1
   combat: {fileID: 4606927101237902647}
   attackRangeX: 1.2
   attackStateName: Attack
