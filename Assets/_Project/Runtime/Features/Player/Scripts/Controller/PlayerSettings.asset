@@ -70,11 +70,37 @@ MonoBehaviour:
   airAttackDamage: 10
   airAttackRadius: 2.2
   airAttackHalfAngleDeg: 75
+  showAttackRangeOnAttack: 1
+  attackRangeVisualDuration: 0.06
+  attackRangeLineWidth: 0.03
+  attackRangeSegments: 32
   diceRollIntervalMin: 7
   diceRollIntervalMax: 10
   diceGaugeGainPerRoll: 30
   defaultUltimateGaugeMax: 100
-  startingSkill: {fileID: 0}
-  startingUltimate: {fileID: 0}
-  unlockedSkills: []
-  unlockedUltimates: []
+  startingSkill: {fileID: 11400000, guid: 477314aec5e87c6449a7cd3e239a79bf, type: 2}
+  startingUltimate: {fileID: 11400000, guid: 1b0105a21bc733e42b43ac97b6032b9e, type: 2}
+  skills:
+  - skill: {fileID: 11400000, guid: 477314aec5e87c6449a7cd3e239a79bf, type: 2}
+    unlocked: 1
+  ultimates:
+  - ultimate: {fileID: 11400000, guid: 1b0105a21bc733e42b43ac97b6032b9e, type: 2}
+    unlocked: 1
+  uiDiceFrameTime: 0.1
+  uiDiceSpinLoopDuration: 0.08
+  uiDiceLowerStopDelay: 0.6
+  uiDiceUpperStopExtraDelay: 0.5
+  uiDiceStopTweenTime: 0.08
+  uiDiceFaceForwardEuler:
+  - {x: -90, y: 0, z: 0}
+  - {x: -90, y: 90, z: 0}
+  - {x: 180, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: -90, z: 0}
+  - {x: 90, y: 0, z: 0}
+  uiPotionMaxUses: 3
+  uiPotionStartUses: 3
+  uiHpPotionHealAmount: 30
+  uiMpPotionHealAmount: 30
+  uiPotionHoldTime: 0.35
+  uiSkillGreyColor: {r: 0.35, g: 0.35, b: 0.35, a: 1}
