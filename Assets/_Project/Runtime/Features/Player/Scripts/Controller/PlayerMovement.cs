@@ -3,6 +3,7 @@ using UnityEngine;
 public sealed class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private Transform visualRoot;
+    [SerializeField] private PlayerGroundSensor groundSensor;
 
     public bool IsGrounded { get; private set; }
     public bool IsDashing => dashRemaining > 0f;
@@ -51,6 +52,10 @@ public sealed class PlayerMovement : MonoBehaviour
         combat = player.Combat;
         input = player.Input;
 
+        groundSensor.Initialize(settings.groundMask, player.transform);
+
+        body.useGravity = false;
+
         body.constraints |= RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
         body.constraints |= RigidbodyConstraints.FreezePositionZ;
     }
@@ -60,8 +65,8 @@ public sealed class PlayerMovement : MonoBehaviour
         float axis = input.MoveAxis;
 
         moveSign = 0;
-        if (axis > settings.MoveDeadZone) moveSign = 1;
-        else if (axis < -settings.MoveDeadZone) moveSign = -1;
+        if (axis > settings.moveDeadZone) moveSign = 1;
+        else if (axis < -settings.moveDeadZone) moveSign = -1;
 
         if (moveSign != 0) LastMoveSign = moveSign;
 
@@ -80,7 +85,7 @@ public sealed class PlayerMovement : MonoBehaviour
     {
         float dt = Time.fixedDeltaTime;
 
-        UpdateGrounded(dt);
+        UpdateGrounded();
 
         if (dashCooldownRemaining > 0f) dashCooldownRemaining -= dt;
 
@@ -136,8 +141,8 @@ public sealed class PlayerMovement : MonoBehaviour
 
         dashSign = sign;
 
-        dashRemaining = settings.DashDuration;
-        dashCooldownRemaining = settings.DashCooldown;
+        dashRemaining = settings.dashDuration;
+        dashCooldownRemaining = settings.dashCooldown;
 
         isAirDash = !grounded;
 
@@ -146,7 +151,10 @@ public sealed class PlayerMovement : MonoBehaviour
             hasUsedAirDash = true;
             dashPrevConstraints = body.constraints;
             body.constraints |= RigidbodyConstraints.FreezePositionY;
-            body.useGravity = false;
+
+            Vector3 v0 = body.linearVelocity;
+            v0.y = 0f;
+            body.linearVelocity = v0;
         }
 
         jumpHoldActive = false;
@@ -156,7 +164,7 @@ public sealed class PlayerMovement : MonoBehaviour
         combat.CancelForDash();
         stats.SetInvincible(true);
 
-        float dashSpeed = settings.DashDuration > 0f ? settings.DashDistance / settings.DashDuration : 0f;
+        float dashSpeed = settings.dashDuration > 0f ? settings.dashDistance / settings.dashDuration : 0f;
 
         Vector3 v = body.linearVelocity;
         v.x = dashSpeed * dashSign;
@@ -174,7 +182,7 @@ public sealed class PlayerMovement : MonoBehaviour
     {
         dashRemaining -= dt;
 
-        float dashSpeed = settings.DashDuration > 0f ? settings.DashDistance / settings.DashDuration : 0f;
+        float dashSpeed = settings.dashDuration > 0f ? settings.dashDistance / settings.dashDuration : 0f;
 
         Vector3 v = body.linearVelocity;
         v.x = dashSpeed * dashSign;
@@ -189,7 +197,6 @@ public sealed class PlayerMovement : MonoBehaviour
 
         if (isAirDash)
         {
-            body.useGravity = true;
             body.constraints = dashPrevConstraints;
 
             Vector3 endV = body.linearVelocity;
@@ -206,7 +213,7 @@ public sealed class PlayerMovement : MonoBehaviour
     {
         if (IsGrounded)
         {
-            coyoteRemaining = settings.CoyoteTime;
+            coyoteRemaining = settings.coyoteTime;
             if (hasUsedAirDash) hasUsedAirDash = false;
         }
         else
@@ -230,44 +237,55 @@ public sealed class PlayerMovement : MonoBehaviour
             }
         }
 
-        if (jumpUp) jumpHoldActive = false;
+        if (jumpUp)
+        {
+            jumpHoldActive = false;
+            CutJumpRise();
+        }
 
         if (!jumpHoldActive) return;
 
         if (!jumpHeld)
         {
             jumpHoldActive = false;
+            CutJumpRise();
             return;
         }
 
-        if (jumpHoldElapsed >= settings.MaxJumpHoldTime)
+        if (jumpHoldElapsed >= settings.maxJumpHoldTime)
         {
             jumpHoldActive = false;
             return;
         }
 
-        float t = settings.MaxJumpHoldTime > 0f ? jumpHoldElapsed / settings.MaxJumpHoldTime : 1f;
-        float s = settings.JumpForceCurve != null ? settings.JumpForceCurve.Evaluate(t) : 1f;
+        float t = settings.maxJumpHoldTime > 0f ? jumpHoldElapsed / settings.maxJumpHoldTime : 1f;
+        float s = settings.jumpForceCurve != null ? settings.jumpForceCurve.Evaluate(t) : 1f;
 
         Vector3 v2 = body.linearVelocity;
-        v2.y += s * settings.MaxJumpForce * dt;
+        v2.y += s * settings.maxJumpForce * dt;
         body.linearVelocity = v2;
 
         jumpHoldElapsed += dt;
     }
 
+    private void CutJumpRise()
+    {
+        Vector3 v = body.linearVelocity;
+        if (v.y > 0f) v.y = 0f;
+        body.linearVelocity = v;
+    }
+
     private float ComputeHorizontalVelocity(float dt)
     {
-        float targetSpeed = settings.BaseMoveSpeed;
-        if (runHeld) targetSpeed *= settings.RunSpeedMultiplier;
+        float targetSpeed = settings.baseMoveSpeed;
+        if (runHeld) targetSpeed *= settings.runSpeedMultiplier;
 
         if (!runHeld && moveSign != 0 && moveSign != FacingSign)
-            targetSpeed *= settings.BackwardMoveSpeedMultiplier;
+            targetSpeed *= settings.backwardMoveSpeedMultiplier;
 
         float current = body.linearVelocity.x;
 
-        if (IsGrounded)
-            return ComputeGroundVx(dt, targetSpeed);
+        if (IsGrounded) return ComputeGroundVx(dt, targetSpeed);
 
         return ComputeAirVx(dt, targetSpeed, current);
     }
@@ -289,8 +307,8 @@ public sealed class PlayerMovement : MonoBehaviour
 
         groundAccelElapsed += dt;
 
-        float t = settings.GroundAccelTimeToMax > 0f ? Mathf.Clamp01(groundAccelElapsed / settings.GroundAccelTimeToMax) : 1f;
-        float mul = Mathf.Lerp(settings.GroundStartSpeedMultiplier, 1f, t);
+        float t = settings.groundAccelTimeToMax > 0f ? Mathf.Clamp01(groundAccelElapsed / settings.groundAccelTimeToMax) : 1f;
+        float mul = Mathf.Lerp(settings.groundStartSpeedMultiplier, 1f, t);
 
         return moveSign * targetSpeed * mul;
     }
@@ -302,12 +320,12 @@ public sealed class PlayerMovement : MonoBehaviour
 
         if (moveSign != 0)
         {
-            float accelTime = settings.AirAccelTimeToMax > 0f ? settings.AirAccelTimeToMax : dt;
+            float accelTime = settings.airAccelTimeToMax > 0f ? settings.airAccelTimeToMax : dt;
             float accel = targetSpeed / accelTime;
             return Mathf.MoveTowards(currentVx, moveSign * targetSpeed, accel * dt);
         }
 
-        return Mathf.MoveTowards(currentVx, 0f, settings.AirDecel * dt);
+        return Mathf.MoveTowards(currentVx, 0f, settings.airDecel * dt);
     }
 
     private float ComputeVerticalVelocity(float dt)
@@ -316,58 +334,19 @@ public sealed class PlayerMovement : MonoBehaviour
 
         float vy = body.linearVelocity.y;
 
-        vy += settings.Gravity * dt;
+        vy += settings.gravity * dt;
 
-        float maxFall = -Mathf.Abs(settings.MaxFallSpeed);
+        float maxFall = -Mathf.Abs(settings.maxFallSpeed);
         if (vy < maxFall) vy = maxFall;
 
         return vy;
     }
 
-    private void UpdateGrounded(float dt)
+    private void UpdateGrounded()
     {
-        bool grounded = false;
-
-        if (body.linearVelocity.y <= settings.GroundedMinUpVelocity)
-        {
-            RaycastHit hit;
-            grounded = CheckGround(out hit);
-        }
-
+        bool touching = groundSensor.IsTouchingGround;
+        bool grounded = touching && body.linearVelocity.y <= settings.groundedMinUpVelocity;
         IsGrounded = grounded;
-    }
-
-    private bool CheckGround(out RaycastHit hit)
-    {
-        if (bodyCollider is CapsuleCollider capsule)
-        {
-            Transform t = bodyCollider.transform;
-
-            Vector3 center = t.TransformPoint(capsule.center);
-
-            float scaleX = t.lossyScale.x;
-            float scaleY = t.lossyScale.y;
-            float scaleZ = t.lossyScale.z;
-
-            float radius = capsule.radius * Mathf.Max(scaleX, scaleZ);
-            float height = Mathf.Max(capsule.height * scaleY, radius * 2f);
-
-            Vector3 up = t.up;
-
-            float half = height * 0.5f - radius;
-            Vector3 p1 = center + up * half;
-            Vector3 p2 = center - up * half;
-
-            return Physics.CapsuleCast(p1, p2, radius, -up, out hit, settings.GroundCheckDistance, settings.GroundMask, QueryTriggerInteraction.Ignore);
-        }
-
-        Bounds b = bodyCollider.bounds;
-        float r = Mathf.Min(b.extents.x, b.extents.z);
-
-        Vector3 origin = b.center;
-        float dist = b.extents.y + settings.GroundCheckDistance;
-
-        return Physics.SphereCast(origin, r, Vector3.down, out hit, dist, settings.GroundMask, QueryTriggerInteraction.Ignore);
     }
 
     private void UpdateFacing()
@@ -380,8 +359,8 @@ public sealed class PlayerMovement : MonoBehaviour
             {
                 float dx = p.x - body.position.x;
 
-                if (dx > settings.MouseFacingDeadZone) desired = 1;
-                else if (dx < -settings.MouseFacingDeadZone) desired = -1;
+                if (dx > settings.mouseFacingDeadZone) desired = 1;
+                else if (dx < -settings.mouseFacingDeadZone) desired = -1;
             }
         }
         else
@@ -400,7 +379,7 @@ public sealed class PlayerMovement : MonoBehaviour
         Camera cam = Camera.main;
 
         Ray ray = cam.ScreenPointToRay(UnityEngine.Input.mousePosition);
-        Plane plane = new Plane(Vector3.forward, new Vector3(0f, 0f, settings.PlaneZ));
+        Plane plane = new Plane(Vector3.forward, new Vector3(0f, 0f, settings.planeZ));
 
         float enter;
         if (!plane.Raycast(ray, out enter))
@@ -437,9 +416,9 @@ public sealed class PlayerMovement : MonoBehaviour
     private void LockPlaneZ()
     {
         Vector3 p = body.position;
-        if (Mathf.Approximately(p.z, settings.PlaneZ)) return;
+        if (Mathf.Approximately(p.z, settings.planeZ)) return;
 
-        p.z = settings.PlaneZ;
+        p.z = settings.planeZ;
         body.position = p;
     }
 }

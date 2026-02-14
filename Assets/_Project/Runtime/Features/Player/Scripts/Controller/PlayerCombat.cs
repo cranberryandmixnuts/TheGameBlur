@@ -3,7 +3,17 @@ using UnityEngine;
 
 public sealed class PlayerCombat : MonoBehaviour
 {
+    [SerializeField] private PlayerAttackRangeIndicator attackRangeIndicator;
+
     public bool IsSkillOrUltimateActive => skillLockRemaining > 0f || ultimateLockRemaining > 0f;
+    public bool IsUltimateActive => ultimateLockRemaining > 0f;
+
+    public float SkillLockRemaining => skillLockRemaining;
+    public float SkillLockDuration => equippedSkill != null ? equippedSkill.LockDuration : 0f;
+
+    public float SkillCooldownRemaining => skillCooldownRemaining;
+    public float SkillCooldownDuration => equippedSkill != null ? equippedSkill.Cooldown : 0f;
+
     public PlayerSkill EquippedSkill => equippedSkill;
     public PlayerUltimate EquippedUltimate => equippedUltimate;
 
@@ -12,7 +22,7 @@ public sealed class PlayerCombat : MonoBehaviour
         get
         {
             if (equippedUltimate != null) return equippedUltimate.GaugeMax;
-            return settings.DefaultUltimateGaugeMax;
+            return settings.defaultUltimateGaugeMax;
         }
     }
 
@@ -27,9 +37,15 @@ public sealed class PlayerCombat : MonoBehaviour
     private float basicAttackCooldownRemaining;
     private float skillLockRemaining;
     private float ultimateLockRemaining;
+    private float skillCooldownRemaining;
 
     private readonly Collider[] hitBuffer = new Collider[48];
     private readonly HashSet<IDamageable> hitSet = new HashSet<IDamageable>();
+
+    private readonly HashSet<PlayerSkill> unlockedSkills = new HashSet<PlayerSkill>();
+    private readonly HashSet<PlayerUltimate> unlockedUltimates = new HashSet<PlayerUltimate>();
+
+    private void Reset() => attackRangeIndicator = GetComponent<PlayerAttackRangeIndicator>();
 
     private void Start()
     {
@@ -40,8 +56,15 @@ public sealed class PlayerCombat : MonoBehaviour
         movement = player.Movement;
         input = player.Input;
 
-        equippedSkill = settings.StartingSkill;
-        equippedUltimate = settings.StartingUltimate;
+        if (attackRangeIndicator == null) attackRangeIndicator = GetComponent<PlayerAttackRangeIndicator>();
+
+        RebuildUnlockCache();
+
+        equippedSkill = settings.startingSkill;
+        equippedUltimate = settings.startingUltimate;
+
+        if (equippedSkill != null) unlockedSkills.Add(equippedSkill);
+        if (equippedUltimate != null) unlockedUltimates.Add(equippedUltimate);
     }
 
     private void Update()
@@ -51,6 +74,7 @@ public sealed class PlayerCombat : MonoBehaviour
         if (basicAttackCooldownRemaining > 0f) basicAttackCooldownRemaining -= dt;
         if (skillLockRemaining > 0f) skillLockRemaining -= dt;
         if (ultimateLockRemaining > 0f) ultimateLockRemaining -= dt;
+        if (skillCooldownRemaining > 0f) skillCooldownRemaining -= dt;
 
         if (movement.IsDashing) return;
 
@@ -59,25 +83,66 @@ public sealed class PlayerCombat : MonoBehaviour
         if (input.DiceSkillDown) TryUseUltimate();
     }
 
-    public void CancelForDash()
+    public void RebuildUnlockCache()
     {
-        basicAttackCooldownRemaining = 0f;
+        unlockedSkills.Clear();
+        unlockedUltimates.Clear();
+
+        PlayerSettings.SkillUnlockEntry[] s = settings.skills;
+        for (int i = 0; i < s.Length; i++)
+        {
+            if (!s[i].unlocked) continue;
+            if (s[i].skill == null) continue;
+            unlockedSkills.Add(s[i].skill);
+        }
+
+        PlayerSettings.UltimateUnlockEntry[] u = settings.ultimates;
+        for (int i = 0; i < u.Length; i++)
+        {
+            if (!u[i].unlocked) continue;
+            if (u[i].ultimate == null) continue;
+            unlockedUltimates.Add(u[i].ultimate);
+        }
+    }
+
+    public bool IsSkillUnlocked(PlayerSkill skill) => skill != null && unlockedSkills.Contains(skill);
+    public bool IsUltimateUnlocked(PlayerUltimate ultimate) => ultimate != null && unlockedUltimates.Contains(ultimate);
+
+    public void SetSkillUnlocked(PlayerSkill skill, bool unlocked)
+    {
+        if (skill == null) return;
+
+        if (unlocked) unlockedSkills.Add(skill);
+        else unlockedSkills.Remove(skill);
+    }
+
+    public void SetUltimateUnlocked(PlayerUltimate ultimate, bool unlocked)
+    {
+        if (ultimate == null) return;
+
+        if (unlocked) unlockedUltimates.Add(ultimate);
+        else unlockedUltimates.Remove(ultimate);
     }
 
     public void EquipSkill(PlayerSkill skill)
     {
         if (skill != null && !IsSkillUnlocked(skill)) return;
+
         equippedSkill = skill;
+        skillCooldownRemaining = 0f;
     }
 
     public void EquipUltimate(PlayerUltimate ultimate)
     {
         if (ultimate != null && !IsUltimateUnlocked(ultimate)) return;
+
         equippedUltimate = ultimate;
 
         float max = UltimateGaugeMax;
         if (stats.DiceGauge > max) stats.AddDiceGauge(max - stats.DiceGauge);
     }
+
+    public void CancelForDash() => basicAttackCooldownRemaining = 0f;
 
     private void TryBasicAttack()
     {
@@ -90,8 +155,7 @@ public sealed class PlayerCombat : MonoBehaviour
         if (movement.IsGrounded) GroundAttack(mouseWorld);
         else AirAttack(mouseWorld);
 
-        basicAttackCooldownRemaining = settings.BasicAttackCooldown;
-        stats.NotifyCombatActivity();
+        basicAttackCooldownRemaining = settings.basicAttackCooldown;
     }
 
     private void GroundAttack(Vector3 mouseWorld)
@@ -102,10 +166,12 @@ public sealed class PlayerCombat : MonoBehaviour
         if (d.sqrMagnitude < 0.0001f) d = new Vector2(movement.FacingSign, 0f);
         d.Normalize();
 
-        Vector3 center = new Vector3(p.x + d.x * settings.GroundAttackReach, p.y + d.y * settings.GroundAttackReach, settings.PlaneZ);
+        Vector3 center = new Vector3(p.x + d.x * settings.groundAttackReach, p.y + d.y * settings.groundAttackReach, settings.planeZ);
 
-        int count = Physics.OverlapSphereNonAlloc(center, settings.GroundAttackRadius, hitBuffer, settings.AttackMask, QueryTriggerInteraction.Ignore);
-        DealDamageFromHits(count, settings.GroundAttackDamage);
+        if (attackRangeIndicator != null) attackRangeIndicator.ShowGroundCircle(center, settings.groundAttackRadius);
+
+        int count = Physics.OverlapSphereNonAlloc(center, settings.groundAttackRadius, hitBuffer, settings.attackMask, QueryTriggerInteraction.Ignore);
+        DealDamageFromHits(count, settings.groundAttackDamage);
     }
 
     private void AirAttack(Vector3 mouseWorld)
@@ -114,12 +180,15 @@ public sealed class PlayerCombat : MonoBehaviour
 
         int sign = mouseWorld.x >= p.x ? 1 : -1;
 
-        int count = Physics.OverlapSphereNonAlloc(new Vector3(p.x, p.y, settings.PlaneZ), settings.AirAttackRadius, hitBuffer, settings.AttackMask, QueryTriggerInteraction.Ignore);
+        if (attackRangeIndicator != null)
+            attackRangeIndicator.ShowAirSector(new Vector3(p.x, p.y, settings.planeZ), settings.airAttackRadius, settings.airAttackHalfAngleDeg, sign);
+
+        int count = Physics.OverlapSphereNonAlloc(new Vector3(p.x, p.y, settings.planeZ), settings.airAttackRadius, hitBuffer, settings.attackMask, QueryTriggerInteraction.Ignore);
 
         hitSet.Clear();
 
         Vector2 forward = new Vector2(sign, 0f);
-        float halfAngle = settings.AirAttackHalfAngleDeg;
+        float halfAngle = settings.airAttackHalfAngleDeg;
 
         for (int i = 0; i < count; i++)
         {
@@ -136,11 +205,11 @@ public sealed class PlayerCombat : MonoBehaviour
             float ang = Vector2.Angle(forward, v);
             if (ang > halfAngle) continue;
 
-            IDamageable d = c.GetComponentInParent<IDamageable>();
-            if (d == null) continue;
+            IDamageable d2 = c.GetComponentInParent<IDamageable>();
+            if (d2 == null) continue;
 
-            if (hitSet.Add(d))
-                d.ApplyDamage(new DamagePayload(settings.AirAttackDamage, gameObject));
+            if (hitSet.Add(d2))
+                d2.ApplyDamage(new DamagePayload(settings.airAttackDamage, gameObject));
         }
     }
 
@@ -154,11 +223,11 @@ public sealed class PlayerCombat : MonoBehaviour
             if (c == null) continue;
             if (c.transform.IsChildOf(transform)) continue;
 
-            IDamageable d = c.GetComponentInParent<IDamageable>();
-            if (d == null) continue;
+            IDamageable d2 = c.GetComponentInParent<IDamageable>();
+            if (d2 == null) continue;
 
-            if (hitSet.Add(d))
-                d.ApplyDamage(new DamagePayload(amount, gameObject));
+            if (hitSet.Add(d2))
+                d2.ApplyDamage(new DamagePayload(amount, gameObject));
         }
     }
 
@@ -166,7 +235,7 @@ public sealed class PlayerCombat : MonoBehaviour
     {
         if (IsSkillOrUltimateActive) return;
         if (equippedSkill == null) return;
-        if (!IsSkillUnlocked(equippedSkill)) return;
+        if (skillCooldownRemaining > 0f) return;
 
         if (!TryGetMouseWorldOnPlane(out Vector3 mouseWorld))
             mouseWorld = transform.position + Vector3.right * movement.FacingSign;
@@ -176,16 +245,15 @@ public sealed class PlayerCombat : MonoBehaviour
         if (!stats.TrySpendMana(equippedSkill.ManaCost)) return;
 
         equippedSkill.Execute(Player.Instance, sign, mouseWorld);
-        skillLockRemaining = equippedSkill.LockDuration;
 
-        stats.NotifyCombatActivity();
+        skillLockRemaining = equippedSkill.LockDuration;
+        skillCooldownRemaining = equippedSkill.Cooldown;
     }
 
     private void TryUseUltimate()
     {
         if (IsSkillOrUltimateActive) return;
         if (equippedUltimate == null) return;
-        if (!IsUltimateUnlocked(equippedUltimate)) return;
 
         float max = UltimateGaugeMax;
         if (max <= 0f) return;
@@ -199,26 +267,6 @@ public sealed class PlayerCombat : MonoBehaviour
         stats.ConsumeAllDiceGauge();
         equippedUltimate.Execute(Player.Instance, sign, mouseWorld);
         ultimateLockRemaining = equippedUltimate.LockDuration;
-
-        stats.NotifyCombatActivity();
-    }
-
-    private bool IsSkillUnlocked(PlayerSkill skill)
-    {
-        PlayerSkill[] list = settings.UnlockedSkills;
-        for (int i = 0; i < list.Length; i++)
-            if (list[i] == skill) return true;
-
-        return false;
-    }
-
-    private bool IsUltimateUnlocked(PlayerUltimate ultimate)
-    {
-        PlayerUltimate[] list = settings.UnlockedUltimates;
-        for (int i = 0; i < list.Length; i++)
-            if (list[i] == ultimate) return true;
-
-        return false;
     }
 
     private bool TryGetMouseWorldOnPlane(out Vector3 world)
@@ -226,10 +274,9 @@ public sealed class PlayerCombat : MonoBehaviour
         Camera cam = Camera.main;
 
         Ray ray = cam.ScreenPointToRay(UnityEngine.Input.mousePosition);
-        Plane plane = new Plane(Vector3.forward, new Vector3(0f, 0f, settings.PlaneZ));
+        Plane plane = new Plane(Vector3.forward, new Vector3(0f, 0f, settings.planeZ));
 
-        float enter;
-        if (!plane.Raycast(ray, out enter))
+        if (!plane.Raycast(ray, out float enter))
         {
             world = default;
             return false;

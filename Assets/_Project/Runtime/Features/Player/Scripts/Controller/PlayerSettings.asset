@@ -1,0 +1,106 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6abb639d3c9adb048aecbec7504d6522, type: 3}
+  m_Name: PlayerSettings
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSettings
+  planeZ: 0
+  moveDeadZone: 0.01
+  baseMoveSpeed: 6
+  runSpeedMultiplier: 1.5
+  backwardMoveSpeedMultiplier: 0.7
+  groundStartSpeedMultiplier: 0.3
+  groundAccelTimeToMax: 0.05
+  airAccelTimeToMax: 0.18
+  airDecel: 18
+  mouseFacingDeadZone: 0.02
+  gravity: -70
+  maxFallSpeed: 45
+  coyoteTime: 0.1
+  maxJumpHoldTime: 0.25
+  maxJumpForce: 200
+  jumpForceCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -0.041715056
+      outSlope: -0.041715056
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.38051045
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -2.5312657
+      outSlope: -2.5312657
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.046403766
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  dashCooldown: 0.8
+  dashDuration: 0.2
+  dashDistance: 5
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 128
+  groundedMinUpVelocity: 0.05
+  maxHp: 100
+  maxMp: 100
+  attackMask:
+    serializedVersion: 2
+    m_Bits: 512
+  basicAttackCooldown: 0.08
+  groundAttackDamage: 10
+  groundAttackReach: 1.6
+  groundAttackRadius: 1.2
+  airAttackDamage: 10
+  airAttackRadius: 2.2
+  airAttackHalfAngleDeg: 75
+  showAttackRangeOnAttack: 1
+  attackRangeVisualDuration: 0.06
+  attackRangeLineWidth: 0.03
+  attackRangeSegments: 32
+  diceRollIntervalMin: 7
+  diceRollIntervalMax: 10
+  diceGaugeGainPerRoll: 30
+  defaultUltimateGaugeMax: 100
+  startingSkill: {fileID: 11400000, guid: 477314aec5e87c6449a7cd3e239a79bf, type: 2}
+  startingUltimate: {fileID: 11400000, guid: 1b0105a21bc733e42b43ac97b6032b9e, type: 2}
+  skills:
+  - skill: {fileID: 11400000, guid: 477314aec5e87c6449a7cd3e239a79bf, type: 2}
+    unlocked: 1
+  ultimates:
+  - ultimate: {fileID: 11400000, guid: 1b0105a21bc733e42b43ac97b6032b9e, type: 2}
+    unlocked: 1
+  uiDiceFrameTime: 0.1
+  uiDiceSpinLoopDuration: 0.08
+  uiDiceLowerStopDelay: 0.6
+  uiDiceUpperStopExtraDelay: 0.5
+  uiDiceStopTweenTime: 0.08
+  uiDiceFaceForwardEuler:
+  - {x: -90, y: 0, z: 0}
+  - {x: -90, y: 90, z: 0}
+  - {x: 180, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: -90, z: 0}
+  - {x: 90, y: 0, z: 0}
+  uiPotionMaxUses: 3
+  uiPotionStartUses: 3
+  uiHpPotionHealAmount: 30
+  uiMpPotionHealAmount: 30
+  uiPotionHoldTime: 0.35
+  uiSkillGreyColor: {r: 0.35, g: 0.35, b: 0.35, a: 1}

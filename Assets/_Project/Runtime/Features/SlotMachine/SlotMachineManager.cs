@@ -19,6 +19,11 @@ public class SlotMachineManager : MonoBehaviour
 
     private bool isCooldown = false;
 
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
     public void PlaySlot()
     {
         if (isCooldown)
@@ -32,6 +37,8 @@ public class SlotMachineManager : MonoBehaviour
 
         if (result <= succesWeight) // Succes
         {
+            StartCoroutine(DelayedPlaySound("Jackpot", 1.2f));
+
             for(int index = 0; index < 3; index++)
             {
                 slotInfos.Add(succesResult);
@@ -41,7 +48,9 @@ public class SlotMachineManager : MonoBehaviour
         }
         else // Fail
         {
-            for(int index = 0; index < 3; index++)
+            StartCoroutine(DelayedPlaySound("Fail", 1f));
+
+            for (int index = 0; index < 3; index++)
             {
                 slotInfos.Add(failResult);
             }
@@ -49,6 +58,12 @@ public class SlotMachineManager : MonoBehaviour
             slotMachineView.PlaySlot(slotInfos);
             SceneController.Instance.LoadScene(SceneType.PrologScene, 3f);
         }
+    }
+
+    private IEnumerator DelayedPlaySound(string soundName, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        AudioManager.Instance.PlaySFX(soundName);
     }
 
     private IEnumerator CooldownDelay()
