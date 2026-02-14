@@ -15,7 +15,7 @@ public class PrologManager : MonoBehaviour
 
     private void Start()
     {
-        
+        AudioManager.Instance.SetBGM("RainCity");
     }
 
     public void OnEndSceneFade()
