@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Boss Enemy
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   grade: 4
-  maxHP: 1
+  maxHP: 150
   damage: 10
   moveSpeed: 2
   moveDistance: 3
