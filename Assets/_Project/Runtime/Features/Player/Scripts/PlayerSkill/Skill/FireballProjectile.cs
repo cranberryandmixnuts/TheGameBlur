@@ -20,7 +20,7 @@ public sealed class FireballProjectile : MonoBehaviour
     private readonly Collider[] hitBuffer = new Collider[32];
     private readonly HashSet<IDamageable> hitSet = new HashSet<IDamageable>();
 
-    public void Initialize(Vector3 direction, float speed, float maxDistance, int damage, float hitRadius, LayerMask enemyMask, LayerMask worldMask, GameObject source, float planeZ)
+    public void Initialize(Vector3 direction, float speed, float maxDistance, int damage, float hitRadius, LayerMask enemyMask, LayerMask worldMask, GameObject source, float planeZ, float size)
     {
         this.direction = direction;
         this.speed = speed;
@@ -38,6 +38,8 @@ public sealed class FireballProjectile : MonoBehaviour
         Vector3 p = transform.position;
         p.z = planeZ;
         transform.position = p;
+
+        transform.localScale = transform.localScale * size;
     }
 
     private void Update()
