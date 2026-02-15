@@ -377,7 +377,6 @@ public class EnemyScript : MonoBehaviour, IDamageable
         if (lockRoutine != null) StopCoroutine(lockRoutine);
     }
 
-    //배서일 연출용
     public void MoveToTarget(Transform target, float speed)
     {
         if (target == null) return;

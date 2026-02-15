@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TutorialManager : MonoBehaviour
@@ -6,6 +7,30 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private PlayerUI playerUI;
     [SerializeField] private Animator leech;
     [SerializeField] private CameraController cameraController;
+
+    private float explosionRange { get; } = 30f;
+    private Transform playerTransform;
+    List<EnemyScript> enemies = new List<EnemyScript>();
+
+    private void Start()
+    {
+        playerTransform = FindAnyObjectByType<Player>().transform;
+
+        EnemyScript[] allEnemies = FindObjectsByType<EnemyScript>(FindObjectsSortMode.None);
+
+        foreach (var enemy in allEnemies)
+        {
+            if (Vector3.Distance(playerTransform.position, enemy.transform.position) <= explosionRange)
+            {
+                enemies.Add(enemy);
+            }
+        }
+
+        foreach (var enemy in enemies)
+        {
+            enemy.DeactivateEnemy();
+        }
+    }
 
     public void OnEndCinemtaic()
     {
@@ -30,6 +55,12 @@ public class TutorialManager : MonoBehaviour
     
     private void OnEndMainTutorial3(Cinematic cinematic)
     {
+        foreach(var enemy in enemies)
+        {
+            enemy.ActivateEnemy();
+            enemy.MoveToTarget(playerTransform, 2f);
+        }
+
         StartCoroutine(StartMainTutorial4());
     }
 
