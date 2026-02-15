@@ -15,7 +15,7 @@ MonoBehaviour:
   idleBetweenSkills: 1
   skills:
   - type: 0
-    weight: 0
+    weight: 35
     randomMoveSpeed: 4
     randomMoveDistanceMin: 5
     randomMoveDistanceMax: 5
@@ -27,20 +27,19 @@ MonoBehaviour:
     jumpApexHeightPerUnit: 0.25
     dashSpeed: 0
     undergroundWalkDeltaZ: 2
-    undergroundWalkSpeed: 3
-    undergroundEnterTime: 0.4
+    undergroundWalkOutSpeed: 3
+    undergroundWalkInSpeed: 3
     undergroundDropY: 3
     undergroundDropTime: 0.12
     undergroundBeforeFireWait: 0
-    fireHorizontalSpeed: 0
     undergroundAfterFireWait: 1.2
     undergroundRiseTime: 0.12
-    undergroundExitTime: 0.4
+    fireHorizontalSpeed: 0
     aimShotSpeed: 0
     aimShotInterval: 0
     aimShotCount: 0
   - type: 2
-    weight: 0
+    weight: 25
     randomMoveSpeed: 0
     randomMoveDistanceMin: 0
     randomMoveDistanceMax: 0
@@ -52,20 +51,19 @@ MonoBehaviour:
     jumpApexHeightPerUnit: 0.25
     dashSpeed: 13
     undergroundWalkDeltaZ: 2
-    undergroundWalkSpeed: 3
-    undergroundEnterTime: 0.4
+    undergroundWalkOutSpeed: 3
+    undergroundWalkInSpeed: 3
     undergroundDropY: 3
     undergroundDropTime: 0.12
     undergroundBeforeFireWait: 0
-    fireHorizontalSpeed: 0
     undergroundAfterFireWait: 1.2
     undergroundRiseTime: 0.12
-    undergroundExitTime: 0.4
+    fireHorizontalSpeed: 0
     aimShotSpeed: 0
     aimShotInterval: 0
     aimShotCount: 0
   - type: 3
-    weight: 100
+    weight: 15
     randomMoveSpeed: 0
     randomMoveDistanceMin: 0
     randomMoveDistanceMax: 0
@@ -77,20 +75,19 @@ MonoBehaviour:
     jumpApexHeightPerUnit: 0.25
     dashSpeed: 13
     undergroundWalkDeltaZ: 3
-    undergroundWalkSpeed: 0.5
-    undergroundEnterTime: 0.4
+    undergroundWalkOutSpeed: 3
+    undergroundWalkInSpeed: 3
     undergroundDropY: 3
     undergroundDropTime: 0.4
     undergroundBeforeFireWait: 0
-    fireHorizontalSpeed: 12
     undergroundAfterFireWait: 1.2
     undergroundRiseTime: 0.2
-    undergroundExitTime: 0.6
+    fireHorizontalSpeed: 12
     aimShotSpeed: 0
     aimShotInterval: 0
     aimShotCount: 0
   - type: 4
-    weight: 0
+    weight: 25
     randomMoveSpeed: 0
     randomMoveDistanceMin: 0
     randomMoveDistanceMax: 0
@@ -102,15 +99,14 @@ MonoBehaviour:
     jumpApexHeightPerUnit: 0.25
     dashSpeed: 13
     undergroundWalkDeltaZ: 2
-    undergroundWalkSpeed: 3
-    undergroundEnterTime: 0.4
+    undergroundWalkOutSpeed: 3
+    undergroundWalkInSpeed: 3
     undergroundDropY: 3
     undergroundDropTime: 0.12
     undergroundBeforeFireWait: 0
-    fireHorizontalSpeed: 12
     undergroundAfterFireWait: 1.2
     undergroundRiseTime: 0.12
-    undergroundExitTime: 0.4
+    fireHorizontalSpeed: 12
     aimShotSpeed: 10
     aimShotInterval: 0
     aimShotCount: 1
