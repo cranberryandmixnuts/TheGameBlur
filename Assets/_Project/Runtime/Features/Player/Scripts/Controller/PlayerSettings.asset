@@ -53,7 +53,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   dashCooldown: 0.8
   dashDuration: 0.2
-  dashDistance: 5
+  dashDistance: 6
   groundMask:
     serializedVersion: 2
     m_Bits: 128

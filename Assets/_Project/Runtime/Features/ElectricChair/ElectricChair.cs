@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
@@ -8,6 +9,8 @@ public sealed class ElectricChair : MonoBehaviour
 
     private Player player;
     private bool playerInRange;
+
+    public event Action OnSeat;
 
     private void Awake()
     {
@@ -41,6 +44,8 @@ public sealed class ElectricChair : MonoBehaviour
 
     private void SitPlayer()
     {
+        OnSeat?.Invoke();
+
         Vector3 p = seatPoint.position + seatOffset;
         player.Sit(this, p);
     }
