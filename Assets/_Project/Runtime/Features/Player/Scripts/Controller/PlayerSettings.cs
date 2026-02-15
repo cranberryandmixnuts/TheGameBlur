@@ -71,7 +71,7 @@ public sealed class PlayerSettings : ScriptableObject
 
     [Header("Attack - Air")]
     public int airAttackDamage = 10;
-    public float airAttackRadius = 2.5f;
+    public float airAttackRadius = 2.6f;
     public float airPogoBounceVelocity = 12f;
 
     [Header("Attack Range Visual Debug")]
@@ -92,6 +92,9 @@ public sealed class PlayerSettings : ScriptableObject
     [Header("Unlock Table")]
     public SkillUnlockEntry[] skills;
     public UltimateUnlockEntry[] ultimates;
+
+    [Header("Unlock - Consumable")]
+    public bool potionUnlocked = true;
 
     [Header("UI - Dice Panel Animation")]
     public float uiDiceFrameTime = 0.08f;
