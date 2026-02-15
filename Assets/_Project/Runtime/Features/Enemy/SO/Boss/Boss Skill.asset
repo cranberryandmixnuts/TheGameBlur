@@ -15,7 +15,7 @@ MonoBehaviour:
   idleBetweenSkills: 1
   skills:
   - type: 0
-    weight: 35
+    weight: 20
     randomMoveSpeed: 4
     randomMoveDistanceMin: 5
     randomMoveDistanceMax: 5
@@ -39,7 +39,7 @@ MonoBehaviour:
     aimShotInterval: 0
     aimShotCount: 0
   - type: 2
-    weight: 25
+    weight: 40
     randomMoveSpeed: 0
     randomMoveDistanceMin: 0
     randomMoveDistanceMax: 0
