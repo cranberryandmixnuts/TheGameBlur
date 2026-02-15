@@ -30,8 +30,8 @@ public class BossSkillEntry
     public float dashSpeed = 10f;
 
     public float undergroundWalkDeltaZ = 2f;
-    public float undergroundWalkOutSpeed = 3f;
-    public float undergroundWalkInSpeed = 3f;
+    public float undergroundWalkOutSpeed = 12f;
+    public float undergroundWalkInSpeed = 12f;
 
     public float undergroundDropY = 2f;
     public float undergroundDropTime = 0.12f;
