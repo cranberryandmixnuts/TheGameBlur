@@ -25,7 +25,7 @@ public sealed class EnemyCombatRng : MonoBehaviour
             if (Player.Instance != null && Player.Instance.Stats != null)
                 dv = Player.Instance.Stats.DiceValue;
 
-            return DiceChanceTable.GetChance01(dv);
+            return DiceChanceTable.GetEnemyChance(dv);
         }
     }
 
