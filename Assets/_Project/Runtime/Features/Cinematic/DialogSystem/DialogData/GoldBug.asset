@@ -13,15 +13,55 @@ MonoBehaviour:
   m_Name: GoldBug
   m_EditorClassIdentifier: Assembly-CSharp::DialogData
   _dialogs:
+  - name: ???
+    line: "\uD798\uC744 \uC6D0\uD558\uB294\uAC00?"
+    isSelectable: 0
+    selections: []
+  - name: ???
+    line: "\u2026 \uB108\uBB34 \uC804\uD615\uC801\uC774\uC9C0 \uD558\uD558\uD558"
+    isSelectable: 0
+    selections: []
+  - name: "\uC70C\uB77C"
+    line: "\uB204\uAD6C... \uC138\uC694?"
+    isSelectable: 0
+    selections: []
+  - name: ???
+    line: "\uC774\uB984\uC740 \uB531\uD788 \uC5C6\uACE0, \uC77C\uB2E8\uC740 \uB098\uB97C
+      \u201C\uB77C\uD50C\uB77C\uC2A4\u201D \uB77C\uACE0 \uBD88\uB7EC"
+    isSelectable: 0
+    selections: []
   - name: "\uB77C\uD50C\uB77C\uC2A4"
-    line: "\uBB50\uC2DC\uAE30"
+    line: "\uB098\uB294 \uACB0\uC815\uB860\uC5D0 \uAD6C\uC560\uBC1B\uC9C0 \uC54A\uB294
+      \uC790\uB4E4\uC744 \uCC3E\uACE0 \uC788\uC5C8\uC5B4"
+    isSelectable: 0
+    selections: []
+  - name: "\uB77C\uD50C\uB77C\uC2A4"
+    line: "\uB108 \uC774\uB300\uB85C\uBA74 \uC8FD\uC5B4, \uC0AC\uB9DD \uC6D0\uC778\uC740
+      \uBCF5\uC5FD\uAE30\uACE0"
+    isSelectable: 0
+    selections: []
+  - name: "\uC70C\uB77C"
+    line: "\uC73C\uC73C "
+    isSelectable: 0
+    selections: []
+  - name: "\uC70C\uB77C"
+    line: "(\uC0DD\uAC01\uB9CC \uD574\uB3C4 \uC2EB\uB2E4)"
+    isSelectable: 0
+    selections: []
+  - name: "\uB77C\uD50C\uB77C\uC2A4"
+    line: "\uADF8\uB7EC\uB2C8 \uB098\uC640 \uACC4\uC57D\uD558\uC790"
+    isSelectable: 0
+    selections: []
+  - name: "\uB77C\uD50C\uB77C\uC2A4"
+    line: "\uACC4\uC57D \uC870\uAC74\uC740 \uB098\uB294 \uB110 \uC0B4\uB9AC\uACE0
+      \uB108\uB3C4 \uB0A0 \uB3C4\uC6B0\uB294 \uAC83"
     isSelectable: 1
     selections:
-    - name: a
+    - name: "\uACC4\uC57D\uD55C\uB2E4."
       dialogData: {fileID: 0}
-    - name: a
+    - name: "\uBCF5\uC5FD\uAE30\uB97C \uD68C\uD53C\uD574\uBCF8\uB2E4."
       dialogData: {fileID: 0}
-    - name: a
+    - name: "\uC8FD\uC74C\uC744 \uB9DE\uC774\uD55C\uB2E4."
       dialogData: {fileID: 0}
   - name: "\uB77C\uD50C\uB77C\uC2A4"
     line: "\uC0AC\uC2E4 \uB108\uC5D0\uAC8C \uC120\uD0DD\uAD8C\uC740 \uC5C6\uC5C8\uC5B4

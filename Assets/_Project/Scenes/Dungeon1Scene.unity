@@ -3657,6 +3657,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (25)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6053,6 +6057,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (17)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7079,6 +7087,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (48)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8504,6 +8516,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (38)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9046,6 +9062,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (7)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9359,6 +9379,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (13)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10415,6 +10439,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (60)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11169,6 +11197,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_WallShelf_01 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4ae9640336e896940b51a3368c229524, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11323,6 +11355,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 4ae9640336e896940b51a3368c229524, type: 3}
       propertyPath: m_Name
       value: SM_WallShelf_01 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4ae9640336e896940b51a3368c229524, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -12026,6 +12062,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 219b1130b5761c941bc68062e1c9e5cd, type: 3}
+--- !u!4 &482933074 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8570861687592359040, guid: 219b1130b5761c941bc68062e1c9e5cd, type: 3}
+  m_PrefabInstance: {fileID: 482933073}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &483133716
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13823,6 +13864,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (9)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -13908,6 +13953,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (47)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -13995,6 +14044,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (56)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14080,6 +14133,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (16)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -14280,6 +14337,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (42)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -15951,6 +16012,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (36)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16105,6 +16170,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 4ae9640336e896940b51a3368c229524, type: 3}
       propertyPath: m_Name
       value: SM_WallShelf_01 (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4ae9640336e896940b51a3368c229524, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -16835,6 +16904,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_WallShelf_01 (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4ae9640336e896940b51a3368c229524, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -17034,6 +17107,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (18)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -17667,6 +17744,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -17809,6 +17890,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (44)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -19143,9 +19228,49 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1031620937718962552, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1074911971527831372, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1156620439573805689, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1195296865082257998, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1702244913202889932, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3153406152240398913, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
       propertyPath: m_Name
       value: PlayerUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 3273009247370241079, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5469739353624182279, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6172637396679083096, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6579323231953327006, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6659411376241638654, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6813418429038653943, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
       propertyPath: m_LocalPosition.x
@@ -19186,6 +19311,22 @@ PrefabInstance:
     - target: {fileID: 6813418429038653943, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7056459969847977762, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7402122305472519779, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7502145091809292117, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7715280961012672118, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -19243,6 +19384,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (52)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -19786,6 +19931,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (67)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -19928,6 +20077,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (49)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -20751,6 +20904,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -21620,6 +21777,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (11)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -21705,6 +21866,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (15)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -22019,6 +22184,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (33)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -22447,6 +22616,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (12)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -22990,6 +23163,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (66)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -23189,6 +23366,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (20)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -23557,6 +23738,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (37)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -23756,6 +23941,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (40)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -25504,6 +25693,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (59)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -26992,6 +27185,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (53)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -27444,6 +27641,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (58)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -28371,6 +28572,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (39)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -29140,6 +29345,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (65)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -30913,6 +31122,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (43)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -32734,6 +32947,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (63)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -33048,6 +33265,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (64)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -33151,6 +33372,8 @@ GameObject:
   - component: {fileID: 1315110036}
   - component: {fileID: 1315110035}
   - component: {fileID: 1315110038}
+  - component: {fileID: 1315110040}
+  - component: {fileID: 1315110039}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -33226,7 +33449,7 @@ Transform:
   m_GameObject: {fileID: 1315110034}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.62, y: 4.74, z: -8}
+  m_LocalPosition: {x: -2.57, y: 4.58, z: -8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -33371,6 +33594,34 @@ MonoBehaviour:
       enableFptlForForwardOpaque: 0
       enableBigTilePrepass: 0
       isFptlEnabled: 0
+--- !u!114 &1315110039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1315110034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35cf4b3099369d441861f0c8142f1841, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraShaker
+--- !u!114 &1315110040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1315110034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef440f84f1a3fbe43bd23cc297978f48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraController
+  playerTransform: {fileID: 482933074}
+  offset: {x: 0, y: 1.6}
+  speed: 5
+  isActive: 1
 --- !u!1001 &1318739784
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -34115,6 +34366,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (14)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -34681,6 +34936,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (10)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -34766,6 +35025,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (54)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -35035,6 +35298,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 4ae9640336e896940b51a3368c229524, type: 3}
       propertyPath: m_Name
       value: SM_WallShelf_01 (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4ae9640336e896940b51a3368c229524, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -35349,6 +35616,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (32)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -35977,6 +36248,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (45)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -36869,6 +37144,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 4ae9640336e896940b51a3368c229524, type: 3}
       propertyPath: m_Name
       value: SM_WallShelf_01 (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4ae9640336e896940b51a3368c229524, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -38084,6 +38363,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (62)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -39449,6 +39732,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (8)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -40447,6 +40734,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (50)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -40646,6 +40937,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (24)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -41229,6 +41524,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (46)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -42372,6 +42671,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -42514,6 +42817,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (34)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -43884,6 +44191,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -44026,6 +44337,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (61)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -45285,6 +45600,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (35)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -46883,6 +47202,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (51)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -47082,6 +47405,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (41)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -48533,6 +48860,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -49861,6 +50192,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (57)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -51033,6 +51368,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
       propertyPath: m_Name
       value: SM_Floor_Flagstone_01 (55)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6181d5ae1938b294da21c75b546f6237, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

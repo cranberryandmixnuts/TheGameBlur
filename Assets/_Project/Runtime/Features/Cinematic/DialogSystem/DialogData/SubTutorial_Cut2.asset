@@ -14,6 +14,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DialogData
   _dialogs:
   - name: "\uBCF4\uB514\uAC00\uB4DC"
-    line: "\uB300\uB0AE\uBD80\uD130 \uC65C \uC774\uB798, \uAEBC\uC838!"
+    line: "\uC65C \uAC11\uC790\uAE30 \uB09C\uB3D9\uC774\uC57C, \uAEBC\uC838!"
+    isSelectable: 0
+    selections: []
+  - name: "\uC70C\uB77C"
+    line: "\uB09C \uC798\uBABB \uC5C6\uC5B4 \uAE30\uACC4\uAC00 \uACE0\uC7A5\uB098\uBA74
+      \uB54C\uB824\uC57C\uC9C0!"
+    isSelectable: 0
+    selections: []
+  - name: "\uBCF4\uB514\uAC00\uB4DC"
+    line: "\uC560\uAFCE\uC740 \uC2AC\uB86F \uBA38\uC2E0 \uB194\uB450\uACE0 \uAC08\uAE38\uC774\uB098
+      \uAC00\uC2DC\uC9C0"
+    isSelectable: 0
+    selections: []
+  - name: "\uC70C\uB77C"
+    line: "\uC73C\uC73C \uC9C4\uC9DC"
+    isSelectable: 0
+    selections: []
+  - name: "\uC70C\uB77C"
+    line: "\uD558 \uC624\uB298\uB530\uB77C \uC6B4\uC774 \uC548 \uC88B\uB124\u2026"
     isSelectable: 0
     selections: []
