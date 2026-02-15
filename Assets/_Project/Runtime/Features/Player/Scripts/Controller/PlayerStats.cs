@@ -61,6 +61,8 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
     private float diceSettleRemaining;
     private bool lastBattle;
 
+    private bool diceIsFromRandomRoll;
+
     private PlayerUltimate lastUltimate;
 
     private void Awake()
@@ -81,8 +83,9 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
 
         diceGauge = 0f;
 
+        diceIsFromRandomRoll = false;
+
         lastBattle = isBattle;
-        if (isBattle) EnterBattle();
 
         lastUltimate = combat.EquippedUltimate;
         ApplyUltimateDiceMode(lastUltimate);
@@ -214,6 +217,8 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         settledDiceA = diceA;
         settledDiceB = diceB;
 
+        diceIsFromRandomRoll = true;
+
         diceSettleRemaining = 0f;
 
         DiceRolled?.Invoke(diceA, diceB);
@@ -279,6 +284,12 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
             return;
         }
 
+        if (!diceIsFromRandomRoll)
+        {
+            RollDiceInternal();
+            AddDiceGauge(settings.diceGaugeGainPerRoll);
+        }
+
         diceRollRemaining = UnityEngine.Random.Range(settings.diceRollIntervalMin, settings.diceRollIntervalMax);
     }
 
@@ -326,6 +337,8 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         settledDiceA = a;
         settledDiceB = b;
 
+        diceIsFromRandomRoll = false;
+
         DiceSettled?.Invoke(settledDiceA, settledDiceB);
     }
 
@@ -333,6 +346,8 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
     {
         diceA = UnityEngine.Random.Range(1, 7);
         diceB = UnityEngine.Random.Range(1, 7);
+
+        diceIsFromRandomRoll = true;
 
         pendingSettledDiceA = diceA;
         pendingSettledDiceB = diceB;
