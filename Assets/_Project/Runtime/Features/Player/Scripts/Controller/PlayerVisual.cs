@@ -253,7 +253,7 @@ public sealed class PlayerVisual : MonoBehaviour
 
     private void UpdateLookIk()
     {
-        lookActive = stats.IsBattle && !movement.IsDashing && !combat.IsUltimateActive && !player.IsSitting && stats.IsActive;
+        lookActive = stats.IsBattle && !movement.IsDashing && !combat.IsUltimateActive && !player.IsSitting && stats.IsActive && !movement.RunHeld;
 
         if (!lookActive) return;
 

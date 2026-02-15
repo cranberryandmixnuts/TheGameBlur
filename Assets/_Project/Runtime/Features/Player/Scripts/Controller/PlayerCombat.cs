@@ -129,6 +129,8 @@ public sealed class PlayerCombat : MonoBehaviour
         ultimateLockRemaining = 0f;
         skillCooldownRemaining = 0f;
 
+        movement.CancelBasicAttackRunLock();
+
         if (ultimateInvincibleApplied)
         {
             ultimateInvincibleApplied = false;
@@ -190,6 +192,7 @@ public sealed class PlayerCombat : MonoBehaviour
     public void CancelForDash()
     {
         basicAttackCooldownRemaining = 0f;
+        movement.CancelBasicAttackRunLock();
     }
 
     private void TryBasicAttack()
@@ -205,6 +208,7 @@ public sealed class PlayerCombat : MonoBehaviour
             GroundAttack(mouseWorld);
 
             basicAttackCooldownRemaining = settings.basicAttackCooldown;
+            movement.NotifyBasicAttackStarted(settings.basicAttackCooldown);
             return;
         }
 
@@ -214,6 +218,7 @@ public sealed class PlayerCombat : MonoBehaviour
 
         usedAirBasicAttackThisAirtime = true;
         basicAttackCooldownRemaining = settings.basicAttackCooldown;
+        movement.NotifyBasicAttackStarted(settings.basicAttackCooldown);
 
         if (hitAny)
         {
