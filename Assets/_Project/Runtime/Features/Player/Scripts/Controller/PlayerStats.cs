@@ -27,7 +27,7 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
     public int DiceValue => settledDiceA + settledDiceB;
 
     public float DiceGauge => diceGauge;
-    public float DiceGaugeMax => combat.UltimateGaugeMax;
+    public float DiceGaugeMax => combat.EquippedUltimate != null && combat.EquippedUltimate.DiceEnabled ? combat.UltimateGaugeMax : 0f;
 
     public int Hp => hp;
     public int MaxHp => maxHp;
@@ -61,6 +61,8 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
     private float diceSettleRemaining;
     private bool lastBattle;
 
+    private PlayerUltimate lastUltimate;
+
     private void Awake()
     {
         Player player = GetComponent<Player>();
@@ -81,10 +83,20 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
 
         lastBattle = isBattle;
         if (isBattle) EnterBattle();
+
+        lastUltimate = combat.EquippedUltimate;
+        ApplyUltimateDiceMode(lastUltimate);
     }
 
     private void Update()
     {
+        PlayerUltimate nowUltimate = combat.EquippedUltimate;
+        if (nowUltimate != lastUltimate)
+        {
+            lastUltimate = nowUltimate;
+            ApplyUltimateDiceMode(nowUltimate);
+        }
+
         if (isBattle != lastBattle)
         {
             lastBattle = isBattle;
@@ -94,6 +106,15 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         }
 
         if (!isBattle) return;
+
+        PlayerUltimate ultimate = combat.EquippedUltimate;
+        if (ultimate == null) return;
+
+        if (!ultimate.DiceEnabled)
+        {
+            ApplyFixedDiceIfNeeded(ultimate);
+            return;
+        }
 
         float dt = Time.deltaTime;
 
@@ -198,6 +219,10 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
 
     public void RollDiceForUltimate()
     {
+        PlayerUltimate ultimate = combat.EquippedUltimate;
+        if (ultimate == null) return;
+        if (!ultimate.DiceEnabled) return;
+
         RollDiceInternal();
         diceRollRemaining = UnityEngine.Random.Range(settings.diceRollIntervalMin, settings.diceRollIntervalMax);
     }
@@ -235,8 +260,70 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
 
     private void EnterBattle()
     {
-        diceRollRemaining = UnityEngine.Random.Range(settings.diceRollIntervalMin, settings.diceRollIntervalMax);
         diceSettleRemaining = 0f;
+
+        PlayerUltimate ultimate = combat.EquippedUltimate;
+        if (ultimate == null)
+        {
+            diceRollRemaining = float.PositiveInfinity;
+            return;
+        }
+
+        if (!ultimate.DiceEnabled)
+        {
+            diceRollRemaining = float.PositiveInfinity;
+            ApplyFixedDiceIfNeeded(ultimate);
+            return;
+        }
+
+        diceRollRemaining = UnityEngine.Random.Range(settings.diceRollIntervalMin, settings.diceRollIntervalMax);
+    }
+
+    private void ApplyUltimateDiceMode(PlayerUltimate ultimate)
+    {
+        diceSettleRemaining = 0f;
+
+        if (ultimate == null)
+        {
+            diceRollRemaining = float.PositiveInfinity;
+            return;
+        }
+
+        if (!ultimate.DiceEnabled)
+        {
+            if (!Mathf.Approximately(diceGauge, 0f))
+            {
+                diceGauge = 0f;
+                DiceGaugeChanged?.Invoke(diceGauge, DiceGaugeMax);
+            }
+
+            diceRollRemaining = float.PositiveInfinity;
+            ApplyFixedDiceIfNeeded(ultimate);
+            return;
+        }
+
+        if (isBattle) EnterBattle();
+    }
+
+    private void ApplyFixedDiceIfNeeded(PlayerUltimate ultimate)
+    {
+        if (!ultimate.UseFixedDice) return;
+
+        int a = Mathf.Clamp(ultimate.FixedDiceA, 1, 6);
+        int b = Mathf.Clamp(ultimate.FixedDiceB, 1, 6);
+
+        if (settledDiceA == a && settledDiceB == b && diceA == a && diceB == b) return;
+
+        diceA = a;
+        diceB = b;
+
+        pendingSettledDiceA = a;
+        pendingSettledDiceB = b;
+
+        settledDiceA = a;
+        settledDiceB = b;
+
+        DiceSettled?.Invoke(settledDiceA, settledDiceB);
     }
 
     private void RollDiceInternal()

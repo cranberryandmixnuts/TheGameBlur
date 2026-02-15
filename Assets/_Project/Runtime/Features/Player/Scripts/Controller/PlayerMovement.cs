@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 
 public sealed class PlayerMovement : MonoBehaviour
@@ -12,7 +13,7 @@ public sealed class PlayerMovement : MonoBehaviour
     public int LastMoveSign { get; private set; } = 1;
 
     public int MoveSign => moveSign;
-    public bool RunHeld => runHeld;
+    public bool RunHeld => runActive;
 
     private Player player;
     private Rigidbody body;
@@ -23,11 +24,14 @@ public sealed class PlayerMovement : MonoBehaviour
     private InputManager input;
 
     private int moveSign;
-    private bool runHeld;
+    private bool runHeldRaw;
+    private bool runActive;
     private bool jumpDown;
     private bool jumpUp;
     private bool jumpHeld;
     private bool dashDown;
+
+    private float runLockRemaining;
 
     private float groundAccelElapsed;
     private int lastGroundMoveSign;
@@ -48,6 +52,9 @@ public sealed class PlayerMovement : MonoBehaviour
 
     private bool isStandingUpFromChair;
 
+    private float rightFacingY;
+    private Tween facingTween;
+
     private void Start()
     {
         player = Player.Instance;
@@ -65,11 +72,33 @@ public sealed class PlayerMovement : MonoBehaviour
 
         body.constraints |= RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
         body.constraints |= RigidbodyConstraints.FreezePositionZ;
+
+        InitializeVisualFacing();
+    }
+
+    private void InitializeVisualFacing()
+    {
+        if (visualRoot == null) return;
+
+        rightFacingY = visualRoot.localEulerAngles.y;
+
+        Vector3 s = visualRoot.localScale;
+        s.x = Mathf.Abs(s.x);
+        visualRoot.localScale = s;
+
+        ApplyVisualFacing(true);
     }
 
     private void Update()
     {
         if (!player.Stats.IsActive) return;
+
+        float dt = Time.deltaTime;
+        if (runLockRemaining > 0f)
+        {
+            runLockRemaining -= dt;
+            if (runLockRemaining < 0f) runLockRemaining = 0f;
+        }
 
         float axis = input.MoveAxis;
 
@@ -83,7 +112,9 @@ public sealed class PlayerMovement : MonoBehaviour
 
             moveSign = 0;
 
-            runHeld = false;
+            runHeldRaw = false;
+            runActive = false;
+            runLockRemaining = 0f;
             jumpDown = false;
             jumpUp = false;
             jumpHeld = false;
@@ -94,7 +125,8 @@ public sealed class PlayerMovement : MonoBehaviour
 
         if (moveSign != 0) LastMoveSign = moveSign;
 
-        runHeld = input.RunHeld;
+        runHeldRaw = input.RunHeld;
+        runActive = runHeldRaw && moveSign != 0 && runLockRemaining <= 0f;
 
         jumpDown = input.JumpDown;
         jumpUp = input.JumpUp;
@@ -188,7 +220,31 @@ public sealed class PlayerMovement : MonoBehaviour
 
         FacingSign = 1;
         isStandingUpFromChair = false;
+
+        runHeldRaw = false;
+        runActive = false;
+        runLockRemaining = 0f;
+
         ApplyVisualFacing();
+    }
+
+    public void NotifyBasicAttackStarted(float duration)
+        => NotifyBasicAttackStarted(duration, true);
+
+    public void NotifyBasicAttackStarted(float duration, bool lockRun)
+    {
+        if (lockRun)
+        {
+            if (duration > runLockRemaining) runLockRemaining = duration;
+            runActive = false;
+
+            if (stats.IsBattle) ForceFaceMouseNow();
+        }
+    }
+
+    public void CancelBasicAttackRunLock()
+    {
+        runLockRemaining = 0f;
     }
 
     public void BeginStandingUpFromChair()
@@ -386,9 +442,9 @@ public sealed class PlayerMovement : MonoBehaviour
     private float ComputeHorizontalVelocity(float dt)
     {
         float targetSpeed = settings.baseMoveSpeed;
-        if (runHeld) targetSpeed *= settings.runSpeedMultiplier;
+        if (runActive) targetSpeed *= settings.runSpeedMultiplier;
 
-        if (IsGrounded && !runHeld && moveSign != 0 && moveSign != FacingSign)
+        if (IsGrounded && !runActive && moveSign != 0 && moveSign != FacingSign)
             targetSpeed *= settings.backwardMoveSpeedMultiplier;
 
         float current = body.linearVelocity.x;
@@ -461,7 +517,7 @@ public sealed class PlayerMovement : MonoBehaviour
     {
         int desired = FacingSign;
 
-        if (stats.IsBattle)
+        if (stats.IsBattle && !runActive)
         {
             if (TryGetMouseWorldOnPlane(out Vector3 p))
             {
@@ -475,6 +531,22 @@ public sealed class PlayerMovement : MonoBehaviour
         {
             if (moveSign != 0) desired = moveSign;
         }
+
+        if (desired == FacingSign) return;
+
+        FacingSign = desired;
+        ApplyVisualFacing();
+    }
+
+    private void ForceFaceMouseNow()
+    {
+        if (!TryGetMouseWorldOnPlane(out Vector3 p)) return;
+
+        float dx = p.x - body.position.x;
+
+        int desired = FacingSign;
+        if (dx > settings.mouseFacingDeadZone) desired = 1;
+        else if (dx < -settings.mouseFacingDeadZone) desired = -1;
 
         if (desired == FacingSign) return;
 
@@ -502,11 +574,30 @@ public sealed class PlayerMovement : MonoBehaviour
 
     private void ApplyVisualFacing()
     {
+        ApplyVisualFacing(false);
+    }
+
+    private void ApplyVisualFacing(bool instant)
+    {
         if (visualRoot == null) return;
 
         Vector3 s = visualRoot.localScale;
-        s.x = Mathf.Abs(s.x) * FacingSign;
+        s.x = Mathf.Abs(s.x);
         visualRoot.localScale = s;
+
+        float y = FacingSign < 0 ? rightFacingY + 180f : rightFacingY;
+        y = Mathf.Repeat(y, 360f);
+
+        Vector3 target = visualRoot.localEulerAngles;
+        target.y = y;
+
+        if (facingTween != null) facingTween.Kill();
+
+        float duration = instant ? 0f : settings.facingTurnDuration;
+        if (duration <= 0f)
+            visualRoot.localEulerAngles = target;
+        else
+            facingTween = visualRoot.DOLocalRotate(target, duration, RotateMode.Fast).SetEase(Ease.OutSine);
     }
 
     private void ApplyPendingImpulse()
