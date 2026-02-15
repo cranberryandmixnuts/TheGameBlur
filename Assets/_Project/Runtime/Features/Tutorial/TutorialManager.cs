@@ -30,6 +30,8 @@ public class TutorialManager : MonoBehaviour
         {
             enemy.DeactivateEnemy();
         }
+
+        Player.Instance.Stats.PlayerSetActive(false);
     }
 
     public void OnEndCinemtaic()
@@ -85,6 +87,7 @@ public class TutorialManager : MonoBehaviour
 
     private void StartFight()
     {
+        Player.Instance.Stats.PlayerSetActive(true);
         cameraController.Active();
         playerUI.gameObject.SetActive(true);
         CinematicManager.Show<CinematicMainTutorial>().Play();
