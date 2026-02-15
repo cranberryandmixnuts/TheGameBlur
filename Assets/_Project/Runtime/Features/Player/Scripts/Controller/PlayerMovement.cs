@@ -229,12 +229,17 @@ public sealed class PlayerMovement : MonoBehaviour
     }
 
     public void NotifyBasicAttackStarted(float duration)
+        => NotifyBasicAttackStarted(duration, true);
+
+    public void NotifyBasicAttackStarted(float duration, bool lockRun)
     {
-        if (duration > runLockRemaining) runLockRemaining = duration;
+        if (lockRun)
+        {
+            if (duration > runLockRemaining) runLockRemaining = duration;
+            runActive = false;
 
-        runActive = false;
-
-        if (stats.IsBattle) ForceFaceMouseNow();
+            if (stats.IsBattle) ForceFaceMouseNow();
+        }
     }
 
     public void CancelBasicAttackRunLock()

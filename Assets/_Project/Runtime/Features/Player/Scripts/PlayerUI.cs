@@ -95,6 +95,8 @@ public sealed class PlayerUI : MonoBehaviour
 
     private PlayerUltimate lastUltimate;
 
+    private bool diceUiVisible;
+
     private void Start()
     {
         player = Player.Instance;
@@ -118,6 +120,8 @@ public sealed class PlayerUI : MonoBehaviour
         StartDicePanelLoop(stats.IsBattle);
 
         lastUltimate = combat.EquippedUltimate;
+        diceUiVisible = lastUltimate != null && lastUltimate.DiceEnabled;
+        ApplyDiceUiVisible(diceUiVisible);
         RebuildDiceModels(lastUltimate);
 
         RefreshSkillSprites();
@@ -165,6 +169,10 @@ public sealed class PlayerUI : MonoBehaviour
         if (nowUltimate != lastUltimate)
         {
             lastUltimate = nowUltimate;
+
+            diceUiVisible = lastUltimate != null && lastUltimate.DiceEnabled;
+            ApplyDiceUiVisible(diceUiVisible);
+
             RebuildDiceModels(nowUltimate);
             ApplyUltimateGauge(stats.DiceGauge, stats.DiceGaugeMax);
         }
@@ -173,7 +181,7 @@ public sealed class PlayerUI : MonoBehaviour
     private void OnBattleChanged(bool battle)
     {
         ApplyBattleUi(battle, false);
-        StartDicePanelTransition(battle);
+        if (diceUiVisible) StartDicePanelTransition(battle);
     }
 
     private void ApplyBattleUi(bool battle, bool immediate)
@@ -188,6 +196,24 @@ public sealed class PlayerUI : MonoBehaviour
         frameTimer = 0f;
         ApplyPanelFrame(0);
         ApplyInnerVisibility();
+    }
+
+    private void ApplyDiceUiVisible(bool visible)
+    {
+        if (diceOuterImage != null) diceOuterImage.gameObject.SetActive(visible);
+
+        if (diceInnerImage != null)
+        {
+            if (!visible) diceInnerImage.gameObject.SetActive(false);
+        }
+
+        if (lowerDiceRoot != null) lowerDiceRoot.gameObject.SetActive(visible);
+        if (upperDiceRoot != null) upperDiceRoot.gameObject.SetActive(visible);
+        if (diceSumValueText != null) diceSumValueText.gameObject.SetActive(visible);
+        if (ultimateGauge != null) ultimateGauge.gameObject.SetActive(visible);
+
+        if (!visible) KillDiceTweens();
+        else StartDicePanelLoop(stats.IsBattle);
     }
 
     private void ConfigureSkillImages()
@@ -288,7 +314,7 @@ public sealed class PlayerUI : MonoBehaviour
     {
         PlayerSkill skill = combat.EquippedSkill;
 
-        if (skill == null)
+        if (skill == null || !skill.IsEquipped || skill.Icon == null)
         {
             skillBaseGreyImage.enabled = false;
             skillFillImage.enabled = false;
@@ -306,7 +332,7 @@ public sealed class PlayerUI : MonoBehaviour
     {
         PlayerSkill skill = combat.EquippedSkill;
 
-        if (skill == null)
+        if (skill == null || !skill.IsEquipped || skill.Icon == null)
         {
             skillBaseGreyImage.enabled = false;
             skillFillImage.enabled = false;
@@ -363,6 +389,8 @@ public sealed class PlayerUI : MonoBehaviour
 
     private void TickDicePanelAnimation(float dt)
     {
+        if (!diceUiVisible) return;
+
         frameTimer += dt;
         if (frameTimer < settings.uiDiceFrameTime) return;
 
@@ -431,6 +459,8 @@ public sealed class PlayerUI : MonoBehaviour
 
     private void OnDiceRolled(int a, int b)
     {
+        if (!diceUiVisible) return;
+
         pendingDiceA = a;
         pendingDiceB = b;
 
@@ -489,6 +519,7 @@ public sealed class PlayerUI : MonoBehaviour
 
     private void ApplyUltimateGauge(float current, float max)
     {
+        if (!diceUiVisible) return;
         if (ultimateGauge == null) return;
 
         float ratio = 0f;
@@ -508,6 +539,13 @@ public sealed class PlayerUI : MonoBehaviour
 
         lowerDiceInstance = null;
         upperDiceInstance = null;
+
+        if (!diceUiVisible)
+        {
+            lowerDiceModel = null;
+            upperDiceModel = null;
+            return;
+        }
 
         GameObject prefab = ultimate != null ? ultimate.DicePrefab : null;
 

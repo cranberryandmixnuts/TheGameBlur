@@ -29,7 +29,7 @@ public sealed class PlayerCombat : MonoBehaviour
     public PlayerSkill EquippedSkill => equippedSkill;
     public PlayerUltimate EquippedUltimate => equippedUltimate;
 
-    public float UltimateGaugeMax => equippedUltimate != null ? equippedUltimate.GaugeMax : 0f;
+    public float UltimateGaugeMax => equippedUltimate != null && equippedUltimate.DiceEnabled ? equippedUltimate.GaugeMax : 0f;
 
     private Player player;
     private PlayerSettings settings;
@@ -162,12 +162,12 @@ public sealed class PlayerCombat : MonoBehaviour
 
     public bool IsSkillUnlocked(PlayerSkill skill)
     {
-        return skill != null && unlockedSkills.Contains(skill);
+        return skill != null && (skill.IsAlwaysUnlocked || unlockedSkills.Contains(skill));
     }
 
     public bool IsUltimateUnlocked(PlayerUltimate ultimate)
     {
-        return ultimate != null && unlockedUltimates.Contains(ultimate);
+        return ultimate != null && (ultimate.IsAlwaysUnlocked || unlockedUltimates.Contains(ultimate));
     }
 
     public void EquipSkill(PlayerSkill skill)
@@ -291,6 +291,7 @@ public sealed class PlayerCombat : MonoBehaviour
     {
         if (IsSkillOrUltimateActive) return;
         if (equippedSkill == null) return;
+        if (!equippedSkill.IsEquipped) return;
         if (skillCooldownRemaining > 0f) return;
 
         if (!TryGetMouseWorldOnPlane(out Vector3 mouseWorld))
@@ -312,6 +313,7 @@ public sealed class PlayerCombat : MonoBehaviour
     {
         if (IsSkillOrUltimateActive) return;
         if (equippedUltimate == null) return;
+        if (!equippedUltimate.DiceEnabled) return;
 
         float max = UltimateGaugeMax;
         if (max <= 0f) return;

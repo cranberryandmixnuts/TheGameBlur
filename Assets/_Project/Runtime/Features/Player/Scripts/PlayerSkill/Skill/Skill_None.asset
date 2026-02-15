@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2bac163f35d72004ab7a58d60d726d1c, type: 3}
-  m_Name: Skill_Debug
-  m_EditorClassIdentifier: Assembly-CSharp::DebugPlayerSkill
-  icon: {fileID: 21300000, guid: 3cc12547cdbd3da4fa46e733c174aece, type: 3}
+  m_Script: {fileID: 11500000, guid: 404974df0e7afcb489c081d97ba8fa8c, type: 3}
+  m_Name: Skill_None
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSkill_None
+  icon: {fileID: 0}
   manaCost: 20
   lockDuration: 0.2
-  message: Debug Skill executed
+  cooldown: 1

@@ -71,8 +71,7 @@ public sealed class PlayerSettings : ScriptableObject
 
     [Header("Attack - Air")]
     public int airAttackDamage = 10;
-    public float airAttackRadius = 2.2f;
-    public float airAttackHalfAngleDeg = 75f;
+    public float airAttackRadius = 2.5f;
     public float airPogoBounceVelocity = 12f;
 
     [Header("Attack Range Visual Debug")]

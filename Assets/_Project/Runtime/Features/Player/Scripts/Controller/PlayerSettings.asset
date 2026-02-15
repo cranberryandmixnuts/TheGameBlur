@@ -22,6 +22,7 @@ MonoBehaviour:
   airAccelTimeToMax: 0.18
   airDecel: 18
   mouseFacingDeadZone: 0.02
+  facingTurnDuration: 0.1
   gravity: -70
   maxFallSpeed: 45
   coyoteTime: 0.1
@@ -68,8 +69,7 @@ MonoBehaviour:
   groundAttackReach: 1.6
   groundAttackRadius: 1.2
   airAttackDamage: 10
-  airAttackRadius: 2.2
-  airAttackHalfAngleDeg: 75
+  airAttackRadius: 2.5
   airPogoBounceVelocity: 30
   showAttackRangeOnAttack: 1
   attackRangeVisualDuration: 0.06
@@ -81,12 +81,12 @@ MonoBehaviour:
   startingSkill: {fileID: 11400000, guid: db9f1459f6ba8b14b868dba81b26d455, type: 2}
   startingUltimate: {fileID: 11400000, guid: ea565f6b8abd4bf408f327a1b9ca3a10, type: 2}
   skills:
-  - skill: {fileID: 11400000, guid: 477314aec5e87c6449a7cd3e239a79bf, type: 2}
+  - skill: {fileID: 11400000, guid: e4bffc66257ac4544b763d01b4c04180, type: 2}
     unlocked: 1
   - skill: {fileID: 11400000, guid: db9f1459f6ba8b14b868dba81b26d455, type: 2}
     unlocked: 1
   ultimates:
-  - ultimate: {fileID: 11400000, guid: 1b0105a21bc733e42b43ac97b6032b9e, type: 2}
+  - ultimate: {fileID: 11400000, guid: 8eb9a844fa0b3dc47886fca6475f13a6, type: 2}
     unlocked: 1
   - ultimate: {fileID: 11400000, guid: ea565f6b8abd4bf408f327a1b9ca3a10, type: 2}
     unlocked: 1
