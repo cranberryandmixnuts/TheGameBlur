@@ -31,6 +31,7 @@ public class TutorialManager : MonoBehaviour
         foreach (var enemy in enemies)
         {
             enemy.DeactivateEnemy();
+            Debug.Log("Deactive ½ÇÇà");
         }
 
         healGuideSprite.color = new Color(1, 1, 1, 0);
@@ -62,8 +63,8 @@ public class TutorialManager : MonoBehaviour
     {
         foreach(var enemy in enemies)
         {
-            enemy.ActivateEnemy();
             enemy.MoveToTarget(playerTransform, 2f);
+            enemy.ActivateEnemy();
         }
 
         StartCoroutine(StartMainTutorial4());
