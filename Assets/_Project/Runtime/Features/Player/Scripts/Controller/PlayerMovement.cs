@@ -4,6 +4,9 @@ using UnityEngine.InputSystem;
 
 public sealed class PlayerMovement : MonoBehaviour
 {
+    private const float WalkSfxInterval = 1.2f;
+    private const float RunSfxInterval = 0.6f;
+
     [SerializeField] private Transform visualRoot;
     [SerializeField] private PlayerGroundSensor groundSensor;
 
@@ -56,6 +59,10 @@ public sealed class PlayerMovement : MonoBehaviour
     private float rightFacingY;
     private Tween facingTween;
 
+    private bool lastGroundedForLand;
+    private bool lastFootstepActive;
+    private float footstepRemaining;
+
     private void Start()
     {
         player = Player.Instance;
@@ -75,6 +82,10 @@ public sealed class PlayerMovement : MonoBehaviour
         body.constraints |= RigidbodyConstraints.FreezePositionZ;
 
         InitializeVisualFacing();
+
+        UpdateGrounded();
+        lastGroundedForLand = IsGrounded;
+        ResetFootstepState();
     }
 
     private void InitializeVisualFacing()
@@ -145,6 +156,7 @@ public sealed class PlayerMovement : MonoBehaviour
         float dt = Time.fixedDeltaTime;
 
         UpdateGrounded();
+        TryPlayLandSfx();
 
         if (dashCooldownRemaining > 0f) dashCooldownRemaining -= dt;
 
@@ -153,6 +165,7 @@ public sealed class PlayerMovement : MonoBehaviour
             body.linearVelocity = Vector3.zero;
             pendingImpulse = Vector3.zero;
             LockPlaneZ();
+            ResetFootstepState();
             return;
         }
 
@@ -161,6 +174,8 @@ public sealed class PlayerMovement : MonoBehaviour
             body.linearVelocity = Vector3.zero;
             pendingImpulse = Vector3.zero;
             LockPlaneZ();
+
+            ResetFootstepState();
 
             dashDown = false;
             jumpDown = false;
@@ -173,6 +188,7 @@ public sealed class PlayerMovement : MonoBehaviour
             TickDash(dt);
             ApplyPendingImpulse();
             LockPlaneZ();
+            ResetFootstepState();
             return;
         }
 
@@ -192,6 +208,8 @@ public sealed class PlayerMovement : MonoBehaviour
 
         ApplyPendingImpulse();
         LockPlaneZ();
+
+        TickFootsteps(dt);
 
         dashDown = false;
         jumpDown = false;
@@ -225,6 +243,8 @@ public sealed class PlayerMovement : MonoBehaviour
         runHeldRaw = false;
         runActive = false;
         runLockRemaining = 0f;
+
+        ResetFootstepState();
 
         ApplyVisualFacing();
     }
@@ -340,6 +360,8 @@ public sealed class PlayerMovement : MonoBehaviour
         v.z = 0f;
 
         body.linearVelocity = v;
+
+        AudioManager.Instance.PlaySFX("Dash");
 
         dashDown = false;
         jumpDown = false;
@@ -520,6 +542,45 @@ public sealed class PlayerMovement : MonoBehaviour
         bool touching = groundSensor.IsTouchingGround;
         bool grounded = touching && body.linearVelocity.y <= settings.groundedMinUpVelocity;
         IsGrounded = grounded;
+    }
+
+    private void TryPlayLandSfx()
+    {
+        if (!lastGroundedForLand && IsGrounded && !player.IsSitting)
+            AudioManager.Instance.PlaySFX("Land");
+
+        lastGroundedForLand = IsGrounded;
+    }
+
+    private void TickFootsteps(float dt)
+    {
+        bool active = IsGrounded && moveSign != 0;
+
+        if (!active)
+        {
+            ResetFootstepState();
+            return;
+        }
+
+        if (!lastFootstepActive) footstepRemaining = 0f;
+
+        float interval = runActive ? RunSfxInterval : WalkSfxInterval;
+
+        footstepRemaining -= dt;
+
+        if (footstepRemaining <= 0f)
+        {
+            AudioManager.Instance.PlaySFX("Walk");
+            footstepRemaining += interval;
+        }
+
+        lastFootstepActive = true;
+    }
+
+    private void ResetFootstepState()
+    {
+        lastFootstepActive = false;
+        footstepRemaining = 0f;
     }
 
     private void UpdateFacing()

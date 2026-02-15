@@ -61,6 +61,8 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
     private float diceSettleRemaining;
     private bool lastBattle;
 
+    private bool diceIsFromRandomRoll;
+
     private PlayerUltimate lastUltimate;
 
     private void Awake()
@@ -81,8 +83,9 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
 
         diceGauge = 0f;
 
+        diceIsFromRandomRoll = false;
+
         lastBattle = isBattle;
-        if (isBattle) EnterBattle();
 
         lastUltimate = combat.EquippedUltimate;
         ApplyUltimateDiceMode(lastUltimate);
@@ -166,11 +169,17 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         if (isInvincible) return;
 
         float dodgeChance = DiceChanceTable.GetPlayerChance(DiceValue);
-        if (dodgeChance > 0f && UnityEngine.Random.value < dodgeChance) return;
+        if (dodgeChance > 0f && UnityEngine.Random.value < dodgeChance)
+        {
+            AudioManager.Instance.PlaySFX("Dodge");
+            return;
+        }
 
         int before = hp;
         hp -= payload.Amount;
         if (hp < 0) hp = 0;
+
+        AudioManager.Instance.PlaySFX("TakeDamagePlayerAndMonster");
 
         if (hp != before) HpChanged?.Invoke(hp, maxHp);
     }
@@ -214,6 +223,8 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         settledDiceA = diceA;
         settledDiceB = diceB;
 
+        diceIsFromRandomRoll = true;
+
         diceSettleRemaining = 0f;
 
         DiceRolled?.Invoke(diceA, diceB);
@@ -225,6 +236,8 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         PlayerUltimate ultimate = combat.EquippedUltimate;
         if (ultimate == null) return;
         if (!ultimate.DiceEnabled) return;
+
+        AudioManager.Instance.PlaySFX("DiceRoll");
 
         RollDiceInternal();
         diceRollRemaining = UnityEngine.Random.Range(settings.diceRollIntervalMin, settings.diceRollIntervalMax);
@@ -279,6 +292,12 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
             return;
         }
 
+        if (!diceIsFromRandomRoll)
+        {
+            RollDiceInternal();
+            AddDiceGauge(settings.diceGaugeGainPerRoll);
+        }
+
         diceRollRemaining = UnityEngine.Random.Range(settings.diceRollIntervalMin, settings.diceRollIntervalMax);
     }
 
@@ -326,6 +345,8 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         settledDiceA = a;
         settledDiceB = b;
 
+        diceIsFromRandomRoll = false;
+
         DiceSettled?.Invoke(settledDiceA, settledDiceB);
     }
 
@@ -333,6 +354,8 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
     {
         diceA = UnityEngine.Random.Range(1, 7);
         diceB = UnityEngine.Random.Range(1, 7);
+
+        diceIsFromRandomRoll = true;
 
         pendingSettledDiceA = diceA;
         pendingSettledDiceB = diceB;

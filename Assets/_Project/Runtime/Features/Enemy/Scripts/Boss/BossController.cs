@@ -25,6 +25,9 @@ public sealed class BossController : MonoBehaviour
     [Header("Underground Facing (Delta From baseYawForLeft)")]
     public float undergroundBackYawOffset = 90f;
     public float undergroundFrontYawOffset = -90f;
+    public float undergroundBackStepDeltaZ = 1.0f;  
+    public float undergroundBackStepSpeed = 23.0f;       
+    public float rotateWaitSeconds = 0.12f;
 
     [Header("Aim Shot Spawn Offset (From Boss Body)")]
     public float aimShotSpawnXOffset = 0.8f;
@@ -342,8 +345,12 @@ public sealed class BossController : MonoBehaviour
     {
         int prevFacing = facingDir;
 
+        float savedYaw = GetModelYaw();
+
         Vector3 startPos = rb.position;
         float startZ = startPos.z;
+
+        float backZ = startZ + undergroundBackStepDeltaZ;
 
         float outZ = startZ + s.undergroundWalkDeltaZ;
 
@@ -352,8 +359,12 @@ public sealed class BossController : MonoBehaviour
 
         float backYaw = bossData.baseYawForLeft + undergroundBackYawOffset;
         SetModelYaw(backYaw);
+        yield return WaitRotateDone();
 
         PlayStateForce(moveHash);
+
+        yield return MoveZ(backZ, undergroundBackStepSpeed);
+
         yield return MoveZ(outZ, s.undergroundWalkOutSpeed);
 
         bool prevGravity = rb.useGravity;
@@ -382,17 +393,23 @@ public sealed class BossController : MonoBehaviour
         yield return MoveY(startPos.y, Mathf.Max(0.01f, s.undergroundRiseTime));
         rb.useGravity = prevGravity;
 
+
         float frontYaw = bossData.baseYawForLeft + undergroundFrontYawOffset;
         SetModelYaw(frontYaw);
+        yield return WaitRotateDone();
+
 
         PlayStateForce(moveHash);
         yield return MoveZ(startZ, s.undergroundWalkInSpeed);
 
         rb.constraints = savedConstraints;
 
-        SetFacing(prevFacing);
+        SetYawExact(savedYaw);
+
         PlayStateForce(idleHash);
+        yield return WaitRotateDone();
     }
+
 
     IEnumerator Skill_TwoShotsToPlayerPos(BossSkillEntry s)
     {
@@ -545,4 +562,29 @@ public sealed class BossController : MonoBehaviour
     {
         DeactivateBoss();
     }
+
+    IEnumerator WaitRotateDone()
+    {
+        float t = Mathf.Max(0f, rotateWaitSeconds);
+        while (t > 0f && active)
+        {
+            t -= Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    float GetModelYaw()
+    {
+        if (modelRoot == null) return transform.eulerAngles.y;
+
+        if (modelRoot == transform) return transform.eulerAngles.y;
+        return modelRoot.localEulerAngles.y;
+    }
+
+    void SetYawExact(float yaw)
+    {
+        yaw = (yaw % 360f + 360f) % 360f;
+        SetModelYaw(yaw);
+    }
+
 }
