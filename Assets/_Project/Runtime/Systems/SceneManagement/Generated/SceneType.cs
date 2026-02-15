@@ -8,4 +8,5 @@ public enum SceneType {
 	TutorialScene,
 	PrologScene,
 	FallScene,
+	Dungeon1Scene,
 }
