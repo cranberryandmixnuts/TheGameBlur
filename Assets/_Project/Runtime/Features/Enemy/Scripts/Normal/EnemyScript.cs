@@ -45,6 +45,13 @@ public class EnemyScript : MonoBehaviour, IDamageable
     bool isActionLocked = false;
     Coroutine lockRoutine;
 
+    bool activeAI;
+    Vector3 spawnPos;
+    Quaternion spawnRot;
+
+    public bool IsActiveAI => activeAI;
+
+
     Animator anim;
     static readonly int AnimIsMoving = Animator.StringToHash("IsMoving");
     static readonly int AnimIsChasing = Animator.StringToHash("IsChasing");
@@ -80,6 +87,10 @@ public class EnemyScript : MonoBehaviour, IDamageable
             return;
         }
 
+        spawnPos = transform.position;
+        spawnRot = transform.rotation;
+
+
         currentHP = data.maxHP;
 
         if (enableNormalAI)
@@ -112,6 +123,74 @@ public class EnemyScript : MonoBehaviour, IDamageable
             yield return PatrolOnce();
         }
     }
+
+    public void ActivateEnemy(bool resetHp = false, bool resetTransform = false)
+    {
+        if (data == null) return;
+
+        if (resetTransform)
+        {
+            transform.position = spawnPos;
+            transform.rotation = spawnRot;
+        }
+
+        if (resetHp)
+            currentHP = data.maxHP;
+
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        hasAggro = false;
+        lockedTarget = null;
+        isActionLocked = false;
+
+        activeAI = true;
+
+        if (loop != null) StopCoroutine(loop);
+        loop = StartCoroutine(AI_Loop());
+    }
+
+    public void DeactivateEnemy(bool resetTransform = false)
+    {
+        activeAI = false;
+
+        if (loop != null)
+        {
+            StopCoroutine(loop);
+            loop = null;
+        }
+
+        if (lockRoutine != null)
+        {
+            StopCoroutine(lockRoutine);
+            lockRoutine = null;
+        }
+
+        if (combat != null)
+            combat.enabled = false;
+
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        hasAggro = false;
+        lockedTarget = null;
+        isActionLocked = false;
+
+        SetState(EnemyState.Idle);
+
+        if (resetTransform)
+        {
+            transform.position = spawnPos;
+            transform.rotation = spawnRot;
+        }
+    }
+
+    public void SetCombatEnabled(bool enabled)
+    {
+        if (combat != null)
+            combat.enabled = enabled;
+    }
+
 
     IEnumerator PatrolOnce()
     {
