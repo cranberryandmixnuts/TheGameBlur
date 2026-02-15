@@ -10,7 +10,10 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
     public event Action<int, int> MpChanged;
     public event Action<bool> BattleChanged;
 
-    [SerializeField] private bool isBattle;
+    [SerializeField] private bool isActive = true;
+    [SerializeField] private bool isBattle = true;
+
+    public bool IsActive => isActive;
 
     public bool IsBattle => isBattle;
     public bool IsInvincible => isInvincible;
@@ -123,9 +126,12 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
 
     public void SetBattle(bool value)
     {
-        if (isBattle == value) return;
+        if (isBattle != value) isBattle = value;
+    }
 
-        isBattle = value;
+    public void PlayerSetActive(bool value)
+    {
+        if (isActive != value) isActive = value;
     }
 
     public void NotifyCombatActivity()

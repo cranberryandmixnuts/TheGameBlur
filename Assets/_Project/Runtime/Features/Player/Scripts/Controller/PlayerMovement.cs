@@ -69,6 +69,8 @@ public sealed class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (!player.Stats.IsActive) return;
+
         float axis = input.MoveAxis;
 
         moveSign = 0;
@@ -105,6 +107,8 @@ public sealed class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!player.Stats.IsActive) return;
+
         float dt = Time.fixedDeltaTime;
 
         UpdateGrounded();

@@ -89,6 +89,8 @@ public sealed class PlayerCombat : MonoBehaviour
 
     private void Update()
     {
+        if (!player.Stats.IsActive) return;
+
         float dt = Time.deltaTime;
 
         if (basicAttackCooldownRemaining > 0f) basicAttackCooldownRemaining -= dt;
