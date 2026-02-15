@@ -12,6 +12,7 @@ public sealed class PlayerCombat : MonoBehaviour
     }
 
     public event Action<AnimRequest> AnimationRequested;
+    public event Action OnAttacked;
 
     [SerializeField] private PlayerAttackRangeIndicator attackRangeIndicator;
 
@@ -265,6 +266,9 @@ public sealed class PlayerCombat : MonoBehaviour
 
     private bool DealDamageFromHits(int count, int amount)
     {
+        float critChance = DiceChanceTable.GetPlayerChance(stats.DiceValue);
+        if (critChance > 0f && UnityEngine.Random.value < critChance) amount *= 2;
+
         hitSet.Clear();
         bool hitAny = false;
 
@@ -280,6 +284,7 @@ public sealed class PlayerCombat : MonoBehaviour
             if (hitSet.Add(d2))
             {
                 d2.ApplyDamage(new DamagePayload(amount, gameObject));
+                OnAttacked?.Invoke();
                 hitAny = true;
             }
         }

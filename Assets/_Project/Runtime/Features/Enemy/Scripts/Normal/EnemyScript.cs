@@ -148,6 +148,7 @@ public class EnemyScript : MonoBehaviour, IDamageable
     {
         if (data == null) return;
 
+        activeAI = true;
         if (moveRoutine != null)
         {
             StopCoroutine(moveRoutine);

@@ -284,6 +284,14 @@ public sealed class PlayerMovement : MonoBehaviour
         body.linearVelocity = v;
 
         LockPlaneZ();
+
+        if (jumpHoldActive) CancelJumpHoldWithoutCut();
+    }
+
+    private void CancelJumpHoldWithoutCut()
+    {
+        jumpHoldActive = false;
+        jumpHoldElapsed = settings.maxJumpHoldTime;
     }
 
     private void TryStartDash()
