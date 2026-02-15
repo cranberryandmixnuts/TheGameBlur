@@ -111,8 +111,7 @@ public sealed class PlayerCombat : MonoBehaviour
         if (skillCooldownRemaining > 0f) skillCooldownRemaining -= dt;
 
         bool grounded = movement.IsGrounded;
-        if (grounded && !lastGrounded)
-            usedAirBasicAttackThisAirtime = false;
+        if (grounded && !lastGrounded) usedAirBasicAttackThisAirtime = false;
 
         lastGrounded = grounded;
 
@@ -133,11 +132,10 @@ public sealed class PlayerCombat : MonoBehaviour
 
         movement.CancelBasicAttackRunLock();
 
-        if (ultimateInvincibleApplied)
-        {
-            ultimateInvincibleApplied = false;
-            stats.SetInvincible(false);
-        }
+        if (!ultimateInvincibleApplied) return;
+
+        ultimateInvincibleApplied = false;
+        stats.SetInvincible(false);
     }
 
     public void RebuildUnlockCache()
@@ -163,14 +161,10 @@ public sealed class PlayerCombat : MonoBehaviour
     }
 
     public bool IsSkillUnlocked(PlayerSkill skill)
-    {
-        return skill != null && (skill.IsAlwaysUnlocked || unlockedSkills.Contains(skill));
-    }
+        => skill != null && (skill.IsAlwaysUnlocked || unlockedSkills.Contains(skill));
 
     public bool IsUltimateUnlocked(PlayerUltimate ultimate)
-    {
-        return ultimate != null && (ultimate.IsAlwaysUnlocked || unlockedUltimates.Contains(ultimate));
-    }
+        => ultimate != null && (ultimate.IsAlwaysUnlocked || unlockedUltimates.Contains(ultimate));
 
     public void EquipSkill(PlayerSkill skill)
     {
@@ -202,12 +196,12 @@ public sealed class PlayerCombat : MonoBehaviour
         if (IsSkillOrUltimateActive) return;
         if (basicAttackCooldownRemaining > 0f) return;
 
-        AudioManager.Instance.PlaySFX("SwordSwing");
-
         if (movement.IsGrounded)
         {
             if (!TryGetMouseWorldOnPlane(out Vector3 mouseWorld))
                 mouseWorld = transform.position + Vector3.right * movement.FacingSign;
+
+            AudioManager.Instance.PlaySFX("SwordSwing");
 
             GroundAttack(mouseWorld);
 
@@ -218,18 +212,19 @@ public sealed class PlayerCombat : MonoBehaviour
 
         if (usedAirBasicAttackThisAirtime) return;
 
+        AudioManager.Instance.PlaySFX("SwordSwing");
+
         bool hitAny = AirAttack();
 
         usedAirBasicAttackThisAirtime = true;
         basicAttackCooldownRemaining = settings.basicAttackCooldown;
         movement.NotifyBasicAttackStarted(settings.basicAttackCooldown);
 
-        if (hitAny)
-        {
-            usedAirBasicAttackThisAirtime = false;
-            movement.RefreshAirDashUsage();
-            movement.ApplyAirPogoBounce();
-        }
+        if (!hitAny) return;
+
+        usedAirBasicAttackThisAirtime = false;
+        movement.RefreshAirDashUsage();
+        movement.ApplyAirPogoBounce();
     }
 
     private void GroundAttack(Vector3 mouseWorld)
@@ -285,12 +280,11 @@ public sealed class PlayerCombat : MonoBehaviour
             IDamageable d2 = c.GetComponentInParent<IDamageable>();
             if (d2 == null) continue;
 
-            if (hitSet.Add(d2))
-            {
-                d2.ApplyDamage(new DamagePayload(amount, gameObject));
-                OnAttacked?.Invoke();
-                hitAny = true;
-            }
+            if (!hitSet.Add(d2)) continue;
+
+            d2.ApplyDamage(new DamagePayload(amount, gameObject));
+            OnAttacked?.Invoke();
+            hitAny = true;
         }
 
         if (hitAny && isCrit) AudioManager.Instance.PlaySFX("Critical");

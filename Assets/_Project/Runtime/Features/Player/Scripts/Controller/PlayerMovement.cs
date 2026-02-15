@@ -4,8 +4,8 @@ using UnityEngine.InputSystem;
 
 public sealed class PlayerMovement : MonoBehaviour
 {
-    private const float WalkSfxInterval = 0.45f;
-    private const float RunSfxInterval = 0.3f;
+    private const float WalkSfxInterval = 1.2f;
+    private const float RunSfxInterval = 0.6f;
 
     [SerializeField] private Transform visualRoot;
     [SerializeField] private PlayerGroundSensor groundSensor;
