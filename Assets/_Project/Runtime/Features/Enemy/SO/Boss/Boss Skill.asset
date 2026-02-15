@@ -74,15 +74,15 @@ MonoBehaviour:
     jumpApexHeightMin: 1.5
     jumpApexHeightPerUnit: 0.25
     dashSpeed: 13
-    undergroundWalkDeltaZ: 3
+    undergroundWalkDeltaZ: 6
     undergroundWalkOutSpeed: 3
     undergroundWalkInSpeed: 3
-    undergroundDropY: 3
-    undergroundDropTime: 0.4
+    undergroundDropY: 4
+    undergroundDropTime: 0.5
     undergroundBeforeFireWait: 0
-    undergroundAfterFireWait: 1.2
-    undergroundRiseTime: 0.2
-    fireHorizontalSpeed: 12
+    undergroundAfterFireWait: 1.4
+    undergroundRiseTime: 0.4
+    fireHorizontalSpeed: 10
     aimShotSpeed: 0
     aimShotInterval: 0
     aimShotCount: 0
