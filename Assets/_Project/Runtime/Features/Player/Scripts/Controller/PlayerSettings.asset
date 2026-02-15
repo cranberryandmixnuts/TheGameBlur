@@ -70,6 +70,7 @@ MonoBehaviour:
   airAttackDamage: 10
   airAttackRadius: 2.2
   airAttackHalfAngleDeg: 75
+  airPogoBounceVelocity: 24
   showAttackRangeOnAttack: 1
   attackRangeVisualDuration: 0.06
   attackRangeLineWidth: 0.03
