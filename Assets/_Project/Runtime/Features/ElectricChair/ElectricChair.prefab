@@ -101,6 +101,7 @@ GameObject:
   - component: {fileID: 4614217099535649536}
   - component: {fileID: 3075821764248315683}
   - component: {fileID: 2670825452812480816}
+  - component: {fileID: 6008222648156365315}
   m_Layer: 0
   m_Name: ElectricChair
   m_TagString: Untagged
@@ -159,3 +160,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ElectricChair
   seatPoint: {fileID: 7693760172222048836}
   seatOffset: {x: -0.03, y: 1.22, z: 0}
+--- !u!114 &6008222648156365315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8961327344786917782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6950b60e5a20d04880f6781fd07dc6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Interacter
+  interactionViewPrefab: {fileID: 5260883214942761160, guid: 2e315972ca562a042829ad24fbf7350c, type: 3}
+  offset: {x: 0, y: 250}

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public sealed class PlayerCombat : MonoBehaviour
 {
@@ -346,7 +347,7 @@ public sealed class PlayerCombat : MonoBehaviour
     {
         Camera cam = Camera.main;
 
-        Ray ray = cam.ScreenPointToRay(UnityEngine.Input.mousePosition);
+        Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
         Plane plane = new Plane(Vector3.forward, new Vector3(0f, 0f, settings.planeZ));
 
         if (!plane.Raycast(ray, out float enter))

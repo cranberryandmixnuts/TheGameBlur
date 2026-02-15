@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
@@ -21,6 +22,17 @@ public class Interacter : MonoBehaviour
         {
             Destroy(interactionViews[0].gameObject);
             interactionViews.RemoveAt(0);
+        }
+    }
+
+    private void Update()
+    {
+        if(InputManager.Instance.InteractionDown)
+        {
+            foreach(InteractionView interactionView in interactionViews)
+                Destroy(interactionView.gameObject);
+
+            interactionViews.Clear();
         }
     }
 }

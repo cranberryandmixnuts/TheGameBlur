@@ -40,6 +40,8 @@ public sealed class FireballProjectile : MonoBehaviour
         transform.position = p;
 
         transform.localScale = transform.localScale * size;
+
+        AudioManager.Instance.PlaySFX("FireBall");
     }
 
     private void Update()
