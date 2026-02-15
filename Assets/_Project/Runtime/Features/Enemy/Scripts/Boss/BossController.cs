@@ -133,6 +133,8 @@ public sealed class BossController : MonoBehaviour
 
     public void DeactivateBoss()
     {
+
+        Debug.Log("DeactivateBoss 함수 실행");
         active = false;
 
         if (loop != null)
