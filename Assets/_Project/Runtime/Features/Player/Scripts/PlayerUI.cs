@@ -218,6 +218,7 @@ public sealed class PlayerUI : MonoBehaviour
 
     private void OnBattleChanged(bool battle)
     {
+        AudioManager.Instance.PlaySFX("LeechOnAndOff");
         ApplyBattleUi(battle, false);
         if (diceUiVisible) StartDicePanelTransition(battle);
     }
