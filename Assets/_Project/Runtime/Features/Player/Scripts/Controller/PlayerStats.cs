@@ -165,6 +165,9 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
     {
         if (isInvincible) return;
 
+        float dodgeChance = DiceChanceTable.GetPlayerChance(DiceValue);
+        if (dodgeChance > 0f && UnityEngine.Random.value < dodgeChance) return;
+
         int before = hp;
         hp -= payload.Amount;
         if (hp < 0) hp = 0;

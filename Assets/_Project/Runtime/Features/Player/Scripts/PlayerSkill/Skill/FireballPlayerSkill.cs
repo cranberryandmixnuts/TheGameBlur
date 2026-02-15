@@ -15,6 +15,13 @@ public sealed class FireballPlayerSkill : PlayerSkill
 
     public override void Execute(Player player, int directionSign, Vector3 mouseWorld)
     {
+        int diceValue = player.Stats.DiceValue;
+        float skillSize = DiceChanceTable.GetPlayerSkillSize(diceValue);
+
+        int finalDamage = damage;
+        float critChance = DiceChanceTable.GetPlayerChance(diceValue);
+        if (critChance > 0f && Random.value < critChance) finalDamage *= 2;
+
         Vector3 p = player.transform.position;
 
         Vector3 d = new Vector3(mouseWorld.x - p.x, mouseWorld.y - p.y, 0f);
@@ -26,6 +33,6 @@ public sealed class FireballPlayerSkill : PlayerSkill
         spawn.z = player.Settings.planeZ;
 
         FireballProjectile proj = Instantiate(projectilePrefab, spawn, Quaternion.identity);
-        proj.Initialize(d, speed, maxDistance, damage, hitRadius, player.Settings.attackMask, player.Settings.groundMask, player.gameObject, player.Settings.planeZ);
+        proj.Initialize(d, speed, maxDistance, finalDamage, hitRadius * skillSize, player.Settings.attackMask, player.Settings.groundMask, player.gameObject, player.Settings.planeZ, skillSize);
     }
 }

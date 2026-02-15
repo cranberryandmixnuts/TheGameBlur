@@ -266,6 +266,9 @@ public sealed class PlayerCombat : MonoBehaviour
 
     private bool DealDamageFromHits(int count, int amount)
     {
+        float critChance = DiceChanceTable.GetPlayerChance(stats.DiceValue);
+        if (critChance > 0f && UnityEngine.Random.value < critChance) amount *= 2;
+
         hitSet.Clear();
         bool hitAny = false;
 
