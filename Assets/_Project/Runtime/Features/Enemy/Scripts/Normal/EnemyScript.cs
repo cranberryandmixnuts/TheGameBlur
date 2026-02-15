@@ -137,6 +137,8 @@ public class EnemyScript : MonoBehaviour, IDamageable
     {
         if (data == null) return;
 
+        activeAI = true;
+
         if (resetTransform)
         {
             transform.position = spawnPos;

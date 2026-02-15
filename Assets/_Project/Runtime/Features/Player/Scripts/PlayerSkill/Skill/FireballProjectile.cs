@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -68,7 +69,10 @@ public sealed class FireballProjectile : MonoBehaviour
             IDamageable d = c.GetComponentInParent<IDamageable>();
             if (d == null) continue;
 
-            if (hitSet.Add(d)) d.ApplyDamage(new DamagePayload(damage, source));
+            if (hitSet.Add(d))
+            {
+                d.ApplyDamage(new DamagePayload(damage, source));
+            }
         }
 
         transform.position = next;

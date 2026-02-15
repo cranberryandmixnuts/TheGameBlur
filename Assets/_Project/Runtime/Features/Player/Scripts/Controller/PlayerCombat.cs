@@ -12,6 +12,7 @@ public sealed class PlayerCombat : MonoBehaviour
     }
 
     public event Action<AnimRequest> AnimationRequested;
+    public event Action OnAttacked;
 
     [SerializeField] private PlayerAttackRangeIndicator attackRangeIndicator;
 
@@ -280,6 +281,7 @@ public sealed class PlayerCombat : MonoBehaviour
             if (hitSet.Add(d2))
             {
                 d2.ApplyDamage(new DamagePayload(amount, gameObject));
+                OnAttacked?.Invoke();
                 hitAny = true;
             }
         }

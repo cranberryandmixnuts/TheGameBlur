@@ -62,8 +62,8 @@ public class TutorialManager : MonoBehaviour
     {
         foreach(var enemy in enemies)
         {
-            enemy.ActivateEnemy();
             enemy.MoveToTarget(playerTransform, 2f);
+            enemy.ActivateEnemy();
         }
 
         StartCoroutine(StartMainTutorial4());
