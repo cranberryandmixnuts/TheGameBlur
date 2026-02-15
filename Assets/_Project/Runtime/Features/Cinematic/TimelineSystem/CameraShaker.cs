@@ -14,6 +14,7 @@ public class CameraShaker : MonoBehaviour
 
     public void Shake()
     {
+        Debug.Log("!");
         Shake(0.5f, 6f, 10f);
     }
 
