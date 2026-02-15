@@ -376,4 +376,38 @@ public class EnemyScript : MonoBehaviour, IDamageable
         if (loop != null) StopCoroutine(loop);
         if (lockRoutine != null) StopCoroutine(lockRoutine);
     }
+
+    //배서일 연출용
+    public void MoveToTarget(Transform target, float speed)
+    {
+        if (target == null) return;
+
+        StopAllCoroutines();
+        loop = StartCoroutine(MoveToTargetRoutine(target, speed));
+    }
+
+    IEnumerator MoveToTargetRoutine(Transform target, float speed)
+    {
+        activeAI = false;
+        hasAggro = false;
+
+        SetState(EnemyState.Move);
+
+        while (target != null)
+        {
+            float dx = target.position.x - rb.position.x;
+
+            if (Mathf.Abs(dx) <= 0.05f)
+                break;
+
+            SetFacing(dx >= 0f ? 1 : -1);
+
+            MoveX(target.position.x, speed);
+
+            yield return new WaitForFixedUpdate();
+        }
+
+        SetState(EnemyState.Idle);
+    }
+
 }
