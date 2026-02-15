@@ -6,7 +6,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private List<EnemySpawnTarget> spawnTargets;
     [SerializeField] private EnemyScript enemyPrefab;
 
-    private List<EnemyScript> spawnScripts;
+    private List<EnemyScript> spawnScripts = new();
 
     private void Start()
     {
