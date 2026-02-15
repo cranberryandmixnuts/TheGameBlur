@@ -1,5 +1,6 @@
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public sealed class PlayerMovement : MonoBehaviour
 {
@@ -566,7 +567,7 @@ public sealed class PlayerMovement : MonoBehaviour
     {
         Camera cam = Camera.main;
 
-        Ray ray = cam.ScreenPointToRay(UnityEngine.Input.mousePosition);
+        Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
         Plane plane = new Plane(Vector3.forward, new Vector3(0f, 0f, settings.planeZ));
 
         float enter;

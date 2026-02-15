@@ -29,7 +29,7 @@ public class SettingManager : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if(InputManager.Instance.EscapeDown)
         {
             if(settingView != null)
             {

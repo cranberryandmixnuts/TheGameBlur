@@ -27,7 +27,7 @@ public class Interacter : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.E))
+        if(InputManager.Instance.InteractionDown)
         {
             foreach(InteractionView interactionView in interactionViews)
                 Destroy(interactionView.gameObject);
