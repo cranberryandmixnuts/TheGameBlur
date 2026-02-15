@@ -37,6 +37,7 @@ public sealed class PlayerSettings : ScriptableObject
 
     [Header("Facing")]
     public float mouseFacingDeadZone = 0.02f;
+    public float facingTurnDuration = 0.1f;
 
     [Header("Jump / Gravity")]
     public float gravity = -35f;

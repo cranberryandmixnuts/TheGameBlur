@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 
 public sealed class PlayerMovement : MonoBehaviour
@@ -48,6 +49,9 @@ public sealed class PlayerMovement : MonoBehaviour
 
     private bool isStandingUpFromChair;
 
+    private float rightFacingY;
+    private Tween facingTween;
+
     private void Start()
     {
         player = Player.Instance;
@@ -65,6 +69,21 @@ public sealed class PlayerMovement : MonoBehaviour
 
         body.constraints |= RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
         body.constraints |= RigidbodyConstraints.FreezePositionZ;
+
+        InitializeVisualFacing();
+    }
+
+    private void InitializeVisualFacing()
+    {
+        if (visualRoot == null) return;
+
+        rightFacingY = visualRoot.localEulerAngles.y;
+
+        Vector3 s = visualRoot.localScale;
+        s.x = Mathf.Abs(s.x);
+        visualRoot.localScale = s;
+
+        ApplyVisualFacing(true);
     }
 
     private void Update()
@@ -502,11 +521,30 @@ public sealed class PlayerMovement : MonoBehaviour
 
     private void ApplyVisualFacing()
     {
+        ApplyVisualFacing(false);
+    }
+
+    private void ApplyVisualFacing(bool instant)
+    {
         if (visualRoot == null) return;
 
         Vector3 s = visualRoot.localScale;
-        s.x = Mathf.Abs(s.x) * FacingSign;
+        s.x = Mathf.Abs(s.x);
         visualRoot.localScale = s;
+
+        float y = FacingSign < 0 ? rightFacingY + 180f : rightFacingY;
+        y = Mathf.Repeat(y, 360f);
+
+        Vector3 target = visualRoot.localEulerAngles;
+        target.y = y;
+
+        if (facingTween != null) facingTween.Kill();
+
+        float duration = instant ? 0f : settings.facingTurnDuration;
+        if (duration <= 0f)
+            visualRoot.localEulerAngles = target;
+        else
+            facingTween = visualRoot.DOLocalRotate(target, duration, RotateMode.Fast).SetEase(Ease.OutSine);
     }
 
     private void ApplyPendingImpulse()
