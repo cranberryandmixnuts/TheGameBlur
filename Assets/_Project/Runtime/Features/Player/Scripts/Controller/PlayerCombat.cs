@@ -202,6 +202,8 @@ public sealed class PlayerCombat : MonoBehaviour
         if (IsSkillOrUltimateActive) return;
         if (basicAttackCooldownRemaining > 0f) return;
 
+        AudioManager.Instance.PlaySFX("SwordSwing");
+
         if (movement.IsGrounded)
         {
             if (!TryGetMouseWorldOnPlane(out Vector3 mouseWorld))
@@ -268,7 +270,8 @@ public sealed class PlayerCombat : MonoBehaviour
     private bool DealDamageFromHits(int count, int amount)
     {
         float critChance = DiceChanceTable.GetPlayerChance(stats.DiceValue);
-        if (critChance > 0f && UnityEngine.Random.value < critChance) amount *= 2;
+        bool isCrit = critChance > 0f && UnityEngine.Random.value < critChance;
+        if (isCrit) amount *= 2;
 
         hitSet.Clear();
         bool hitAny = false;
@@ -289,6 +292,8 @@ public sealed class PlayerCombat : MonoBehaviour
                 hitAny = true;
             }
         }
+
+        if (hitAny && isCrit) AudioManager.Instance.PlaySFX("Critical");
 
         return hitAny;
     }

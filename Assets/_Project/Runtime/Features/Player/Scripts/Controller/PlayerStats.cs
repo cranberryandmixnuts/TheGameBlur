@@ -169,7 +169,11 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         if (isInvincible) return;
 
         float dodgeChance = DiceChanceTable.GetPlayerChance(DiceValue);
-        if (dodgeChance > 0f && UnityEngine.Random.value < dodgeChance) return;
+        if (dodgeChance > 0f && UnityEngine.Random.value < dodgeChance)
+        {
+            AudioManager.Instance.PlaySFX("Dodge");
+            return;
+        }
 
         int before = hp;
         hp -= payload.Amount;
@@ -232,6 +236,8 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         PlayerUltimate ultimate = combat.EquippedUltimate;
         if (ultimate == null) return;
         if (!ultimate.DiceEnabled) return;
+
+        AudioManager.Instance.PlaySFX("DiceRoll");
 
         RollDiceInternal();
         diceRollRemaining = UnityEngine.Random.Range(settings.diceRollIntervalMin, settings.diceRollIntervalMax);
