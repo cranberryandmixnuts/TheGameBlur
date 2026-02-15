@@ -175,6 +175,8 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         hp -= payload.Amount;
         if (hp < 0) hp = 0;
 
+        AudioManager.Instance.PlaySFX("TakeDamagePlayerAndMonster");
+
         if (hp != before) HpChanged?.Invoke(hp, maxHp);
     }
 
