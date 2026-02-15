@@ -97,6 +97,8 @@ public sealed class PlayerUI : MonoBehaviour
 
     private bool diceUiVisible;
 
+    private bool lastPotionUnlocked;
+
     private void Start()
     {
         player = Player.Instance;
@@ -108,6 +110,9 @@ public sealed class PlayerUI : MonoBehaviour
 
         potionType = PotionType.Hp;
         potionUses = Mathf.Clamp(settings.uiPotionStartUses, 0, settings.uiPotionMaxUses);
+
+        lastPotionUnlocked = settings.potionUnlocked;
+        ApplyPotionUnlocked(lastPotionUnlocked);
 
         ConfigureSkillImages();
 
@@ -143,6 +148,12 @@ public sealed class PlayerUI : MonoBehaviour
 
     private void Update()
     {
+        if (settings.potionUnlocked != lastPotionUnlocked)
+        {
+            lastPotionUnlocked = settings.potionUnlocked;
+            ApplyPotionUnlocked(lastPotionUnlocked);
+        }
+
         float dt = Time.deltaTime;
 
         RefreshHpMpUi();
@@ -157,7 +168,13 @@ public sealed class PlayerUI : MonoBehaviour
         }
         else
         {
-            TickPotionInput(dt);
+            if (lastPotionUnlocked) TickPotionInput(dt);
+            else
+            {
+                wasHealHeld = false;
+                healHoldElapsed = 0f;
+                potionConsumedThisHold = false;
+            }
         }
 
         RefreshPotionUi();
@@ -175,6 +192,27 @@ public sealed class PlayerUI : MonoBehaviour
 
             RebuildDiceModels(nowUltimate);
             ApplyUltimateGauge(stats.DiceGauge, stats.DiceGaugeMax);
+        }
+    }
+
+    private void ApplyPotionUnlocked(bool unlocked)
+    {
+        potionIconImage.gameObject.SetActive(unlocked);
+        potionCountText.gameObject.SetActive(unlocked);
+
+        if (!unlocked)
+        {
+            potionType = PotionType.Hp;
+            potionUses = 0;
+
+            wasHealHeld = false;
+            healHoldElapsed = 0f;
+            potionConsumedThisHold = false;
+        }
+        else
+        {
+            if (potionUses <= 0) potionUses = Mathf.Clamp(settings.uiPotionStartUses, 0, settings.uiPotionMaxUses);
+            if (potionUses > settings.uiPotionMaxUses) potionUses = settings.uiPotionMaxUses;
         }
     }
 
@@ -200,17 +238,14 @@ public sealed class PlayerUI : MonoBehaviour
 
     private void ApplyDiceUiVisible(bool visible)
     {
-        if (diceOuterImage != null) diceOuterImage.gameObject.SetActive(visible);
+        diceOuterImage.gameObject.SetActive(visible);
 
-        if (diceInnerImage != null)
-        {
-            if (!visible) diceInnerImage.gameObject.SetActive(false);
-        }
+        if (!visible) diceInnerImage.gameObject.SetActive(false);
 
-        if (lowerDiceRoot != null) lowerDiceRoot.gameObject.SetActive(visible);
-        if (upperDiceRoot != null) upperDiceRoot.gameObject.SetActive(visible);
-        if (diceSumValueText != null) diceSumValueText.gameObject.SetActive(visible);
-        if (ultimateGauge != null) ultimateGauge.gameObject.SetActive(visible);
+        lowerDiceRoot.gameObject.SetActive(visible);
+        upperDiceRoot.gameObject.SetActive(visible);
+        diceSumValueText.gameObject.SetActive(visible);
+        ultimateGauge.gameObject.SetActive(visible);
 
         if (!visible) KillDiceTweens();
         else StartDicePanelLoop(stats.IsBattle);
@@ -264,12 +299,16 @@ public sealed class PlayerUI : MonoBehaviour
 
     private void TogglePotionType()
     {
+        if (!lastPotionUnlocked) return;
+
         if (potionType == PotionType.Hp) potionType = PotionType.Mp;
         else potionType = PotionType.Hp;
     }
 
     private void TryConsumePotion()
     {
+        if (!lastPotionUnlocked) return;
+
         if (potionUses <= 0) return;
         if (player.IsSitting) return;
 
@@ -290,6 +329,8 @@ public sealed class PlayerUI : MonoBehaviour
 
     private void RestorePotionUse(int amount)
     {
+        if (!lastPotionUnlocked) return;
+
         potionUses += amount;
         if (potionUses > settings.uiPotionMaxUses) potionUses = settings.uiPotionMaxUses;
         if (potionUses < 0) potionUses = 0;
@@ -299,13 +340,15 @@ public sealed class PlayerUI : MonoBehaviour
     {
         bool ultimateActive = combat.IsUltimateActive;
 
-        if (ultimateActive && !wasUltimateActive) RestorePotionUse(1);
+        if (lastPotionUnlocked && ultimateActive && !wasUltimateActive) RestorePotionUse(1);
 
         wasUltimateActive = ultimateActive;
     }
 
     private void RefreshPotionUi()
     {
+        if (!lastPotionUnlocked) return;
+
         potionIconImage.sprite = potionType == PotionType.Hp ? hpPotionSprite : mpPotionSprite;
         potionCountText.text = potionUses.ToString();
     }
@@ -520,7 +563,6 @@ public sealed class PlayerUI : MonoBehaviour
     private void ApplyUltimateGauge(float current, float max)
     {
         if (!diceUiVisible) return;
-        if (ultimateGauge == null) return;
 
         float ratio = 0f;
         if (max > 0f) ratio = Mathf.Clamp01(current / max);

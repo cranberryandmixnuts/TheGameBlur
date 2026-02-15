@@ -32,7 +32,10 @@ public class EnemyScript : MonoBehaviour, IDamageable
     public bool debugLog = false;
 
     Rigidbody rb;
-    Coroutine loop;
+
+    Coroutine aiRoutine;
+
+    Coroutine moveRoutine;
 
     int currentHP;
 
@@ -50,7 +53,6 @@ public class EnemyScript : MonoBehaviour, IDamageable
     Quaternion spawnRot;
 
     public bool IsActiveAI => activeAI;
-
 
     Animator anim;
     static readonly int AnimIsMoving = Animator.StringToHash("IsMoving");
@@ -90,25 +92,36 @@ public class EnemyScript : MonoBehaviour, IDamageable
         spawnPos = transform.position;
         spawnRot = transform.rotation;
 
-
         currentHP = data.maxHP;
 
-        if (enableNormalAI)
-            loop = StartCoroutine(AI_Loop());
+        activeAI = enableNormalAI;
+        if (combat != null) combat.enabled = activeAI;
+
+        if (enableNormalAI && aiRoutine == null)
+            aiRoutine = StartCoroutine(AI_Loop());
     }
 
     IEnumerator AI_Loop()
     {
         while (true)
         {
-
             if (!activeAI)
             {
-                SetState(EnemyState.Idle);
+                hasAggro = false;
+                lockedTarget = null;
+
+                if (!isActionLocked)
+                    SetState(EnemyState.Idle);
+
                 yield return null;
                 continue;
             }
 
+            if (moveRoutine != null)
+            {
+                yield return null;
+                continue;
+            }
 
             if (isActionLocked)
             {
@@ -138,6 +151,11 @@ public class EnemyScript : MonoBehaviour, IDamageable
         if (data == null) return;
 
         activeAI = true;
+        if (moveRoutine != null)
+        {
+            StopCoroutine(moveRoutine);
+            moveRoutine = null;
+        }
 
         if (resetTransform)
         {
@@ -155,20 +173,29 @@ public class EnemyScript : MonoBehaviour, IDamageable
         lockedTarget = null;
         isActionLocked = false;
 
+        if (lockRoutine != null)
+        {
+            StopCoroutine(lockRoutine);
+            lockRoutine = null;
+        }
+
+        if (combat != null)
+            combat.enabled = true;
+
         activeAI = true;
 
-        if (loop != null) StopCoroutine(loop);
-        loop = StartCoroutine(AI_Loop());
+        if (enableNormalAI && aiRoutine == null)
+            aiRoutine = StartCoroutine(AI_Loop());
     }
 
     public void DeactivateEnemy(bool resetTransform = false)
     {
         activeAI = false;
 
-        if (loop != null)
+        if (moveRoutine != null)
         {
-            StopCoroutine(loop);
-            loop = null;
+            StopCoroutine(moveRoutine);
+            moveRoutine = null;
         }
 
         if (lockRoutine != null)
@@ -202,7 +229,6 @@ public class EnemyScript : MonoBehaviour, IDamageable
             combat.enabled = enabled;
     }
 
-
     IEnumerator PatrolOnce()
     {
         SetState(EnemyState.Move);
@@ -215,6 +241,7 @@ public class EnemyScript : MonoBehaviour, IDamageable
 
         while (Mathf.Abs(rb.position.x - targetX) > 0.01f)
         {
+            if (!activeAI || moveRoutine != null) yield break;
             if (isActionLocked) { yield return null; continue; }
 
             if (!hasAggro && vision != null && vision.IsDetected && vision.target != null)
@@ -233,6 +260,7 @@ public class EnemyScript : MonoBehaviour, IDamageable
         float t = data.restTime;
         while (t > 0f)
         {
+            if (!activeAI || moveRoutine != null) yield break;
             if (isActionLocked) { yield return null; continue; }
 
             if (!hasAggro && vision != null && vision.IsDetected && vision.target != null)
@@ -249,7 +277,7 @@ public class EnemyScript : MonoBehaviour, IDamageable
 
     IEnumerator ChaseOrAttackLoop()
     {
-        while (hasAggro && lockedTarget != null)
+        while (activeAI && moveRoutine == null && hasAggro && lockedTarget != null)
         {
             if (isActionLocked)
             {
@@ -263,7 +291,7 @@ public class EnemyScript : MonoBehaviour, IDamageable
             {
                 SetState(EnemyState.Attack);
 
-                if (combat != null && !combat.IsActionActive)
+                if (combat != null && combat.enabled && !combat.IsActionActive)
                     combat.BeginAttack();
 
                 yield return null;
@@ -322,11 +350,8 @@ public class EnemyScript : MonoBehaviour, IDamageable
     {
         isActionLocked = true;
 
-        if (rb != null)
-        {
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-        }
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
 
         yield return new WaitForSeconds(duration);
 
@@ -384,40 +409,44 @@ public class EnemyScript : MonoBehaviour, IDamageable
 
     void OnDisable()
     {
-        if (loop != null) StopCoroutine(loop);
-        if (lockRoutine != null) StopCoroutine(lockRoutine);
+        if (aiRoutine != null) { StopCoroutine(aiRoutine); aiRoutine = null; }
+        if (moveRoutine != null) { StopCoroutine(moveRoutine); moveRoutine = null; }
+        if (lockRoutine != null) { StopCoroutine(lockRoutine); lockRoutine = null; }
     }
+
 
     public void MoveToTarget(Transform target, float speed)
     {
         if (target == null) return;
 
-        StopAllCoroutines();
-        loop = StartCoroutine(MoveToTargetRoutine(target, speed));
+        if (moveRoutine != null) StopCoroutine(moveRoutine);
+
+        activeAI = false;
+        hasAggro = false;
+        lockedTarget = null;
+
+        if (combat != null)
+            combat.enabled = false;
+
+        moveRoutine = StartCoroutine(MoveToTargetRoutine(target, speed));
     }
 
     IEnumerator MoveToTargetRoutine(Transform target, float speed)
     {
-        activeAI = false;
-        hasAggro = false;
-
         SetState(EnemyState.Move);
 
         while (target != null)
         {
             float dx = target.position.x - rb.position.x;
-
-            if (Mathf.Abs(dx) <= 0.05f)
-                break;
+            if (Mathf.Abs(dx) <= 0.05f) break;
 
             SetFacing(dx >= 0f ? 1 : -1);
-
             MoveX(target.position.x, speed);
 
             yield return new WaitForFixedUpdate();
         }
 
         SetState(EnemyState.Idle);
+        moveRoutine = null;
     }
-
 }

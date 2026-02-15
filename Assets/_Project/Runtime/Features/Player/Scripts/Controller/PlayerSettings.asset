@@ -69,7 +69,7 @@ MonoBehaviour:
   groundAttackReach: 1.6
   groundAttackRadius: 1.2
   airAttackDamage: 10
-  airAttackRadius: 2.5
+  airAttackRadius: 2.6
   airPogoBounceVelocity: 30
   showAttackRangeOnAttack: 1
   attackRangeVisualDuration: 0.06
@@ -90,6 +90,7 @@ MonoBehaviour:
     unlocked: 1
   - ultimate: {fileID: 11400000, guid: ea565f6b8abd4bf408f327a1b9ca3a10, type: 2}
     unlocked: 1
+  potionUnlocked: 1
   uiDiceFrameTime: 0.15
   uiDiceLowerStopDelay: 0.5
   uiDiceUpperStopExtraDelay: 0.5
