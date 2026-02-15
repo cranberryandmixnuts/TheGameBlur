@@ -7,6 +7,6 @@ public class FallCameraController : MonoBehaviour
 
     public void FallShake()
     {
-        GetComponent<CameraShaker>().Shake(10, strength, vibrato, false);
+        GetComponent<CameraShaker>().Shake(6.5f, strength, vibrato, false);
     }
 }

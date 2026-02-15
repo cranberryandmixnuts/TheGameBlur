@@ -1818,6 +1818,75 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 91a342645a1ff074ea3966c7a8824bb1, type: 3}
   m_PrefabInstance: {fileID: 118635896}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &174257949
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 174257951}
+  - component: {fileID: 174257950}
+  - component: {fileID: 174257952}
+  m_Layer: 0
+  m_Name: CombatSceneMover
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &174257950
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 174257949}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 13.3, z: 5.52}
+  m_Center: {x: -0.59, y: 0, z: 0}
+--- !u!4 &174257951
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 174257949}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 139.82, y: 1.61817, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &174257952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 174257949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac216c69bc2d8f248b8aa344518fecb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CombatSceneMover
+  loadSceneType: 6
+  interactionViewPrefab: {fileID: 5260883214942761160, guid: 2e315972ca562a042829ad24fbf7350c, type: 3}
+  offset: {x: -150, y: -300}
 --- !u!1001 &177974337
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3546,7 +3615,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1992090318407668727, guid: 8eddb4801856a7e4686f1e6d0cbefb41, type: 3}
   m_PrefabInstance: {fileID: 634542466}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1189961239}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dbc8e54d140ed1c469016f94255ad474, type: 3}
@@ -6825,15 +6894,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1488768678192106274, guid: 8eddb4801856a7e4686f1e6d0cbefb41, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.75
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1488768678192106274, guid: 8eddb4801856a7e4686f1e6d0cbefb41, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.75
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1488768678192106274, guid: 8eddb4801856a7e4686f1e6d0cbefb41, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.75
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1488768678192106274, guid: 8eddb4801856a7e4686f1e6d0cbefb41, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6935,7 +7004,10 @@ PrefabInstance:
     - {fileID: 3919821501203112593, guid: 8eddb4801856a7e4686f1e6d0cbefb41, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4423219298157482014, guid: 8eddb4801856a7e4686f1e6d0cbefb41, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1189961244}
   m_SourcePrefab: {fileID: 100100000, guid: 8eddb4801856a7e4686f1e6d0cbefb41, type: 3}
 --- !u!1 &635801762
 GameObject:
@@ -14053,6 +14125,24 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 709453fc32a062441be3d17267cc36d3, type: 3}
   m_PrefabInstance: {fileID: 1186802298}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1189961239 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4423219298157482014, guid: 8eddb4801856a7e4686f1e6d0cbefb41, type: 3}
+  m_PrefabInstance: {fileID: 634542466}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1189961244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1189961239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5634ebc311834a840afa9d03a8eac914, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CombatClearNotifier
+  sceneMover: {fileID: 174257952}
 --- !u!1 &1191287218
 GameObject:
   m_ObjectHideFlags: 0
@@ -28147,3 +28237,4 @@ SceneRoots:
   - {fileID: 1292044872}
   - {fileID: 1837618118}
   - {fileID: 1668409819}
+  - {fileID: 174257951}

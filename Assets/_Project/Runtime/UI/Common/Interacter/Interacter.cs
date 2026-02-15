@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -9,6 +10,8 @@ public class Interacter : MonoBehaviour
     [SerializeField] private Vector2 offset;
 
     private List<InteractionView> interactionViews = new();
+
+    public event Action OnInteract;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -36,6 +39,7 @@ public class Interacter : MonoBehaviour
 
                 AudioManager.Instance.PlaySFX("Interact");
 
+                OnInteract?.Invoke();
                 interactionViews.Clear();
 
             }

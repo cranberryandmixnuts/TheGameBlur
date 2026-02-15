@@ -6,4 +6,9 @@ public class FallManager : MonoBehaviour
     {
         SceneController.Instance.LoadScene(SceneType.TutorialScene);
     }
+
+    private void Start()
+    {
+        AudioManager.Instance.SetBGM(null);
+    }
 }
