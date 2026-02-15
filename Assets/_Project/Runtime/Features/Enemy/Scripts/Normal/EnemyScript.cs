@@ -287,14 +287,7 @@ public class EnemyScript : MonoBehaviour, IDamageable
         SetState(EnemyState.Idle);
         moveRoutine = null;
 
-        if (resumeAIWhenArrived)
-        {
-            ActivateEnemy(resetHp: false, resetTransform: false);
-        }
-        else
-        {
-            DeactivateEnemy(resetTransform: false);
-        }
+        
     }
 
     IEnumerator PatrolOnce()

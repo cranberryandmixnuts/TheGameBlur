@@ -29,10 +29,16 @@ public class Interacter : MonoBehaviour
     {
         if(InputManager.Instance.InteractionDown)
         {
-            foreach(InteractionView interactionView in interactionViews)
-                Destroy(interactionView.gameObject);
+            if(interactionViews.Count > 0)
+            {
+                foreach (InteractionView interactionView in interactionViews)
+                    Destroy(interactionView.gameObject);
 
-            interactionViews.Clear();
+                AudioManager.Instance.PlaySFX("Interact");
+
+                interactionViews.Clear();
+
+            }
         }
     }
 }

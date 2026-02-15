@@ -64,7 +64,7 @@ public class TutorialManager : MonoBehaviour
         foreach(var enemy in enemies)
         {
             enemy.MoveToTarget(playerTransform, 2f);
-            enemy.ActivateEnemy();
+            
         }
 
         StartCoroutine(StartMainTutorial4());
@@ -75,7 +75,15 @@ public class TutorialManager : MonoBehaviour
         leech.gameObject.SetActive(true);
         leech.Play("LeechFall");
 
+
         yield return new WaitForSeconds(1.5f);
+
+
+        foreach (var enemy in enemies)
+        {
+            enemy.ActivateEnemy();
+
+        }
 
         var cinematicDialog = CinematicManager.Show<CinematicDialog>();
         cinematicDialog.BindDialog("MainTutorial4");
