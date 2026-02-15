@@ -101,6 +101,15 @@ public class EnemyScript : MonoBehaviour, IDamageable
     {
         while (true)
         {
+
+            if (!activeAI)
+            {
+                SetState(EnemyState.Idle);
+                yield return null;
+                continue;
+            }
+
+
             if (isActionLocked)
             {
                 yield return null;
