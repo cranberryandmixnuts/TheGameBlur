@@ -27,7 +27,7 @@ public class PrologPlayerController : MonoBehaviour
         if (!isActive)
             return;
 
-        float moveRate = Input.GetAxisRaw("Horizontal");
+        float moveRate = InputManager.Instance.MoveAxis;
         _rigidBody.linearVelocity = Vector3.right * moveRate * moveSpeed;
 
         if (!Mathf.Approximately(moveRate, 0))

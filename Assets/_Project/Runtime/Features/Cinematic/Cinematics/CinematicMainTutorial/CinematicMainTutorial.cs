@@ -66,7 +66,7 @@ public class CinematicMainTutorial : Cinematic
             }
         }
         
-        if(Mathf.Approximately(Time.timeScale, 0) && Input.GetMouseButtonDown(0))
+        if(Mathf.Approximately(Time.timeScale, 0) && InputManager.Instance.AttackDown)
         {
             isTimeUnslowed = true;
             Destroy(clickGuideView.gameObject);

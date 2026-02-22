@@ -28,7 +28,7 @@ public class CinematicSubTutorial : Cinematic
 
     private void Update()
     {
-        if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+        if(InputManager.Instance.MoveAxis > 0.01f)
         {
             isMoved = true;
             Finish();
