@@ -4232,6 +4232,64 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: -4938724812805102183, guid: 23cd928166e81b543a2e6abc3cd20e61, type: 3}
+--- !u!1 &1953131462
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1953131464}
+  - component: {fileID: 1953131463}
+  m_Layer: 0
+  m_Name: InputManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1953131463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953131462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d79a511d97f62814198ad66882b45d3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InputManager
+  actions: {fileID: -944628639613478452, guid: 3558513544e6cd94bb7c4e1134be6ac2, type: 3}
+  playerMapName: Player
+  uiMapName: UI
+  moveActionName: Move
+  runActionName: Run
+  dashActionName: Dash
+  jumpActionName: Jump
+  attackActionName: Attack
+  skillActionName: Skill
+  diceSkillActionName: DiceSkill
+  healActionName: Heal
+  interactionActionName: Interaction
+  mapActionName: Map
+  escapeActionName: Escape
+--- !u!4 &1953131464
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953131462}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1960180621
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4691,3 +4749,4 @@ SceneRoots:
   - {fileID: 682409951}
   - {fileID: 339587623}
   - {fileID: 1621018334}
+  - {fileID: 1953131464}

@@ -7,10 +7,10 @@ public class CinematicMainTutorial : Cinematic
     private ClickGuideView clickGuideView;
 
     private Transform playerTransform;
-    List<EnemyScript> enemies = new List<EnemyScript>();
-    private float explosionRange { get; } = 30f;
-    private float timeSlowRange { get; } = 3.5f;
-    private float timeSlowScale { get; } = 6f;
+    List<EnemyScript> enemies = new();
+    private float ExplosionRange { get; } = 30f;
+    private float TimeSlowRange { get; } = 3.5f;
+    private float TimeSlowScale { get; } = 6f;
     private bool isTimeSlowed = false;
     private bool isTimeUnslowed = false;
 
@@ -24,7 +24,7 @@ public class CinematicMainTutorial : Cinematic
 
         foreach (var enemy in allEnemies)
         {
-            if (Vector3.Distance(playerTransform.position, enemy.transform.position) <= explosionRange)
+            if (Vector3.Distance(playerTransform.position, enemy.transform.position) <= ExplosionRange)
             {
                 enemies.Add(enemy);
             }
@@ -45,7 +45,7 @@ public class CinematicMainTutorial : Cinematic
         {
             foreach (var enemy in enemies)
             {
-                if (Vector3.Distance(playerTransform.position, enemy.transform.position) <= timeSlowRange)
+                if (Vector3.Distance(playerTransform.position, enemy.transform.position) <= TimeSlowRange)
                 {
                     isTimeSlowed = true;
                     clickGuideView = Instantiate(clickGuideViewPrefab);
@@ -56,9 +56,9 @@ public class CinematicMainTutorial : Cinematic
 
         if(isTimeSlowed && Time.timeScale > 0 && !isTimeUnslowed)
         {
-            if(Time.timeScale - Time.deltaTime * timeSlowScale > 0.1f)
+            if(Time.timeScale - Time.deltaTime * TimeSlowScale > 0.1f)
             {
-                Time.timeScale -= Time.deltaTime * timeSlowScale;
+                Time.timeScale -= Time.deltaTime * TimeSlowScale;
             }
             else
             {
@@ -75,9 +75,9 @@ public class CinematicMainTutorial : Cinematic
         if(isTimeUnslowed)
         {
             
-            if (Time.timeScale + (Time.deltaTime + 0.001f) * timeSlowScale < 1)
+            if (Time.timeScale + (Time.deltaTime + 0.001f) * TimeSlowScale < 1)
             {
-                Time.timeScale += (Time.deltaTime + 0.001f) * timeSlowScale;
+                Time.timeScale += (Time.deltaTime + 0.001f) * TimeSlowScale;
             }
             else
             {
