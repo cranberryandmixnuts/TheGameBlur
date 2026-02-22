@@ -31,7 +31,7 @@ public class DialogView : UIView
 
     private void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if(InputManager.Instance.AttackDown)
             SkipDialog();
     }
 
@@ -79,7 +79,7 @@ public class DialogView : UIView
     private IEnumerator EndDialog()
     {
         yield return new WaitForEndOfFrame();
-        yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
+        yield return new WaitUntil(() => InputManager.Instance.AttackDown);
 
         OnFinished?.Invoke(dialog);
     }

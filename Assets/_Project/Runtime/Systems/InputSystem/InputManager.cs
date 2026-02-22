@@ -36,6 +36,7 @@ public sealed class InputManager : Singleton<InputManager, GlobalScope>
     private InputAction mapAction;
     private InputAction escapeAction;
 
+    #region 입력 프로퍼티
     public Vector2 MoveVector { get; private set; }
     public float MoveAxis => MoveVector.x;
 
@@ -57,6 +58,7 @@ public sealed class InputManager : Singleton<InputManager, GlobalScope>
     public bool MapDown { get; private set; }
 
     public bool EscapeDown { get; private set; }
+    #endregion
 
     private InputAction FindAction(string mapName, string actionName) =>
         actions.FindAction(mapName + "/" + actionName);
