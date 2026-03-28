@@ -37,10 +37,12 @@ public class CinematicManager : MonoBehaviour
             T cinematic = Instantiate(entry.Cinematic) as T;
             cinematic.OnFinished += Instance.HandleCinematicFinished;
 
+			print("CN NOT NULL");
             return cinematic;
         }
         else
         {
+			print("CN NULL");
             return null;
         }
     }
