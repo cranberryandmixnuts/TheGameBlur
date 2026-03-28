@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CinematicDialog : Cinematic
 {
+    private static CinematicDialog instance { get; set; } = null;
+
     private DialogData dialogData;
 
     private DialogEventReciever dialogEventReciever;
@@ -32,6 +34,12 @@ public class CinematicDialog : Cinematic
     {
         dialogEventReciever = new GameObject(typeof(DialogEventReciever).Name).AddComponent<DialogEventReciever>();
         ProcessDialog();
+
+        if(instance != null )
+        {
+            Destroy(instance.gameObject);
+        }
+        instance = this;
     }
 
     private void OnDialogFinished(Dialog dialog)
@@ -87,4 +95,11 @@ public class CinematicDialog : Cinematic
         Destroy(gameObject);
     }
 
+
+    private void OnDisable()
+    {
+        if (dialogEventReciever != null) Destroy(dialogEventReciever.gameObject);
+        if (selectionView != null) Destroy(selectionView.gameObject);
+        if (dialogView != null) Destroy(dialogView.gameObject);
+    }
 }

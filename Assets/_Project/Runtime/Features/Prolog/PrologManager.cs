@@ -31,6 +31,14 @@ public class PrologManager : MonoBehaviour
 
     public void StartGoldBug()
     {
+        var dialog = CinematicManager.Show<CinematicDialog>();
+
+        dialog.BindDialog("DiceKick");
+        dialog.OnFinished += OnEndDiceKickDialog;
+    }
+
+    private void OnEndDiceKickDialog(Cinematic obj)
+    {
         goldBugTimeline.Play();
     }
 
