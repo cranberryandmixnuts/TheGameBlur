@@ -95,4 +95,11 @@ public class CinematicDialog : Cinematic
         Destroy(gameObject);
     }
 
+
+    private void OnDisable()
+    {
+        if (dialogEventReciever != null) Destroy(dialogEventReciever.gameObject);
+        if (selectionView != null) Destroy(selectionView.gameObject);
+        if (dialogView != null) Destroy(dialogView.gameObject);
+    }
 }
