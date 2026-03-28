@@ -22,7 +22,7 @@ MonoBehaviour:
   airAccelTimeToMax: 0.18
   airDecel: 18
   mouseFacingDeadZone: 0.02
-  facingTurnDuration: 0.1
+  facingTurnDuration: 0.16
   gravity: -70
   maxFallSpeed: 45
   coyoteTime: 0.1

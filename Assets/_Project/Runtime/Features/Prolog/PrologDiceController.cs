@@ -29,7 +29,7 @@ public class PrologDiceController : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.E) && isEnter)
+        if(InputManager.Instance.InteractionDown && isEnter)
         {
             Destroy(this);
             prologManager.StartGoldBug();
