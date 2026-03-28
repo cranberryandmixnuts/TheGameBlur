@@ -47,3 +47,4 @@ MonoBehaviour:
   dialogDatas:
   - {fileID: 11400000, guid: d8fede662f78a2d408529a5f55182c79, type: 2}
   - {fileID: 11400000, guid: fd88c4058708a0e4dac0d2a64a76ad2b, type: 2}
+  visualEffectPrefab: {fileID: 1687625717492804342, guid: 153e715cb7c9cea4e8789f9ffa80d6c7, type: 3}
