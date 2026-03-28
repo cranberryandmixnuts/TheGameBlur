@@ -7,6 +7,9 @@ public sealed class BossController : MonoBehaviour
     public BossEnemyDataSO bossData;
     public Transform player;
 
+    [Header("Boss HP UI")]
+    [SerializeField] private BossHPBarUI bossHPBarUI;
+
     [Header("Underground Spawners")]
     public Transform undergroundSpawner1;
     public Transform undergroundSpawner2;
@@ -25,8 +28,8 @@ public sealed class BossController : MonoBehaviour
     [Header("Underground Facing (Delta From baseYawForLeft)")]
     public float undergroundBackYawOffset = 90f;
     public float undergroundFrontYawOffset = -90f;
-    public float undergroundBackStepDeltaZ = 1.0f;  
-    public float undergroundBackStepSpeed = 23.0f;       
+    public float undergroundBackStepDeltaZ = 1.0f;
+    public float undergroundBackStepSpeed = 23.0f;
     public float rotateWaitSeconds = 0.12f;
 
     [Header("Aim Shot Spawn Offset (From Boss Body)")]
@@ -47,18 +50,22 @@ public sealed class BossController : MonoBehaviour
 
     public bool debugLog = false;
 
-    Rigidbody rb;
-    Animator anim;
-    EnemyScript enemy;
+    private Rigidbody rb;
+    private Animator anim;
+    private EnemyScript enemy;
 
-    int facingDir = -1;
-    Coroutine loop;
-    bool active;
+    private int facingDir = -1;
+    private Coroutine loop;
+    private bool active;
 
-    int idleHash, moveHash, jumpHash, runHash, castHash;
+    private int idleHash;
+    private int moveHash;
+    private int jumpHash;
+    private int runHash;
+    private int castHash;
 
-    Vector3 spawnPos;
-    Quaternion spawnRot;
+    private Vector3 spawnPos;
+    private Quaternion spawnRot;
 
     void Awake()
     {
@@ -99,19 +106,23 @@ public sealed class BossController : MonoBehaviour
         facingDir = -1;
         ApplyFacingRotation();
         PlayStateForce(idleHash);
-    }
 
+        if (bossHPBarUI != null)
+            bossHPBarUI.Hide();
+    }
 
     public void ActivateBoss(Transform playerOverride = null)
     {
         if (bossData == null) return;
 
-        if (playerOverride != null) player = playerOverride;
+        if (playerOverride != null)
+            player = playerOverride;
 
         if (player == null)
         {
-            var go = GameObject.FindGameObjectWithTag("Player");
-            if (go != null) player = go.transform;
+            GameObject go = GameObject.FindGameObjectWithTag("Player");
+            if (go != null)
+                player = go.transform;
         }
 
         transform.position = spawnPos;
@@ -128,15 +139,23 @@ public sealed class BossController : MonoBehaviour
 
         active = true;
 
-        if (loop != null) StopCoroutine(loop);
+        if (bossHPBarUI != null && enemy != null)
+        {
+            bossHPBarUI.Show();
+            bossHPBarUI.Refresh(enemy.CurrentHP, enemy.MaxHP);
+        }
+
+        if (loop != null)
+            StopCoroutine(loop);
+
         loop = StartCoroutine(SkillLoop());
 
-        if (debugLog) Debug.Log("[Boss] ActivateBoss()");
+        if (debugLog)
+            Debug.Log("[Boss] ActivateBoss()");
     }
 
     public void DeactivateBoss()
     {
-
         Debug.Log("DeactivateBoss 함수 실행");
         active = false;
 
@@ -169,22 +188,30 @@ public sealed class BossController : MonoBehaviour
 
         PlayStateForce(idleHash);
 
-        if (debugLog) Debug.Log("[Boss] DeactivateBoss() Reset Done");
+        if (bossHPBarUI != null)
+            bossHPBarUI.Hide();
+
+        if (debugLog)
+            Debug.Log("[Boss] DeactivateBoss() Reset Done");
     }
 
+    public void RefreshBossHPBar(int currentHP)
+    {
+        if (bossHPBarUI == null || enemy == null) return;
+        bossHPBarUI.Refresh(currentHP, enemy.MaxHP);
+    }
 
     IEnumerator SkillLoop()
     {
         while (active)
         {
-            
-
             PlayStateForce(idleHash);
             yield return WaitSeconds(bossData.idleBetweenSkills);
 
-            if (!active) yield break;
+            if (!active)
+                yield break;
 
-            var skill = PickSkill();
+            BossSkillEntry skill = PickSkill();
             if (skill == null)
             {
                 yield return null;
@@ -202,16 +229,17 @@ public sealed class BossController : MonoBehaviour
         float total = 0f;
         for (int i = 0; i < bossData.skills.Length; i++)
         {
-            var s = bossData.skills[i];
+            BossSkillEntry s = bossData.skills[i];
             if (s == null || s.weight <= 0f) continue;
             total += s.weight;
         }
+
         if (total <= 0f) return null;
 
         float r = Random.value * total;
         for (int i = 0; i < bossData.skills.Length; i++)
         {
-            var s = bossData.skills[i];
+            BossSkillEntry s = bossData.skills[i];
             if (s == null || s.weight <= 0f) continue;
             r -= s.weight;
             if (r <= 0f) return s;
@@ -288,7 +316,6 @@ public sealed class BossController : MonoBehaviour
         float startX = rb.position.x;
         float startY = rb.position.y;
         float startZ = rb.position.z;
-
         float targetX = startX + dir * dist;
 
         float duration = Mathf.Max(0.01f, s.jumpDuration);
@@ -343,18 +370,15 @@ public sealed class BossController : MonoBehaviour
 
     IEnumerator Skill_UndergroundDoubleFire(BossSkillEntry s)
     {
-        int prevFacing = facingDir;
-
         float savedYaw = GetModelYaw();
 
         Vector3 startPos = rb.position;
         float startZ = startPos.z;
 
         float backZ = startZ + undergroundBackStepDeltaZ;
-
         float outZ = startZ + s.undergroundWalkDeltaZ;
 
-        var savedConstraints = rb.constraints;
+        RigidbodyConstraints savedConstraints = rb.constraints;
         rb.constraints = savedConstraints & ~RigidbodyConstraints.FreezePositionZ;
 
         float backYaw = bossData.baseYawForLeft + undergroundBackYawOffset;
@@ -364,7 +388,6 @@ public sealed class BossController : MonoBehaviour
         PlayStateForce(moveHash);
 
         yield return MoveZ(backZ, undergroundBackStepSpeed);
-
         yield return MoveZ(outZ, s.undergroundWalkOutSpeed);
 
         bool prevGravity = rb.useGravity;
@@ -393,11 +416,9 @@ public sealed class BossController : MonoBehaviour
         yield return MoveY(startPos.y, Mathf.Max(0.01f, s.undergroundRiseTime));
         rb.useGravity = prevGravity;
 
-
         float frontYaw = bossData.baseYawForLeft + undergroundFrontYawOffset;
         SetModelYaw(frontYaw);
         yield return WaitRotateDone();
-
 
         PlayStateForce(moveHash);
         yield return MoveZ(startZ, s.undergroundWalkInSpeed);
@@ -409,7 +430,6 @@ public sealed class BossController : MonoBehaviour
         PlayStateForce(idleHash);
         yield return WaitRotateDone();
     }
-
 
     IEnumerator Skill_TwoShotsToPlayerPos(BossSkillEntry s)
     {
@@ -428,7 +448,9 @@ public sealed class BossController : MonoBehaviour
 
             Vector3 dir = lockedTarget - spawn;
             dir.z = 0f;
-            if (dir.sqrMagnitude < 0.0001f) dir = Vector3.left;
+            if (dir.sqrMagnitude < 0.0001f)
+                dir = Vector3.left;
+
             dir.Normalize();
 
             SetFacing(dir.x >= 0f ? 1 : -1);
@@ -470,7 +492,6 @@ public sealed class BossController : MonoBehaviour
             Vector3 p = rb.position;
             float y = Mathf.Lerp(startY, targetY, a);
             rb.MovePosition(new Vector3(p.x, y, p.z));
-
             yield return new WaitForFixedUpdate();
         }
 
@@ -511,14 +532,14 @@ public sealed class BossController : MonoBehaviour
 
         GameObject go = Instantiate(bossData.fireballPrefab, pos, Quaternion.identity);
 
-        var proj = go.GetComponent<BossFireballProjectile>();
+        BossFireballProjectile proj = go.GetComponent<BossFireballProjectile>();
         if (proj != null)
         {
             proj.Init(1, gameObject, velocity);
             return;
         }
 
-        var r = go.GetComponent<Rigidbody>();
+        Rigidbody r = go.GetComponent<Rigidbody>();
         if (r != null)
         {
             r.useGravity = false;
@@ -576,7 +597,6 @@ public sealed class BossController : MonoBehaviour
     float GetModelYaw()
     {
         if (modelRoot == null) return transform.eulerAngles.y;
-
         if (modelRoot == transform) return transform.eulerAngles.y;
         return modelRoot.localEulerAngles.y;
     }
@@ -586,5 +606,4 @@ public sealed class BossController : MonoBehaviour
         yaw = (yaw % 360f + 360f) % 360f;
         SetModelYaw(yaw);
     }
-
 }

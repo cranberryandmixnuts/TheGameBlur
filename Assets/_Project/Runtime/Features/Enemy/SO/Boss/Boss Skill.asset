@@ -14,32 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossEnemyDataSO
   idleBetweenSkills: 1
   skills:
-  - type: 0
-    weight: 20
-    randomMoveSpeed: 4
-    randomMoveDistanceMin: 5
-    randomMoveDistanceMax: 5
-    randomMoveAfterIdle: 1
-    jumpDistanceMin: 0
-    jumpDistanceMax: 0
-    jumpDuration: 1
-    jumpApexHeightMin: 1.5
-    jumpApexHeightPerUnit: 0.25
-    dashSpeed: 0
-    undergroundWalkDeltaZ: 2
-    undergroundWalkOutSpeed: 3
-    undergroundWalkInSpeed: 3
-    undergroundDropY: 3
-    undergroundDropTime: 0.12
-    undergroundBeforeFireWait: 0
-    undergroundAfterFireWait: 1.2
-    undergroundRiseTime: 0.12
-    fireHorizontalSpeed: 0
-    aimShotSpeed: 0
-    aimShotInterval: 0
-    aimShotCount: 0
   - type: 2
-    weight: 40
+    weight: 25
     randomMoveSpeed: 0
     randomMoveDistanceMin: 0
     randomMoveDistanceMax: 0
@@ -59,35 +35,11 @@ MonoBehaviour:
     undergroundAfterFireWait: 1.2
     undergroundRiseTime: 0.12
     fireHorizontalSpeed: 0
-    aimShotSpeed: 0
-    aimShotInterval: 0
-    aimShotCount: 0
-  - type: 3
-    weight: 15
-    randomMoveSpeed: 0
-    randomMoveDistanceMin: 0
-    randomMoveDistanceMax: 0
-    randomMoveAfterIdle: 0
-    jumpDistanceMin: 0
-    jumpDistanceMax: 0
-    jumpDuration: 1
-    jumpApexHeightMin: 1.5
-    jumpApexHeightPerUnit: 0.25
-    dashSpeed: 13
-    undergroundWalkDeltaZ: 6
-    undergroundWalkOutSpeed: 3
-    undergroundWalkInSpeed: 3
-    undergroundDropY: 4
-    undergroundDropTime: 0.5
-    undergroundBeforeFireWait: 0
-    undergroundAfterFireWait: 1.4
-    undergroundRiseTime: 0.4
-    fireHorizontalSpeed: 10
     aimShotSpeed: 0
     aimShotInterval: 0
     aimShotCount: 0
   - type: 4
-    weight: 25
+    weight: 60
     randomMoveSpeed: 0
     randomMoveDistanceMin: 0
     randomMoveDistanceMax: 0
