@@ -940,6 +940,10 @@ PlayableDirector:
     value: {fileID: 960691352}
   - key: {fileID: -4223215532612327488, guid: 21982d24de1c42947bd63735778d866f, type: 2}
     value: {fileID: 441886856}
+  - key: {fileID: -8648799122695699083, guid: 21982d24de1c42947bd63735778d866f, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -7448873972550844617, guid: 21982d24de1c42947bd63735778d866f, type: 2}
+    value: {fileID: 0}
   m_ExposedReferences:
     m_References: []
 --- !u!4 &441886855
@@ -2393,8 +2397,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: The GameBlur
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: a699835fcc09e374f9a439ea1402b697, type: 2}
-  m_sharedMaterial: {fileID: -8571954925239100381, guid: a699835fcc09e374f9a439ea1402b697, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 67fa965b29ca0a84ea4e59e29e5885b7, type: 2}
+  m_sharedMaterial: {fileID: 4359298012106766905, guid: 67fa965b29ca0a84ea4e59e29e5885b7, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
