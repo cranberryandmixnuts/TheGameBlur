@@ -14,9 +14,6 @@ public class SlotMachineManager : MonoBehaviour
     [SerializeField] private SlotMachineView.ImageType succesResult;
     [SerializeField] private SlotMachineView.ImageType failResult;
 
-    [Header("Cooldown")]
-    [SerializeField] private float cooldownDelay;
-
     private bool isCooldown = false;
 
     public void QuitGame()
@@ -30,14 +27,13 @@ public class SlotMachineManager : MonoBehaviour
             return;
 
         isCooldown = true;
-        StartCoroutine(CooldownDelay());
-
         var result = Random.Range(0, succesWeight + failWeight);
         List<SlotMachineView.ImageType> slotInfos = new();
 
         if (result <= succesWeight) // Succes
         {
             StartCoroutine(DelayedPlaySound("Jackpot", 1.2f));
+            StartCoroutine(DelayedSuccesComment(2.5f));
 
             for(int index = 0; index < 3; index++)
             {
@@ -66,9 +62,16 @@ public class SlotMachineManager : MonoBehaviour
         AudioManager.Instance.PlaySFX(soundName);
     }
 
-    private IEnumerator CooldownDelay()
+    private IEnumerator DelayedSuccesComment(float delay)
     {
-        yield return new WaitForSeconds(cooldownDelay);
+        yield return new WaitForSeconds(delay);
+        var cinematic = CinematicManager.Show<CinematicSuccesSlotMachine>();
+        cinematic.Play();
+        cinematic.OnFinished += OnSuccesCommentFinisihed;
+    }
+
+    private void OnSuccesCommentFinisihed(Cinematic obj)
+    {
         isCooldown = false;
     }
 }
