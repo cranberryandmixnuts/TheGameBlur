@@ -39,7 +39,13 @@ public class EnemyScript : MonoBehaviour, IDamageable
     Coroutine moveRoutine;   
     Coroutine lockRoutine;   
 
+
+
     int currentHP;
+
+    public int CurrentHP => currentHP;
+
+    public int MaxHP => data != null ? data.maxHP : 0;
 
     public int FacingDir { get; private set; } = -1;
     EnemyState state;
@@ -458,7 +464,14 @@ public class EnemyScript : MonoBehaviour, IDamageable
     public void TakeDamage(int amount)
     {
         currentHP -= amount;
+
+        BossController boss = GetComponent<BossController>();
+        if (boss != null)
+            boss.RefreshBossHPBar(currentHP);
+
         if (currentHP <= 0) Destroy(gameObject);
+
+
     }
 
     public void ApplyDamage(DamagePayload payload)
