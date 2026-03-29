@@ -12,11 +12,11 @@ public sealed class BasicPlayerUltimate : PlayerUltimate
     [SerializeField] private float endLag = 0.0f;
 
     [Header("Box (XYZ Length + Offset)")]
-    [SerializeField] private Vector3 boxSizeBase = new Vector3(3.0f, 2.0f, 3.0f);
-    [SerializeField] private Vector3 boxSizePerPip = new Vector3(0.2f, 0.1f, 0.0f);
+    [SerializeField] private Vector3 boxSizeBase = new(3.0f, 2.0f, 3.0f);
+    [SerializeField] private Vector3 boxSizePerPip = new(0.2f, 0.1f, 0.0f);
 
-    [SerializeField] private Vector3 boxOffsetBase = new Vector3(1.2f, 0.5f, 0.0f);
-    [SerializeField] private Vector3 boxOffsetPerPip = new Vector3(0.08f, 0.03f, 0.0f);
+    [SerializeField] private Vector3 boxOffsetBase = new(1.2f, 0.5f, 0.0f);
+    [SerializeField] private Vector3 boxOffsetPerPip = new(0.08f, 0.03f, 0.0f);
 
     public override float GetLockDuration(Player player, int directionSign, Vector3 mouseWorld)
     {
@@ -62,7 +62,7 @@ public sealed class BasicPlayerUltimate : PlayerUltimate
     private IEnumerator RunHits(Player player, Vector3 center, Vector3 size, int totalHits)
     {
         Collider[] buffer = new Collider[96];
-        HashSet<IDamageable> hitSet = new HashSet<IDamageable>();
+        HashSet<IDamageable> hitSet = new();
         LayerMask mask = player.Settings.attackMask;
 
         float interval = hitInterval;

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -7,8 +8,18 @@ public sealed class PlayerMovement : MonoBehaviour
     private const float WalkSfxInterval = 1.2f;
     private const float RunSfxInterval = 0.6f;
 
+    private const float DustSpawnStartDelay = 0.3f;
+
+    private const float WalkDustIntervalMin = 0.5f;
+    private const float WalkDustIntervalMax = 1f;
+
+    private const float RunDustIntervalMin = 0.3f;
+    private const float RunDustIntervalMax = 0.5f;
+
     [SerializeField] private Transform visualRoot;
     [SerializeField] private PlayerGroundSensor groundSensor;
+    [SerializeField] private ParticleSystem dustParticlePrefab;
+    [SerializeField] private Vector3 dustSpawnOffset;
 
     public bool IsGrounded { get; private set; }
     public bool IsDashing => dashRemaining > 0f;
@@ -63,6 +74,11 @@ public sealed class PlayerMovement : MonoBehaviour
     private bool lastFootstepActive;
     private float footstepRemaining;
 
+    private bool lastDustActive;
+    private float dustRemaining;
+
+    private readonly List<ParticleSystem> spawnedDustParticles = new();
+
     private void Start()
     {
         player = Player.Instance;
@@ -86,6 +102,18 @@ public sealed class PlayerMovement : MonoBehaviour
         UpdateGrounded();
         lastGroundedForLand = IsGrounded;
         ResetFootstepState();
+    }
+
+    private void OnDestroy()
+    {
+        for (int i = spawnedDustParticles.Count - 1; i >= 0; i--)
+        {
+            ParticleSystem particle = spawnedDustParticles[i];
+            if (particle != null)
+                Destroy(particle.gameObject);
+        }
+
+        spawnedDustParticles.Clear();
     }
 
     private void InitializeVisualFacing()
@@ -151,6 +179,8 @@ public sealed class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        CleanupDustParticles();
+
         if (!player.Stats.IsActive) return;
 
         float dt = Time.fixedDeltaTime;
@@ -563,24 +593,74 @@ public sealed class PlayerMovement : MonoBehaviour
         }
 
         if (!lastFootstepActive) footstepRemaining = 0f;
+        if (!lastDustActive) dustRemaining = DustSpawnStartDelay;
 
-        float interval = runActive ? RunSfxInterval : WalkSfxInterval;
+        float footstepInterval = runActive ? RunSfxInterval : WalkSfxInterval;
 
         footstepRemaining -= dt;
+        dustRemaining -= dt;
 
         if (footstepRemaining <= 0f)
         {
             AudioManager.Instance.PlaySFX("Walk");
-            footstepRemaining += interval;
+            footstepRemaining += footstepInterval;
+        }
+
+        if (dustRemaining <= 0f)
+        {
+            SpawnDustParticle();
+            dustRemaining = GetNextDustInterval();
         }
 
         lastFootstepActive = true;
+        lastDustActive = true;
     }
 
     private void ResetFootstepState()
     {
         lastFootstepActive = false;
         footstepRemaining = 0f;
+
+        lastDustActive = false;
+        dustRemaining = 0f;
+    }
+
+    private float GetNextDustInterval()
+    {
+        if (runActive)
+            return Random.Range(RunDustIntervalMin, RunDustIntervalMax);
+
+        return Random.Range(WalkDustIntervalMin, WalkDustIntervalMax);
+    }
+
+    private void SpawnDustParticle()
+    {
+        if (dustParticlePrefab == null) return;
+
+        Vector3 spawnPosition = body.position + dustSpawnOffset;
+
+        ParticleSystem spawned = Instantiate(dustParticlePrefab, spawnPosition, dustParticlePrefab.transform.rotation);
+        spawned.Play();
+        spawnedDustParticles.Add(spawned);
+    }
+
+    private void CleanupDustParticles()
+    {
+        for (int i = spawnedDustParticles.Count - 1; i >= 0; i--)
+        {
+            ParticleSystem particle = spawnedDustParticles[i];
+
+            if (particle == null)
+            {
+                spawnedDustParticles.RemoveAt(i);
+                continue;
+            }
+
+            if (particle.IsAlive(true)) continue;
+
+            Destroy(particle.gameObject);
+            spawnedDustParticles.RemoveAt(i);
+        }
     }
 
     private void UpdateFacing()
@@ -629,10 +709,9 @@ public sealed class PlayerMovement : MonoBehaviour
         Camera cam = Camera.main;
 
         Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
-        Plane plane = new Plane(Vector3.forward, new Vector3(0f, 0f, settings.planeZ));
+        Plane plane = new(Vector3.forward, new Vector3(0f, 0f, settings.planeZ));
 
-        float enter;
-        if (!plane.Raycast(ray, out enter))
+        if (!plane.Raycast(ray, out float enter))
         {
             world = default;
             return false;
@@ -661,7 +740,7 @@ public sealed class PlayerMovement : MonoBehaviour
         Vector3 target = visualRoot.localEulerAngles;
         target.y = y;
 
-        if (facingTween != null) facingTween.Kill();
+        facingTween?.Kill();
 
         float duration = instant ? 0f : settings.facingTurnDuration;
         if (duration <= 0f)
