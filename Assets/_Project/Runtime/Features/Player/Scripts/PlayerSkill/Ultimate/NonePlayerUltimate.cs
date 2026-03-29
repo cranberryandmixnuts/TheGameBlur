@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Game/Player Ultimate/None", fileName = "Ultimate_None")]
-public sealed class PlayerUltimate_None : PlayerUltimate
+public sealed class NonePlayerUltimate : PlayerUltimate
 {
     public override bool IsAlwaysUnlocked => true;
 

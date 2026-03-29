@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Game/Player/Ultimates/SliceAndDice", fileName = "Ultimate_SliceAndDice")]
-public sealed class SliceAndDicePlayerUltimate : PlayerUltimate
+public sealed class BasicPlayerUltimate : PlayerUltimate
 {
     [Header("Hits")]
     [SerializeField] private int hitsPerPip = 2;
