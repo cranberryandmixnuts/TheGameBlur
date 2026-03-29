@@ -66,8 +66,8 @@ MonoBehaviour:
     m_Bits: 512
   basicAttackCooldown: 0.3
   groundAttackDamage: 10
-  groundAttackReach: 1.6
-  groundAttackRadius: 1.2
+  groundAttackReach: 0.9
+  groundAttackRadius: 2.1
   airAttackDamage: 10
   airAttackRadius: 2.6
   airPogoBounceVelocity: 30
