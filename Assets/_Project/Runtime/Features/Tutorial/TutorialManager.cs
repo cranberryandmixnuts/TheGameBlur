@@ -79,10 +79,11 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
 
 
-        foreach (var enemy in enemies)
+        EnemyScript[] allEnemies = FindObjectsByType<EnemyScript>(FindObjectsSortMode.None);
+
+        foreach (var enemy in allEnemies)
         {
             enemy.ActivateEnemy();
-
         }
 
         var cinematicDialog = CinematicManager.Show<CinematicDialog>();

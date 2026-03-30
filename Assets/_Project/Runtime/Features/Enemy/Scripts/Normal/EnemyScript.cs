@@ -186,13 +186,14 @@ public class EnemyScript : MonoBehaviour, IDamageable
 
         if (combat != null) combat.enabled = true;
 
+        SetState(EnemyState.Idle);
+
         if (enableNormalAI)
         {
             if (aiRoutine != null) StopCoroutine(aiRoutine);
             aiRoutine = StartCoroutine(AI_Loop());
         }
 
-        SetState(EnemyState.Idle);
 
         if (debugLog) Debug.Log($"[Enemy] Activate ({name})");
     }
@@ -292,8 +293,6 @@ public class EnemyScript : MonoBehaviour, IDamageable
 
         SetState(EnemyState.Idle);
         moveRoutine = null;
-
-        
     }
 
     IEnumerator PatrolOnce()
