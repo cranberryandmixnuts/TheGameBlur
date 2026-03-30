@@ -22,6 +22,8 @@ public sealed class PlayerUI : MonoBehaviour
         Mp
     }
 
+    [SerializeField] private Player player;
+
     [Header("Roots")]
     [SerializeField] private GameObject hpMpRoot;
     [SerializeField] private GameObject consumableSkillRoot;
@@ -78,7 +80,6 @@ public sealed class PlayerUI : MonoBehaviour
     [SerializeField] private float diceChanceShakeStrength = 12f;
     [SerializeField] private int diceChanceShakeVibrato = 20;
 
-    private Player player;
     private PlayerSettings settings;
     private PlayerStats stats;
     private PlayerCombat combat;
@@ -226,6 +227,14 @@ public sealed class PlayerUI : MonoBehaviour
             RebuildDiceModels(nowUltimate);
             ApplyUltimateGauge(stats.DiceGauge, stats.DiceGaugeMax);
         }
+    }
+
+    public void RestorePotionToFull()
+    {
+        if (!lastPotionUnlocked) return;
+
+        potionUses = settings.uiPotionMaxUses;
+        RefreshPotionUi();
     }
 
     private void ApplyPotionUnlocked(bool unlocked)
