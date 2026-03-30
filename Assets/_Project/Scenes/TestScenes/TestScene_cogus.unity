@@ -487,17 +487,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &580777219 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2517238967281521415, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
-  m_PrefabInstance: {fileID: 3385030262983016407}
+--- !u!4 &610347416 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5086248954927916043, guid: 219b1130b5761c941bc68062e1c9e5cd, type: 3}
+  m_PrefabInstance: {fileID: 441315908199914824}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &667081022
 GameObject:
   m_ObjectHideFlags: 0
@@ -745,7 +739,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SideScrollerCameraController
   settings: {fileID: 11400000, guid: 47a06aa3461b63646b0af0e4a893dc46, type: 2}
   player: {fileID: 1970011568}
-  target: {fileID: 1970011571}
+  target: {fileID: 610347416}
   bounds: {fileID: 1758552333}
   moveThreshold: 0.1
   teleportSnapDistance: 5
@@ -861,17 +855,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &909724641 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6601211085055603282, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
-  m_PrefabInstance: {fileID: 3385030262983016407}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &1052119941
 GameObject:
   m_ObjectHideFlags: 0
@@ -1031,17 +1014,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1464363307 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3602727741872637533, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
-  m_PrefabInstance: {fileID: 3385030262983016407}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &1758552332
 GameObject:
   m_ObjectHideFlags: 0
@@ -1120,11 +1092,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9607d94ea943ec499993939b79de4b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
---- !u!4 &1970011571 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8570861687592359040, guid: 219b1130b5761c941bc68062e1c9e5cd, type: 3}
-  m_PrefabInstance: {fileID: 441315908199914824}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &441315908199914824
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1181,8 +1148,7 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 7471250777943982399, guid: 219b1130b5761c941bc68062e1c9e5cd, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1195,17 +1161,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1706248886580809776, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 100
-      objectReference: {fileID: 0}
     - target: {fileID: 3153406152240398913, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
       propertyPath: m_Name
       value: PlayerUI
-      objectReference: {fileID: 0}
-    - target: {fileID: 5666144287623417037, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 6813418429038653943, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1246,42 +1204,6 @@ PrefabInstance:
     - target: {fileID: 6813418429038653943, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7111939722955618658, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
-      propertyPath: skillSizeText
-      value: 
-      objectReference: {fileID: 1464363307}
-    - target: {fileID: 7111939722955618658, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
-      propertyPath: dodgeChanceText
-      value: 
-      objectReference: {fileID: 909724641}
-    - target: {fileID: 7111939722955618658, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
-      propertyPath: criticalChanceText
-      value: 
-      objectReference: {fileID: 580777219}
-    - target: {fileID: 7111939722955618658, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
-      propertyPath: lowDiceChanceTextColor.g
-      value: 0.12767339
-      objectReference: {fileID: 0}
-    - target: {fileID: 7111939722955618658, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
-      propertyPath: lowDiceChanceTextColor.r
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7111939722955618658, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
-      propertyPath: highDiceChanceTextColor.b
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7111939722955618658, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
-      propertyPath: highDiceChanceTextColor.g
-      value: 0.03448989
-      objectReference: {fileID: 0}
-    - target: {fileID: 7111939722955618658, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
-      propertyPath: highDiceChanceTextColor.r
-      value: 0.7484276
-      objectReference: {fileID: 0}
-    - target: {fileID: 8293610684024086634, guid: 567836b218c1c7546815ccad064c7dbe, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 100
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1350,6 +1272,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 667081025}
+  - {fileID: 1758552335}
   - {fileID: 1383349815}
   - {fileID: 110100804}
   - {fileID: 441315908199914824}
@@ -1359,4 +1282,3 @@ SceneRoots:
   - {fileID: 213939022}
   - {fileID: 8764840604710420544}
   - {fileID: 395056249}
-  - {fileID: 1758552335}
