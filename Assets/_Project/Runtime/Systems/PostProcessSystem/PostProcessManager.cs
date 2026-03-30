@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 
 public class PostProcessManager : MonoBehaviour
 {
-    [SerializeField] private Camera camera;
+    [SerializeField] private new Camera camera;
     [SerializeField] private Volume volume;
     [SerializeField] private Transform player;
 

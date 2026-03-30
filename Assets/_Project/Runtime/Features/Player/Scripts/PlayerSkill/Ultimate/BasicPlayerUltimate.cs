@@ -51,11 +51,6 @@ public sealed class BasicPlayerUltimate : PlayerUltimate
         Vector3 center = p + new Vector3(offset.x, offset.y, 0f);
         center.z = player.Settings.planeZ;
 
-        float duration = GetLockDuration(player, directionSign, mouseWorld);
-
-        PlayerAttackRangeIndicator indicator = player.Combat.AttackRangeIndicator;
-        if (indicator != null) indicator.ShowUltimateBox(center, size, duration);
-
         player.StartCoroutine(RunHits(player, center, size, totalHits));
     }
 

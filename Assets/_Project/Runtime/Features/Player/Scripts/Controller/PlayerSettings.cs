@@ -18,6 +18,17 @@ public sealed class PlayerSettings : ScriptableObject
         public bool unlocked;
     }
 
+    [Header("Camera")]
+    public float cameraFollowSpeed = 12f;
+    public float cameraSmoothTime = 0.2f;
+    public float lookAheadPercent = 0.15f;
+    public float cliffDownPercent = 0.05f;
+    public float lookDownHoldTime = 1f;
+    public float lookDownPercent = 0.4f;
+    public float cliffProbeForward = 0.6f;
+    public float cliffProbeDown = 1.5f;
+    public float cliffLookDownGraceTime = 0.15f;
+
     [Header("Plane")]
     public float planeZ = 0f;
 
@@ -118,5 +129,5 @@ public sealed class PlayerSettings : ScriptableObject
     public float uiPotionHoldTime = 0.35f;
 
     [Header("UI - Skill")]
-    public Color uiSkillGreyColor = new Color(0.35f, 0.35f, 0.35f, 1f);
+    public Color uiSkillGreyColor = new(0.35f, 0.35f, 0.35f, 1f);
 }

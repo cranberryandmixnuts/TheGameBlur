@@ -63,6 +63,21 @@ public sealed class PlayerUI : MonoBehaviour
     [Header("Dice Value Text")]
     [SerializeField] private TMP_Text diceSumValueText;
 
+    [Header("Dice Chance Texts")]
+    [SerializeField] private TMP_Text dodgeChanceText;
+    [SerializeField] private TMP_Text criticalChanceText;
+    [SerializeField] private TMP_Text skillSizeText;
+
+    [Header("Dice Chance Text Colors")]
+    [SerializeField] private Color lowDiceChanceTextColor = Color.blue;
+    [SerializeField] private Color neutralDiceChanceTextColor = Color.white;
+    [SerializeField] private Color highDiceChanceTextColor = Color.red;
+
+    [Header("Dice Chance Text Shake")]
+    [SerializeField] private float diceChanceShakeDuration = 0.25f;
+    [SerializeField] private float diceChanceShakeStrength = 12f;
+    [SerializeField] private int diceChanceShakeVibrato = 20;
+
     private Player player;
     private PlayerSettings settings;
     private PlayerStats stats;
@@ -90,12 +105,25 @@ public sealed class PlayerUI : MonoBehaviour
     private Tween upperSpinTween;
     private Sequence diceRollSequence;
 
+    private Tween dodgeChanceShakeTween;
+    private Tween criticalChanceShakeTween;
+    private Tween skillSizeShakeTween;
+
+    private Vector2 dodgeChanceBaseAnchoredPos;
+    private Vector2 criticalChanceBaseAnchoredPos;
+    private Vector2 skillSizeBaseAnchoredPos;
+
+    private string lastDodgeChanceLabel;
+    private string lastCriticalChanceLabel;
+    private string lastSkillSizeLabel;
+
     private int pendingDiceA;
     private int pendingDiceB;
 
     private PlayerUltimate lastUltimate;
 
     private bool diceUiVisible;
+    private bool battleUiVisible;
 
     private bool lastPotionUnlocked;
 
@@ -110,6 +138,10 @@ public sealed class PlayerUI : MonoBehaviour
 
         potionType = PotionType.Hp;
         potionUses = Mathf.Clamp(settings.uiPotionStartUses, 0, settings.uiPotionMaxUses);
+
+        dodgeChanceBaseAnchoredPos = dodgeChanceText.rectTransform.anchoredPosition;
+        criticalChanceBaseAnchoredPos = criticalChanceText.rectTransform.anchoredPosition;
+        skillSizeBaseAnchoredPos = skillSizeText.rectTransform.anchoredPosition;
 
         lastPotionUnlocked = settings.potionUnlocked;
         ApplyPotionUnlocked(lastPotionUnlocked);
@@ -132,7 +164,7 @@ public sealed class PlayerUI : MonoBehaviour
         RefreshSkillSprites();
         RefreshPotionUi();
         RefreshHpMpUi();
-        ApplyDiceSumText(stats.DiceValue);
+        ApplyDiceValueUi(stats.DiceValue, false);
         ApplyUltimateGauge(stats.DiceGauge, stats.DiceGaugeMax);
     }
 
@@ -144,6 +176,7 @@ public sealed class PlayerUI : MonoBehaviour
         stats.DiceGaugeChanged -= OnDiceGaugeChanged;
 
         KillDiceTweens();
+        KillChanceTextTweens();
     }
 
     private void Update()
@@ -225,8 +258,12 @@ public sealed class PlayerUI : MonoBehaviour
 
     private void ApplyBattleUi(bool battle, bool immediate)
     {
+        battleUiVisible = battle;
+
         hpMpRoot.SetActive(battle);
         consumableSkillRoot.SetActive(battle);
+
+        ApplyChanceTextVisibility();
 
         if (!immediate) return;
 
@@ -248,8 +285,28 @@ public sealed class PlayerUI : MonoBehaviour
         diceSumValueText.gameObject.SetActive(visible);
         ultimateGauge.gameObject.SetActive(visible);
 
-        if (!visible) KillDiceTweens();
-        else StartDicePanelLoop(stats.IsBattle);
+        ApplyChanceTextVisibility();
+
+        if (!visible)
+        {
+            KillDiceTweens();
+            KillChanceTextTweens();
+        }
+        else
+        {
+            StartDicePanelLoop(stats.IsBattle);
+        }
+    }
+
+    private void ApplyChanceTextVisibility()
+    {
+        bool visible = diceUiVisible && battleUiVisible;
+
+        dodgeChanceText.gameObject.SetActive(visible);
+        criticalChanceText.gameObject.SetActive(visible);
+        skillSizeText.gameObject.SetActive(visible);
+
+        if (!visible) KillChanceTextTweens();
     }
 
     private void ConfigureSkillImages()
@@ -525,11 +582,11 @@ public sealed class PlayerUI : MonoBehaviour
         diceRollSequence.AppendCallback(StopUpperDiceToValue);
     }
 
-    private void OnDiceSettled(int a, int b) => ApplyDiceSumText(a + b);
+    private void OnDiceSettled(int a, int b) => ApplyDiceValueUi(a + b, true);
 
     private void StartSpinDecel(Transform t, float duration, ref Tween tween)
     {
-        Vector3 delta = new Vector3(Random.Range(1080f, 1800f), Random.Range(1080f, 1800f), Random.Range(1080f, 1800f));
+        Vector3 delta = new(Random.Range(1080f, 1800f), Random.Range(1080f, 1800f), Random.Range(1080f, 1800f));
         Vector3 end = t.localEulerAngles + delta;
 
         tween = t.DOLocalRotate(end, duration, RotateMode.FastBeyond360).SetEase(Ease.OutQuad);
@@ -537,7 +594,7 @@ public sealed class PlayerUI : MonoBehaviour
 
     private void StopLowerDiceToValue()
     {
-        if (lowerSpinTween != null) lowerSpinTween.Kill();
+        lowerSpinTween?.Kill();
 
         Quaternion target = GetDiceFaceRotation(pendingDiceA);
         lowerDiceModel.DOLocalRotateQuaternion(target, settings.uiDiceStopTweenTime).SetEase(Ease.OutQuad);
@@ -545,7 +602,7 @@ public sealed class PlayerUI : MonoBehaviour
 
     private void StopUpperDiceToValue()
     {
-        if (upperSpinTween != null) upperSpinTween.Kill();
+        upperSpinTween?.Kill();
 
         Quaternion target = GetDiceFaceRotation(pendingDiceB);
         upperDiceModel.DOLocalRotateQuaternion(target, settings.uiDiceStopTweenTime).SetEase(Ease.OutQuad);
@@ -557,7 +614,75 @@ public sealed class PlayerUI : MonoBehaviour
         return Quaternion.Euler(settings.uiDiceFaceForwardEuler[idx]);
     }
 
+    private void ApplyDiceValueUi(int sum, bool animateChanceTexts)
+    {
+        ApplyDiceSumText(sum);
+        ApplyDiceChanceTexts(sum, animateChanceTexts);
+    }
+
     private void ApplyDiceSumText(int sum) => diceSumValueText.text = sum.ToString();
+
+    private void ApplyDiceChanceTexts(int diceValue, bool animate)
+    {
+        string dodgeLabel = BuildChanceLabel("회피 확률", "적 회피 확률", diceValue);
+        string criticalLabel = BuildChanceLabel("치명타 확률", "적 치명타 확률", diceValue);
+        string sizeLabel = BuildSkillSizeLabel(diceValue);
+        Color textColor = GetChanceTextColor(diceValue);
+
+        dodgeChanceText.text = dodgeLabel;
+        criticalChanceText.text = criticalLabel;
+        skillSizeText.text = sizeLabel;
+
+        dodgeChanceText.color = textColor;
+        criticalChanceText.color = textColor;
+        skillSizeText.color = textColor;
+
+        if (animate && dodgeLabel != lastDodgeChanceLabel && dodgeChanceText.gameObject.activeInHierarchy)
+            PlayChanceTextShake(dodgeChanceText.rectTransform, dodgeChanceBaseAnchoredPos, ref dodgeChanceShakeTween);
+
+        if (animate && criticalLabel != lastCriticalChanceLabel && criticalChanceText.gameObject.activeInHierarchy)
+            PlayChanceTextShake(criticalChanceText.rectTransform, criticalChanceBaseAnchoredPos, ref criticalChanceShakeTween);
+
+        if (animate && sizeLabel != lastSkillSizeLabel && skillSizeText.gameObject.activeInHierarchy)
+            PlayChanceTextShake(skillSizeText.rectTransform, skillSizeBaseAnchoredPos, ref skillSizeShakeTween);
+
+        lastDodgeChanceLabel = dodgeLabel;
+        lastCriticalChanceLabel = criticalLabel;
+        lastSkillSizeLabel = sizeLabel;
+    }
+
+    private string BuildChanceLabel(string playerPrefix, string enemyPrefix, int diceValue)
+    {
+        float enemyChance = DiceChanceTable.GetEnemyChance(diceValue);
+        if (enemyChance > 0f) return $"{enemyPrefix}: {Mathf.RoundToInt(enemyChance * 100f)}%";
+
+        float playerChance = DiceChanceTable.GetPlayerChance(diceValue);
+        return $"{playerPrefix}: {Mathf.RoundToInt(playerChance * 100f)}%";
+    }
+
+    private string BuildSkillSizeLabel(int diceValue)
+    {
+        int percent = Mathf.RoundToInt(DiceChanceTable.GetPlayerSkillSize(diceValue) * 100f);
+        return $"스킬 크기: {percent}%";
+    }
+
+    private Color GetChanceTextColor(int diceValue)
+    {
+        if (diceValue >= 8 && diceValue <= 12) return highDiceChanceTextColor;
+        if (diceValue == 7) return neutralDiceChanceTextColor;
+        if (diceValue >= 2 && diceValue <= 6) return lowDiceChanceTextColor;
+        return neutralDiceChanceTextColor;
+    }
+
+    private void PlayChanceTextShake(RectTransform rectTransform, Vector2 baseAnchoredPos, ref Tween tween)
+    {
+        tween?.Kill();
+
+        rectTransform.anchoredPosition = baseAnchoredPos;
+        tween = rectTransform.DOShakeAnchorPos(diceChanceShakeDuration, diceChanceShakeStrength, diceChanceShakeVibrato, 90f, false, true)
+            .SetUpdate(true)
+            .OnKill(() => rectTransform.anchoredPosition = baseAnchoredPos);
+    }
 
     private void OnDiceGaugeChanged(float current, float max) => ApplyUltimateGauge(current, max);
 
@@ -595,14 +720,12 @@ public sealed class PlayerUI : MonoBehaviour
         if (prefab != null)
         {
             lowerDiceInstance = Instantiate(prefab, lowerDiceRoot);
-            lowerDiceInstance.transform.localPosition = Vector3.zero;
-            lowerDiceInstance.transform.localRotation = Quaternion.identity;
+            lowerDiceInstance.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
             lowerDiceInstance.transform.localScale = Vector3.one;
             SetLayerRecursively(lowerDiceInstance, settings.uiDiceModelLayer);
 
             upperDiceInstance = Instantiate(prefab, upperDiceRoot);
-            upperDiceInstance.transform.localPosition = Vector3.zero;
-            upperDiceInstance.transform.localRotation = Quaternion.identity;
+            upperDiceInstance.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
             upperDiceInstance.transform.localScale = Vector3.one;
             SetLayerRecursively(upperDiceInstance, settings.uiDiceModelLayer);
 
@@ -621,7 +744,7 @@ public sealed class PlayerUI : MonoBehaviour
         if (lowerDiceModel != null) lowerDiceModel.localRotation = GetDiceFaceRotation(a);
         if (upperDiceModel != null) upperDiceModel.localRotation = GetDiceFaceRotation(b);
 
-        ApplyDiceSumText(a + b);
+        ApplyDiceValueUi(a + b, false);
     }
 
     private void SetLayerRecursively(GameObject go, int layer)
@@ -635,12 +758,27 @@ public sealed class PlayerUI : MonoBehaviour
 
     private void KillDiceTweens()
     {
-        if (diceRollSequence != null) diceRollSequence.Kill();
-        if (lowerSpinTween != null) lowerSpinTween.Kill();
-        if (upperSpinTween != null) upperSpinTween.Kill();
+        diceRollSequence?.Kill();
+        lowerSpinTween?.Kill();
+        upperSpinTween?.Kill();
 
         diceRollSequence = null;
         lowerSpinTween = null;
         upperSpinTween = null;
+    }
+
+    private void KillChanceTextTweens()
+    {
+        dodgeChanceShakeTween?.Kill();
+        criticalChanceShakeTween?.Kill();
+        skillSizeShakeTween?.Kill();
+
+        dodgeChanceShakeTween = null;
+        criticalChanceShakeTween = null;
+        skillSizeShakeTween = null;
+
+        dodgeChanceText.rectTransform.anchoredPosition = dodgeChanceBaseAnchoredPos;
+        criticalChanceText.rectTransform.anchoredPosition = criticalChanceBaseAnchoredPos;
+        skillSizeText.rectTransform.anchoredPosition = skillSizeBaseAnchoredPos;
     }
 }

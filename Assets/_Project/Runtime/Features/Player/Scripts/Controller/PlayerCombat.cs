@@ -16,14 +16,13 @@ public sealed class PlayerCombat : MonoBehaviour
     public event Action<AnimRequest> AnimationRequested;
     public event Action OnAttacked;
 
-    [SerializeField] private PlayerAttackRangeIndicator attackRangeIndicator;
-
     [Header("VFX")]
     [SerializeField] private GameObject SlashParent;
     [SerializeField] private VisualEffect Slash;
     [SerializeField] private VisualEffect PogoSlash;
 
-    public PlayerAttackRangeIndicator AttackRangeIndicator => attackRangeIndicator;
+    public bool IsBasicAttackActive => basicAttackCooldownRemaining > 0f;
+    public bool IsAnyActionActive => IsBasicAttackActive || IsSkillOrUltimateActive;
 
     public bool IsSkillOrUltimateActive => skillLockRemaining > 0f || ultimateLockRemaining > 0f;
     public bool IsUltimateActive => ultimateLockRemaining > 0f;
@@ -64,11 +63,6 @@ public sealed class PlayerCombat : MonoBehaviour
     private readonly HashSet<PlayerSkill> unlockedSkills = new();
     private readonly HashSet<PlayerUltimate> unlockedUltimates = new();
 
-    private void Reset()
-    {
-        attackRangeIndicator = GetComponent<PlayerAttackRangeIndicator>();
-    }
-
     private void Awake()
     {
         player = GetComponent<Player>();
@@ -80,8 +74,6 @@ public sealed class PlayerCombat : MonoBehaviour
         stats = player.Stats;
         movement = player.Movement;
         input = player.Input;
-
-        if (attackRangeIndicator == null) attackRangeIndicator = GetComponent<PlayerAttackRangeIndicator>();
 
         RebuildUnlockCache();
 
@@ -248,9 +240,6 @@ public sealed class PlayerCombat : MonoBehaviour
 
         Vector3 center = new(p.x + d.x * settings.groundAttackReach, p.y + d.y * settings.groundAttackReach, settings.planeZ);
 
-        if (attackRangeIndicator != null)
-            attackRangeIndicator.ShowGroundCircle(center, settings.groundAttackRadius);
-
         int count = Physics.OverlapSphereNonAlloc(center, settings.groundAttackRadius, hitBuffer, settings.attackMask, QueryTriggerInteraction.Ignore);
         DealDamageFromHits(count, settings.groundAttackDamage);
 
@@ -261,9 +250,6 @@ public sealed class PlayerCombat : MonoBehaviour
     {
         Vector3 p = transform.position;
         Vector3 center = new(p.x, p.y, settings.planeZ);
-
-        if (attackRangeIndicator != null)
-            attackRangeIndicator.ShowAirCircle(center, settings.airAttackRadius);
 
         int count = Physics.OverlapSphereNonAlloc(center, settings.airAttackRadius, hitBuffer, settings.attackMask, QueryTriggerInteraction.Ignore);
         bool hitAny = DealDamageFromHits(count, settings.airAttackDamage);

@@ -12,6 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6abb639d3c9adb048aecbec7504d6522, type: 3}
   m_Name: PlayerSettings
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSettings
+  cameraFollowSpeed: 12
+  cameraSmoothTime: 0.6
+  lookAheadPercent: 0.15
+  cliffDownPercent: 0.2
+  lookDownHoldTime: 0.9
+  lookDownPercent: 0.2
+  cliffProbeForward: 0.6
+  cliffProbeDown: 1.5
+  cliffLookDownGraceTime: 0.15
   planeZ: 0
   moveDeadZone: 0.01
   baseMoveSpeed: 6
