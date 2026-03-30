@@ -2,7 +2,12 @@ fileFormatVersion: 2
 guid: 7d59277293f30374187391371d804392
 ScriptedImporter:
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BMRomanAltar4_2m_8k_01_BMRomanAltar4_2m_8k_01_u1_v1
+    second: {fileID: 2100000, guid: 58f42e891b9809c40a26c4a80e354979, type: 2}
   serializedVersion: 2
   userData: 
   assetBundleName: 
@@ -47,9 +52,9 @@ ScriptedImporter:
 '
   optimizeGameObjects: 0
   materials:
-  - {instanceID: 0}
+  - {fileID: 3539387075125061721, guid: 7d59277293f30374187391371d804392, type: 3}
   textures:
-  - {instanceID: 0}
+  - {fileID: 6983701643236107813, guid: 7d59277293f30374187391371d804392, type: 3}
   hasSceneData: 1
   hasAnimationData: 0
   hasMaterialData: 1
@@ -61,7 +66,7 @@ ScriptedImporter:
     used: 1
     required: 0
   _textures:
-  - texture: {instanceID: 0}
+  - texture: {fileID: 6983701643236107813, guid: 7d59277293f30374187391371d804392, type: 3}
     shouldBeLinear: 0
     shouldBeNormalMap: 0
   _mainAssetIdentifier: scenes/Sketchfab_Scene
