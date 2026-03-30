@@ -8,7 +8,6 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private PlayerUI playerUI;
     [SerializeField] private Animator leech;
     [SerializeField] private CameraController cameraController;
-    [SerializeField] private SpriteRenderer healGuideSprite;
 
     private float explosionRange { get; } = 30f;
     private Transform playerTransform;
@@ -34,7 +33,6 @@ public class TutorialManager : MonoBehaviour
             Debug.Log("Deactive ½ÇÇà");
         }
 
-        healGuideSprite.color = new Color(1, 1, 1, 0);
         Player.Instance.Stats.PlayerSetActive(false);
     }
 
@@ -103,11 +101,5 @@ public class TutorialManager : MonoBehaviour
         cameraController.Active();
         playerUI.gameObject.SetActive(true);
         CinematicManager.Show<CinematicMainTutorial>().Play();
-        FindAnyObjectByType<ElectricChair>().OnSeat += OnSeat;
-    }
-
-    private void OnSeat()
-    {
-        healGuideSprite.DOColor(new Color(1, 1, 1, 1), 1f);
     }
 }
