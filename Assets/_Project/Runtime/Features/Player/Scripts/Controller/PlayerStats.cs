@@ -239,6 +239,13 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
 
         AudioManager.Instance.PlaySFX("DiceRoll");
 
+        if (ultimate.UseFixedUltimateDice)
+        {
+            SetDice(ultimate.FixedUltimateDiceA, ultimate.FixedUltimateDiceB);
+            diceRollRemaining = UnityEngine.Random.Range(settings.diceRollIntervalMin, settings.diceRollIntervalMax);
+            return;
+        }
+
         RollDiceInternal();
         diceRollRemaining = UnityEngine.Random.Range(settings.diceRollIntervalMin, settings.diceRollIntervalMax);
     }

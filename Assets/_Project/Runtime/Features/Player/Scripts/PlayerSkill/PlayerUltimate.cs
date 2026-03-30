@@ -16,6 +16,10 @@ public abstract class PlayerUltimate : ScriptableObject
     public virtual int FixedDiceA => 1;
     public virtual int FixedDiceB => 1;
 
+    public virtual bool UseFixedUltimateDice => false;
+    public virtual int FixedUltimateDiceA => 1;
+    public virtual int FixedUltimateDiceB => 1;
+
     public virtual float GetLockDuration(Player player, int directionSign, Vector3 mouseWorld) => lockDuration;
 
     public abstract void Execute(Player player, int directionSign, Vector3 mouseWorld);
