@@ -24,7 +24,8 @@ public sealed class FireballPlayerSkill : PlayerSkill
 
         Vector3 p = player.transform.position;
 
-        Vector3 d = new Vector3(mouseWorld.x - p.x, mouseWorld.y - p.y, 0f);
+        Vector3 vector3 = new(mouseWorld.x - p.x, mouseWorld.y - p.y, 0f);
+        Vector3 d = vector3;
         if (d.sqrMagnitude < 0.0001f) d = Vector3.right * directionSign;
 
         d.Normalize();

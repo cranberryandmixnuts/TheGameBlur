@@ -31,6 +31,8 @@ public class PrologManager : MonoBehaviour
 
     public void StartGoldBug()
     {
+        FindAnyObjectByType<PrologPlayerController>().InactivePlayer();
+
         var dialog = CinematicManager.Show<CinematicDialog>();
 
         dialog.BindDialog("DiceKick");

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.VFX;
 
 public sealed class PlayerCombat : MonoBehaviour
 {
@@ -15,9 +16,13 @@ public sealed class PlayerCombat : MonoBehaviour
     public event Action<AnimRequest> AnimationRequested;
     public event Action OnAttacked;
 
-    [SerializeField] private PlayerAttackRangeIndicator attackRangeIndicator;
+    [Header("VFX")]
+    [SerializeField] private GameObject SlashParent;
+    [SerializeField] private VisualEffect Slash;
+    [SerializeField] private VisualEffect PogoSlash;
 
-    public PlayerAttackRangeIndicator AttackRangeIndicator => attackRangeIndicator;
+    public bool IsBasicAttackActive => basicAttackCooldownRemaining > 0f;
+    public bool IsAnyActionActive => IsBasicAttackActive || IsSkillOrUltimateActive;
 
     public bool IsSkillOrUltimateActive => skillLockRemaining > 0f || ultimateLockRemaining > 0f;
     public bool IsUltimateActive => ultimateLockRemaining > 0f;
@@ -53,15 +58,10 @@ public sealed class PlayerCombat : MonoBehaviour
     private bool usedAirBasicAttackThisAirtime;
 
     private readonly Collider[] hitBuffer = new Collider[48];
-    private readonly HashSet<IDamageable> hitSet = new HashSet<IDamageable>();
+    private readonly HashSet<IDamageable> hitSet = new();
 
-    private readonly HashSet<PlayerSkill> unlockedSkills = new HashSet<PlayerSkill>();
-    private readonly HashSet<PlayerUltimate> unlockedUltimates = new HashSet<PlayerUltimate>();
-
-    private void Reset()
-    {
-        attackRangeIndicator = GetComponent<PlayerAttackRangeIndicator>();
-    }
+    private readonly HashSet<PlayerSkill> unlockedSkills = new();
+    private readonly HashSet<PlayerUltimate> unlockedUltimates = new();
 
     private void Awake()
     {
@@ -74,8 +74,6 @@ public sealed class PlayerCombat : MonoBehaviour
         stats = player.Stats;
         movement = player.Movement;
         input = player.Input;
-
-        if (attackRangeIndicator == null) attackRangeIndicator = GetComponent<PlayerAttackRangeIndicator>();
 
         RebuildUnlockCache();
 
@@ -203,6 +201,7 @@ public sealed class PlayerCombat : MonoBehaviour
 
             AudioManager.Instance.PlaySFX("SwordSwing");
 
+            PlayGroundSlash(mouseWorld);
             GroundAttack(mouseWorld);
 
             basicAttackCooldownRemaining = settings.basicAttackCooldown;
@@ -212,8 +211,12 @@ public sealed class PlayerCombat : MonoBehaviour
 
         if (usedAirBasicAttackThisAirtime) return;
 
+        if (!TryGetMouseWorldOnPlane(out Vector3 airMouseWorld))
+            airMouseWorld = transform.position + Vector3.right * movement.FacingSign;
+
         AudioManager.Instance.PlaySFX("SwordSwing");
 
+        PlayPogoSlash(airMouseWorld);
         bool hitAny = AirAttack();
 
         usedAirBasicAttackThisAirtime = true;
@@ -231,14 +234,11 @@ public sealed class PlayerCombat : MonoBehaviour
     {
         Vector3 p = transform.position;
 
-        Vector2 d = new Vector2(mouseWorld.x - p.x, mouseWorld.y - p.y);
+        Vector2 d = new(mouseWorld.x - p.x, mouseWorld.y - p.y);
         if (d.sqrMagnitude < 0.0001f) d = new Vector2(movement.FacingSign, 0f);
         d.Normalize();
 
-        Vector3 center = new Vector3(p.x + d.x * settings.groundAttackReach, p.y + d.y * settings.groundAttackReach, settings.planeZ);
-
-        if (attackRangeIndicator != null)
-            attackRangeIndicator.ShowGroundCircle(center, settings.groundAttackRadius);
+        Vector3 center = new(p.x + d.x * settings.groundAttackReach, p.y + d.y * settings.groundAttackReach, settings.planeZ);
 
         int count = Physics.OverlapSphereNonAlloc(center, settings.groundAttackRadius, hitBuffer, settings.attackMask, QueryTriggerInteraction.Ignore);
         DealDamageFromHits(count, settings.groundAttackDamage);
@@ -249,10 +249,7 @@ public sealed class PlayerCombat : MonoBehaviour
     private bool AirAttack()
     {
         Vector3 p = transform.position;
-        Vector3 center = new Vector3(p.x, p.y, settings.planeZ);
-
-        if (attackRangeIndicator != null)
-            attackRangeIndicator.ShowAirCircle(center, settings.airAttackRadius);
+        Vector3 center = new(p.x, p.y, settings.planeZ);
 
         int count = Physics.OverlapSphereNonAlloc(center, settings.airAttackRadius, hitBuffer, settings.attackMask, QueryTriggerInteraction.Ignore);
         bool hitAny = DealDamageFromHits(count, settings.airAttackDamage);
@@ -342,12 +339,43 @@ public sealed class PlayerCombat : MonoBehaviour
         equippedUltimate.Execute(player, sign, mouseWorld);
     }
 
+    private void PlayGroundSlash(Vector3 mouseWorld)
+    {
+        Vector3 p = SlashParent.transform.position;
+
+        Vector2 d = new(mouseWorld.x - p.x, mouseWorld.y - p.y);
+        if (d.sqrMagnitude < 0.0001f) d = new Vector2(movement.FacingSign, 0f);
+
+        float angle = (Mathf.Atan2(d.y, d.x) * Mathf.Rad2Deg) - 90f;
+
+        SlashParent.transform.rotation = Quaternion.Euler(0f, 0f, angle);
+        Slash.transform.rotation = Quaternion.Euler(0f, 0f, angle);
+
+        Slash.Reinit();
+        Slash.Play();
+    }
+
+    private void PlayPogoSlash(Vector3 mouseWorld)
+    {
+        Vector3 p = PogoSlash.transform.position;
+
+        Vector2 d = new(mouseWorld.x - p.x, mouseWorld.y - p.y);
+        if (d.sqrMagnitude < 0.0001f) d = new Vector2(movement.FacingSign, -1f);
+
+        float angle = (Mathf.Atan2(d.y, d.x) * Mathf.Rad2Deg) - 90f;
+
+        PogoSlash.transform.rotation = Quaternion.Euler(0f, 0f, angle);
+
+        PogoSlash.Reinit();
+        PogoSlash.Play();
+    }
+
     private bool TryGetMouseWorldOnPlane(out Vector3 world)
     {
         Camera cam = Camera.main;
 
         Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
-        Plane plane = new Plane(Vector3.forward, new Vector3(0f, 0f, settings.planeZ));
+        Plane plane = new(Vector3.forward, new Vector3(0f, 0f, settings.planeZ));
 
         if (!plane.Raycast(ray, out float enter))
         {

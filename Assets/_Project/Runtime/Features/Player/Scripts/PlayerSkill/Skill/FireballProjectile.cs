@@ -18,7 +18,7 @@ public sealed class FireballProjectile : MonoBehaviour
     private float planeZ;
 
     private readonly Collider[] hitBuffer = new Collider[32];
-    private readonly HashSet<IDamageable> hitSet = new HashSet<IDamageable>();
+    private readonly HashSet<IDamageable> hitSet = new();
 
     public void Initialize(Vector3 direction, float speed, float maxDistance, int damage, float hitRadius, LayerMask enemyMask, LayerMask worldMask, GameObject source, float planeZ, float size)
     {
@@ -38,6 +38,9 @@ public sealed class FireballProjectile : MonoBehaviour
         Vector3 p = transform.position;
         p.z = planeZ;
         transform.position = p;
+
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + 90f;
+        transform.rotation = Quaternion.Euler(0f, 0f, angle);
 
         transform.localScale = transform.localScale * size;
 
@@ -74,9 +77,7 @@ public sealed class FireballProjectile : MonoBehaviour
             if (d == null) continue;
 
             if (hitSet.Add(d))
-            {
                 d.ApplyDamage(new DamagePayload(damage, source));
-            }
         }
 
         transform.position = next;
