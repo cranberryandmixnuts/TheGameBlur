@@ -1,5 +1,58 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &739216660791522566
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2900791024708774094}
+  - component: {fileID: 8718056458639812468}
+  m_Layer: 0
+  m_Name: BattleModeCheck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2900791024708774094
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 739216660791522566}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8570861687592359040}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &8718056458639812468
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 739216660791522566}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 40, y: 30, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1199280377764011216
 GameObject:
   m_ObjectHideFlags: 0
@@ -218,6 +271,7 @@ Transform:
   m_Children:
   - {fileID: 5086248954927916043}
   - {fileID: 7023336342304295188}
+  - {fileID: 2900791024708774094}
   - {fileID: 3562662495793828940}
   - {fileID: 1671019211430960737}
   m_Father: {fileID: 0}
@@ -291,6 +345,13 @@ MonoBehaviour:
   movement: {fileID: 6919096758703164241}
   combat: {fileID: 1626546899080486869}
   stats: {fileID: 4499996996245647985}
+  ui: {fileID: 0}
+  battleHoldDuration: 1
+  CheckCollider: {fileID: 8718056458639812468}
+  EnemyLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  ForceBattle: 0
 --- !u!114 &6919096758703164241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -335,7 +396,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
   isActive: 1
-  isBattle: 1
 --- !u!1 &4870036596445826393
 GameObject:
   m_ObjectHideFlags: 0
@@ -4096,7 +4156,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 0b02c5c5882a693459cbbf9315b25807, type: 3}
       propertyPath: m_Layer
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
