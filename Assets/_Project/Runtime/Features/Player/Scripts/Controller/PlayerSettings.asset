@@ -15,9 +15,9 @@ MonoBehaviour:
   cameraFollowSpeed: 12
   cameraSmoothTime: 0.6
   lookAheadPercent: 0.15
-  cliffDownPercent: 0.2
+  cliffDownPercent: 0.3
   lookDownHoldTime: 0.9
-  lookDownPercent: 0.2
+  lookDownPercent: 0.3
   cliffProbeForward: 0.6
   cliffProbeDown: 1.5
   cliffLookDownGraceTime: 0.15

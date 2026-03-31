@@ -11,7 +11,7 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
     public event Action<bool> BattleChanged;
 
     [SerializeField] private bool isActive = true;
-    [SerializeField] private bool isBattle = true;
+    private bool isBattle = false;
 
     public bool IsActive => isActive;
 
@@ -238,6 +238,13 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         if (!ultimate.DiceEnabled) return;
 
         AudioManager.Instance.PlaySFX("DiceRoll");
+
+        if (ultimate.UseFixedUltimateDice)
+        {
+            SetDice(ultimate.FixedUltimateDiceA, ultimate.FixedUltimateDiceB);
+            diceRollRemaining = UnityEngine.Random.Range(settings.diceRollIntervalMin, settings.diceRollIntervalMax);
+            return;
+        }
 
         RollDiceInternal();
         diceRollRemaining = UnityEngine.Random.Range(settings.diceRollIntervalMin, settings.diceRollIntervalMax);

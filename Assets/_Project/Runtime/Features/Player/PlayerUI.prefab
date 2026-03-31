@@ -172,7 +172,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -181.5, y: 129.79999}
+  m_AnchoredPosition: {x: -280, y: -180}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7908342755639394413
@@ -852,6 +852,15 @@ MonoBehaviour:
   lowerDiceRoot: {fileID: 3928733589504033862}
   upperDiceRoot: {fileID: 2897203203720106116}
   diceSumValueText: {fileID: 6781912006809188161}
+  dodgeChanceText: {fileID: 6601211085055603282}
+  criticalChanceText: {fileID: 2517238967281521415}
+  skillSizeText: {fileID: 3602727741872637533}
+  lowDiceChanceTextColor: {r: 0.19811308, g: 0.40789992, b: 1, a: 1}
+  neutralDiceChanceTextColor: {r: 1, g: 1, b: 1, a: 1}
+  highDiceChanceTextColor: {r: 0.7484276, g: 0.03448989, b: 0, a: 1}
+  diceChanceShakeDuration: 0.25
+  diceChanceShakeStrength: 12
+  diceChanceShakeVibrato: 20
 --- !u!1 &3273009247370241079
 GameObject:
   m_ObjectHideFlags: 0
@@ -923,8 +932,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -330, y: 60}
-  m_SizeDelta: {x: 75, y: 10}
+  m_AnchoredPosition: {x: -320, y: 70}
+  m_SizeDelta: {x: 120, y: 13}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2689215730385404838
 CanvasRenderer:
@@ -983,8 +992,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 10
-  m_fontSizeBase: 10
+  m_fontSize: 13
+  m_fontSizeBase: 13
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1124,8 +1133,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -330, y: 90}
-  m_SizeDelta: {x: 75, y: 10}
+  m_AnchoredPosition: {x: -320, y: 100}
+  m_SizeDelta: {x: 120, y: 13}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4110261154268995034
 CanvasRenderer:
@@ -1184,8 +1193,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 10
-  m_fontSizeBase: 10
+  m_fontSize: 13
+  m_fontSizeBase: 13
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1263,8 +1272,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -330, y: 75}
-  m_SizeDelta: {x: 75, y: 10}
+  m_AnchoredPosition: {x: -320, y: 85}
+  m_SizeDelta: {x: 120, y: 13}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &588710471869501577
 CanvasRenderer:
@@ -1323,8 +1332,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 10
-  m_fontSizeBase: 10
+  m_fontSize: 13
+  m_fontSizeBase: 13
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1493,7 +1502,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -250.8, y: 129.8}
+  m_AnchoredPosition: {x: -350, y: -180}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1612478936729495425
