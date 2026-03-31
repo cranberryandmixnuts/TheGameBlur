@@ -11,11 +11,11 @@ public class TutorialManager : MonoBehaviour
 
     private float explosionRange { get; } = 30f;
     private Transform playerTransform;
-    List<EnemyScript> enemies = new List<EnemyScript>();
+    List<EnemyScript> enemies = new();
 
     private void Start()
     {
-        playerTransform = FindAnyObjectByType<Player>().transform;
+        playerTransform = Player.Instance.transform;
 
         EnemyScript[] allEnemies = FindObjectsByType<EnemyScript>(FindObjectsSortMode.None);
 
