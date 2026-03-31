@@ -26,16 +26,6 @@ public sealed class Player : Singleton<Player, SceneScope>
     [SerializeField] private PlayerMovement movement;
     [SerializeField] private PlayerCombat combat;
     [SerializeField] private PlayerStats stats;
-    [SerializeField] private PlayerUI ui;
-
-    [Header("BettleModeCheck")]
-    [SerializeField] private float battleHoldDuration = 1f;
-    [SerializeField] private BoxCollider CheckCollider;
-    [SerializeField] private LayerMask EnemyLayer;
-    public bool ForceBattle = false;
-    
-    private readonly Collider[] results = new Collider[16];
-
 
     public PlayerSettings Settings => settings;
     public Rigidbody Body => body;
@@ -44,13 +34,11 @@ public sealed class Player : Singleton<Player, SceneScope>
     public PlayerMovement Movement => movement;
     public PlayerCombat Combat => combat;
     public PlayerStats Stats => stats;
-    public PlayerUI UI => ui;
     public InputManager Input => InputManager.Instance;
 
     public bool IsSitting => chairState != ChairState.None;
     public ChairState CurrentChairState => chairState;
 
-    private float battleHoldTimer;
     private ElectricChair currentChair;
     private ChairState chairState = ChairState.None;
 
@@ -64,54 +52,7 @@ public sealed class Player : Singleton<Player, SceneScope>
         stats = GetComponent<PlayerStats>();
     }
 
-    private void Update()
-    {
-        bool setBattleMode = false;
-
-        setBattleMode |= ForceBattle;
-        setBattleMode |= combat.IsAnyActionActive;
-
-        Vector3 center = CheckCollider.transform.TransformPoint(CheckCollider.center);
-        Vector3 halfExtents = Vector3.Scale(CheckCollider.size * 0.5f, CheckCollider.transform.lossyScale);
-
-        int count = Physics.OverlapBoxNonAlloc(
-            center,
-            halfExtents,
-            results,
-            CheckCollider.transform.rotation,
-            EnemyLayer,
-            QueryTriggerInteraction.Collide);
-
-        for (int i = 0; i < count; i++)
-        {
-            Collider hit = results[i];
-
-            if (hit == gameObject) continue;
-
-            if (hit.GetComponent(typeof(IDamageable)) != null || hit.GetComponentInParent(typeof(IDamageable)) != null)
-            {
-                setBattleMode = true;
-                break;
-            }
-        }
-
-        if (IsSitting)
-        {
-            battleHoldTimer = 0f;
-            setBattleMode = false;
-        }
-        else if (setBattleMode)
-        {
-            battleHoldTimer = battleHoldDuration;
-        }
-        else if (battleHoldTimer > 0f)
-        {
-            battleHoldTimer -= Time.deltaTime;
-            setBattleMode = true;
-        }
-
-        stats.SetBattle(setBattleMode);
-    }
+    private void Update() => stats.SetBattle(!IsSitting); //임시코드
 
     public void Sit(ElectricChair chair, Vector3 seatWorldPosition)
     {
@@ -129,7 +70,6 @@ public sealed class Player : Singleton<Player, SceneScope>
         movement.EnterSitting();
         combat.ResetSkillCooldown();
         stats.RestoreHpMpToFull();
-        ui.RestorePotionToFull();
     }
 
     public void RequestStandUpFromChair()

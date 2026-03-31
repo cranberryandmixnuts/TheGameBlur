@@ -11,7 +11,7 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
     public event Action<bool> BattleChanged;
 
     [SerializeField] private bool isActive = true;
-    private bool isBattle = false;
+    [SerializeField] private bool isBattle = true;
 
     public bool IsActive => isActive;
 

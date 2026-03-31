@@ -16,7 +16,7 @@ public class Interacter : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         interactionViews.Add(Instantiate(interactionViewPrefab));
-        interactionViews[^1].SetInteraction(transform, offset);
+        interactionViews[interactionViews.Count - 1].SetInteraction(transform, offset);
     }
 
     private void OnTriggerExit(Collider other)
