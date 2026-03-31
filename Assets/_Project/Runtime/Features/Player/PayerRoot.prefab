@@ -7927,7 +7927,7 @@ GameObject:
   - component: {fileID: 5308386966959443589}
   - component: {fileID: 6289713313474525300}
   - component: {fileID: 4351820349492117218}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Band
   m_TagString: Untagged
   m_Icon: {fileID: 0}
