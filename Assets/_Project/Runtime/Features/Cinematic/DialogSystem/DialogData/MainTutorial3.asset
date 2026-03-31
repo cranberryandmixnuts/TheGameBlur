@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DialogData
   _dialogs:
   - name: "\uC70C\uB77C"
-    line: "\uC7A0\uAE50\uB9CC \uC800\uB7F0\uAC8C \uC788\uB2E4\uACE0\uB294 \uBABB
+    line: "...\uC7A0\uAE50\uB9CC \uC800\uB7F0\uAC8C \uC788\uB2E4\uACE0\uB294 \uBABB
       \uB4E4\uC5C8\uB294\uB370?"
     isSelectable: 0
     selections: []

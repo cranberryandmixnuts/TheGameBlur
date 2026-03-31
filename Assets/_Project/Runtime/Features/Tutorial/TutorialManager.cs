@@ -52,30 +52,42 @@ public class TutorialManager : MonoBehaviour
 
     private void OnEndMainTutorial2(Cinematic cinematic)
     {
+        StartCoroutine(StartMainTutorial3());
+    }
+
+    private IEnumerator StartMainTutorial3()
+    {
+        leech.gameObject.SetActive(true);
+        leech.Play("LeechFall");
+
+        yield return new WaitForSeconds(1.5f);
+
         var cinematicDialog = CinematicManager.Show<CinematicDialog>();
-        cinematicDialog.BindDialog("MainTutorial3");
+        cinematicDialog.BindDialog("MainTutorial4");
         cinematicDialog.OnFinished += OnEndMainTutorial3;
     }
     
     private void OnEndMainTutorial3(Cinematic cinematic)
     {
-        foreach(var enemy in enemies)
+        var cinematicDialog = CinematicManager.Show<CinematicDialog>();
+        cinematicDialog.BindDialog("MainTutorial3");
+
+        foreach (var enemy in enemies)
         {
-            enemy.MoveToTarget(playerTransform, 2f);
-            
+            enemy.MoveToTarget(playerTransform, 7f);
         }
 
-        StartCoroutine(StartMainTutorial4());
+        StartCoroutine(StartFightByDelay());
     }
 
-    private IEnumerator StartMainTutorial4()
+    private IEnumerator StartFightByDelay()
     {
-        leech.gameObject.SetActive(true);
-        leech.Play("LeechFall");
+        cameraController.GetComponent<Animator>().Play("EnemyRunning", 0, 0f);
+        Destroy(leech.gameObject);
 
+        yield return new WaitForSeconds(2f);
 
-        yield return new WaitForSeconds(1.5f);
-
+        Destroy(cameraController.GetComponent<Animator>());
 
         EnemyScript[] allEnemies = FindObjectsByType<EnemyScript>(FindObjectsSortMode.None);
 
@@ -84,20 +96,6 @@ public class TutorialManager : MonoBehaviour
             enemy.ActivateEnemy();
         }
 
-        var cinematicDialog = CinematicManager.Show<CinematicDialog>();
-        cinematicDialog.BindDialog("MainTutorial4");
-        cinematicDialog.OnFinished += OnEndMainTutorial4;
-    }
-
-
-    private void OnEndMainTutorial4(Cinematic cinematic)
-    {
-        Destroy(leech.gameObject);
-        StartFight();
-    }
-
-    private void StartFight()
-    {
         Player.Instance.Stats.PlayerSetActive(true);
         cameraController.Active();
         playerUI.gameObject.SetActive(true);
