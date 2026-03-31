@@ -106,7 +106,7 @@ public sealed class EnemyCombat : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            PlayerStats player = overlap[i].GetComponentInParent<PlayerStats>();
+            PlayerStats player = overlap[i].GetComponent<PlayerStats>();
             if (player == null) continue;
             if (!hitPlayers.Add(player)) continue;
 
