@@ -46,8 +46,7 @@ public class PrologManager : MonoBehaviour
 
     public void OnExitPrologTimeline()
     {
-        prologPlayerController.ActivePlayer();
-        CinematicManager.Show<CinematicSubTutorial>();
+        prologPlayerController.SetAngle(-90f);
     }
 
     public void OnExitGoldBugPrologTimeline()
@@ -99,6 +98,7 @@ public class PrologManager : MonoBehaviour
 
     public void OnEnd_DialogSubTutorialCut2(Cinematic cinematic)
     {
-        
+        prologPlayerController.ActivePlayer();
+        CinematicManager.Show<CinematicSubTutorial>();
     }
 }

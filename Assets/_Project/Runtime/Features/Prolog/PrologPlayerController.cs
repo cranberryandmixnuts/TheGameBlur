@@ -14,7 +14,12 @@ public class PrologPlayerController : MonoBehaviour
     {
         _rigidBody = GetComponent<Rigidbody>();
         isActive = true;
-        
+    }
+
+    public void SetAngle(float angle)
+    {
+        Quaternion targetRotation = Quaternion.Euler(0f, angle, 0f);
+        playerModelTransform.rotation = targetRotation;
     }
 
     public void InactivePlayer()
