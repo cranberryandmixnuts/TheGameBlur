@@ -68,8 +68,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   groundedMinUpVelocity: 0.05
-  maxHp: 100
-  maxMp: 100
+  maxHp: 20
+  maxMp: 10
   attackMask:
     serializedVersion: 2
     m_Bits: 512
