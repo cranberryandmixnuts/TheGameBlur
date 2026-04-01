@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,6 +7,7 @@ public sealed class PlayerVisual : MonoBehaviour
     [Header("Visible Objects")]
     [SerializeField] private GameObject swordObject;
     [SerializeField] private GameObject bandObject;
+    [SerializeField] private float battleVisibilityTweenDuration = 0.5f;
 
     [Header("Animator")]
     [SerializeField] private Animator animator;
@@ -313,7 +315,17 @@ public sealed class PlayerVisual : MonoBehaviour
 
     private void ApplyBattleVisibility(bool battle)
     {
-        if (swordObject != null) swordObject.SetActive(battle);
-        if (bandObject != null) bandObject.SetActive(!battle);
+        GameObject showObject = battle ? swordObject : bandObject;
+        GameObject hideObject = battle ? bandObject : swordObject;
+
+        showObject.transform.DOKill();
+        hideObject.transform.DOKill();
+
+        showObject.transform.localScale = Vector3.zero;
+        showObject.SetActive(true);
+        showObject.transform.DOScale(Vector3.one, battleVisibilityTweenDuration);
+
+        hideObject.transform.DOScale(Vector3.zero, battleVisibilityTweenDuration)
+            .OnComplete(() => hideObject.SetActive(false));
     }
 }
