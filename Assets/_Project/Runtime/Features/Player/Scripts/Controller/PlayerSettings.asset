@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSettings
   cameraFollowSpeed: 12
   cameraSmoothTime: 0.6
-  lookAheadPercent: 0.15
-  cliffDownPercent: 0.3
+  lookAheadPercent: 0.03
+  cliffDownPercent: 0.1
   lookDownHoldTime: 0.9
   lookDownPercent: 0.3
   cliffProbeForward: 0.6
