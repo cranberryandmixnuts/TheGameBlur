@@ -55769,9 +55769,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   spawnTargets:
   - {fileID: 146056973}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 1025922226}
   enemyPrefab: {fileID: 4508202383446449589, guid: e69866c4bb51b1241bd6e54b7e7e0d68, type: 3}
+  IsNotTutorial: 1
 --- !u!4 &2064798822
 Transform:
   m_ObjectHideFlags: 0
