@@ -32,6 +32,7 @@ public class EnemyScript : MonoBehaviour, IDamageable
     [Header("VFX")]
     [SerializeField] private ParticleSystem hitEffect;
     [SerializeField] private ParticleSystem criticalHitEffect;
+    [SerializeField] private GameObject deathEffectPrefab;
 
     [Header("Debug")]
     public bool debugLog = false;
@@ -297,13 +298,16 @@ public class EnemyScript : MonoBehaviour, IDamageable
         int dir = Random.value < 0.5f ? -1 : 1;
         SetFacing(dir);
 
-        float startX = rb.position.x;
-        float targetX = startX + dir * data.moveDistance;
+        float targetX = rb.position.x + dir * data.moveDistance;
 
-        while (Mathf.Abs(rb.position.x - targetX) > 0.01f)
+        while (true)
         {
             if (!activeAI) yield break;
-            if (isActionLocked) { yield return null; continue; }
+            if (isActionLocked)
+            {
+                yield return null;
+                continue;
+            }
 
             if (!hasAggro && vision != null && vision.IsDetected && vision.target != null)
             {
@@ -311,6 +315,24 @@ public class EnemyScript : MonoBehaviour, IDamageable
                 lockedTarget = vision.target;
                 yield break;
             }
+
+            if (vision != null && vision.IsWallAhead)
+            {
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+
+                yield return new WaitForSeconds(0.1f);
+
+                dir *= -1;
+                SetFacing(dir);
+                targetX = rb.position.x + dir * data.moveDistance;
+
+                yield return null;
+                continue;
+            }
+
+            if (Mathf.Abs(rb.position.x - targetX) <= 0.01f)
+                break;
 
             MoveX(targetX, data.moveSpeed);
             yield return new WaitForFixedUpdate();
@@ -322,7 +344,11 @@ public class EnemyScript : MonoBehaviour, IDamageable
         while (t > 0f)
         {
             if (!activeAI) yield break;
-            if (isActionLocked) { yield return null; continue; }
+            if (isActionLocked)
+            {
+                yield return null;
+                continue;
+            }
 
             if (!hasAggro && vision != null && vision.IsDetected && vision.target != null)
             {
@@ -463,9 +489,11 @@ public class EnemyScript : MonoBehaviour, IDamageable
         if (boss != null)
             boss.RefreshBossHPBar(currentHP);
 
-        if (currentHP <= 0) Destroy(gameObject);
-
-
+        if (currentHP <= 0)
+        {
+            SpawnDeathEffect();
+            Destroy(gameObject);
+        }
     }
 
     public void ApplyDamage(DamagePayload payload)
@@ -482,5 +510,26 @@ public class EnemyScript : MonoBehaviour, IDamageable
         if (aiRoutine != null) { StopCoroutine(aiRoutine); aiRoutine = null; }
         if (moveRoutine != null) { StopCoroutine(moveRoutine); moveRoutine = null; }
         if (lockRoutine != null) { StopCoroutine(lockRoutine); lockRoutine = null; }
+    }
+
+    void SpawnDeathEffect()
+    {
+        if (deathEffectPrefab == null) return;
+
+        GameObject effect = Instantiate(
+            deathEffectPrefab,
+            transform.position,
+            deathEffectPrefab.transform.rotation
+        );
+
+        ParticleSystem ps = effect.GetComponent<ParticleSystem>();
+        if (ps != null)
+        {
+            Destroy(effect, ps.main.duration + ps.main.startLifetime.constantMax);
+        }
+        else
+        {
+            Destroy(effect, 3f);
+        }
     }
 }

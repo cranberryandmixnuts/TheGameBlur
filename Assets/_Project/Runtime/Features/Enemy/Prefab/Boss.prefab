@@ -645,6 +645,7 @@ MonoBehaviour:
   baseYawForLeft: 270
   hitEffect: {fileID: 5665262516651234486}
   criticalHitEffect: {fileID: 8556541957985888256}
+  deathEffectPrefab: {fileID: 6813416509558619124, guid: 141217ef7be5b864994a9a4667b8c292, type: 3}
   debugLog: 0
 --- !u!114 &1992090318407668727
 MonoBehaviour:

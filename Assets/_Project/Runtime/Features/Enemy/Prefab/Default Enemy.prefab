@@ -965,6 +965,7 @@ MonoBehaviour:
   baseYawForLeft: 270
   hitEffect: {fileID: 7434205671487288724}
   criticalHitEffect: {fileID: 4941312711385414240}
+  deathEffectPrefab: {fileID: 6813416509558619124, guid: 141217ef7be5b864994a9a4667b8c292, type: 3}
   debugLog: 1
 --- !u!114 &773161299504954540
 MonoBehaviour:
@@ -982,12 +983,13 @@ MonoBehaviour:
   target: {fileID: 0}
   viewRadius: 6
   viewAngle: 60
+  wallCheckDistance: 0.6
   targetMask:
     serializedVersion: 2
     m_Bits: 8
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
 --- !u!114 &4606927101237902647
 MonoBehaviour:
   m_ObjectHideFlags: 0

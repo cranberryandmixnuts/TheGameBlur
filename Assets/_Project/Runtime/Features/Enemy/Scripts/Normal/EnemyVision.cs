@@ -10,11 +10,15 @@ public class EnemyVision : MonoBehaviour
     public float viewRadius = 6f;
     [Range(0f, 180f)] public float viewAngle = 60f;
 
+    [Header("벽 감지")]
+    public float wallCheckDistance = 0.6f;
+
     [Header("레이어")]
     public LayerMask targetMask;
     public LayerMask obstacleMask;
 
     public bool IsDetected { get; private set; }
+    public bool IsWallAhead { get; private set; }
 
     void Reset()
     {
@@ -23,11 +27,26 @@ public class EnemyVision : MonoBehaviour
 
     void Update()
     {
-        Detect();
+        DetectWall();
+        DetectTarget();
         DrawDebug();
     }
 
-    void Detect()
+    void DetectWall()
+    {
+        IsWallAhead = false;
+        if (enemy == null) return;
+
+        Vector3 origin = transform.position;
+        Vector3 forwardDir = (enemy.FacingDir >= 0) ? Vector3.right : Vector3.left;
+
+        if (Physics.Raycast(origin, forwardDir, wallCheckDistance, obstacleMask))
+        {
+            IsWallAhead = true;
+        }
+    }
+
+    void DetectTarget()
     {
         IsDetected = false;
         if (enemy == null) return;
@@ -64,15 +83,18 @@ public class EnemyVision : MonoBehaviour
     {
         if (enemy == null) return;
 
+        Vector3 origin = transform.position;
         Vector3 forwardDir = (enemy.FacingDir >= 0) ? Vector3.right : Vector3.left;
 
-        Debug.DrawRay(transform.position, forwardDir * viewRadius, Color.red);
+        Debug.DrawRay(origin, forwardDir * viewRadius, Color.red);
 
         Vector3 left = DirFromAngle(-viewAngle * 0.5f, forwardDir);
         Vector3 right = DirFromAngle(viewAngle * 0.5f, forwardDir);
 
-        Debug.DrawRay(transform.position, left * viewRadius, Color.yellow);
-        Debug.DrawRay(transform.position, right * viewRadius, Color.yellow);
+        Debug.DrawRay(origin, left * viewRadius, Color.yellow);
+        Debug.DrawRay(origin, right * viewRadius, Color.yellow);
+
+        Debug.DrawRay(origin, forwardDir * wallCheckDistance, IsWallAhead ? Color.blue : Color.green);
     }
 
     Vector3 DirFromAngle(float angleDeg, Vector3 forward)
