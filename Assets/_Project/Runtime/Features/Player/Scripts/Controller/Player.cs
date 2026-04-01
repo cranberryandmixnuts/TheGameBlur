@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [DefaultExecutionOrder(-29900)]
@@ -50,6 +51,8 @@ public sealed class Player : Singleton<Player, SceneScope>
 
     public bool IsSitting => chairState != ChairState.None;
     public ChairState CurrentChairState => chairState;
+
+    public Action OnPlayerStandUp;
 
     private float battleHoldTimer;
     private ElectricChair currentChair;
@@ -155,5 +158,6 @@ public sealed class Player : Singleton<Player, SceneScope>
         chairState = ChairState.None;
         currentChair = null;
         movement.ExitSitting();
+        OnPlayerStandUp?.Invoke();
     }
 }
