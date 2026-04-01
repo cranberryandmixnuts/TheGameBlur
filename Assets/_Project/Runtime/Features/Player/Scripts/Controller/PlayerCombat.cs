@@ -13,13 +13,27 @@ public sealed class PlayerCombat : MonoBehaviour
         Technology
     }
 
+    private readonly struct AttackResult
+    {
+        public AttackResult(bool hitAny, bool isCritical)
+        {
+            HitAny = hitAny;
+            IsCritical = isCritical;
+        }
+
+        public bool HitAny { get; }
+        public bool IsCritical { get; }
+    }
+
     public event Action<AnimRequest> AnimationRequested;
     public event Action OnAttacked;
 
     [Header("VFX")]
-    [SerializeField] private GameObject SlashParent;
-    [SerializeField] private VisualEffect Slash;
-    [SerializeField] private VisualEffect PogoSlash;
+    [SerializeField] private GameObject slashParent;
+    [SerializeField] private VisualEffect slash;
+    [SerializeField] private VisualEffect pogoSlash;
+    [SerializeField] private VisualEffect critSlash;
+    [SerializeField] private VisualEffect critPogoSlash;
 
     public bool IsBasicAttackActive => basicAttackCooldownRemaining > 0f;
     public bool IsAnyActionActive => IsBasicAttackActive || IsSkillOrUltimateActive;
@@ -201,8 +215,8 @@ public sealed class PlayerCombat : MonoBehaviour
 
             AudioManager.Instance.PlaySFX("SwordSwing");
 
-            PlayGroundSlash(mouseWorld);
-            GroundAttack(mouseWorld);
+            AttackResult result = GroundAttack(mouseWorld);
+            PlayGroundSlash(mouseWorld, result.IsCritical);
 
             basicAttackCooldownRemaining = settings.basicAttackCooldown;
             movement.NotifyBasicAttackStarted(settings.basicAttackCooldown);
@@ -216,21 +230,21 @@ public sealed class PlayerCombat : MonoBehaviour
 
         AudioManager.Instance.PlaySFX("SwordSwing");
 
-        PlayPogoSlash(airMouseWorld);
-        bool hitAny = AirAttack();
+        AttackResult result2 = AirAttack();
+        PlayPogoSlash(airMouseWorld, result2.IsCritical);
 
         usedAirBasicAttackThisAirtime = true;
         basicAttackCooldownRemaining = settings.basicAttackCooldown;
         movement.NotifyBasicAttackStarted(settings.basicAttackCooldown);
 
-        if (!hitAny) return;
+        if (!result2.HitAny) return;
 
         usedAirBasicAttackThisAirtime = false;
         movement.RefreshAirDashUsage();
         movement.ApplyAirPogoBounce();
     }
 
-    private void GroundAttack(Vector3 mouseWorld)
+    private AttackResult GroundAttack(Vector3 mouseWorld)
     {
         Vector3 p = transform.position;
 
@@ -241,25 +255,27 @@ public sealed class PlayerCombat : MonoBehaviour
         Vector3 center = new(p.x + d.x * settings.groundAttackReach, p.y + d.y * settings.groundAttackReach, settings.planeZ);
 
         int count = Physics.OverlapSphereNonAlloc(center, settings.groundAttackRadius, hitBuffer, settings.attackMask, QueryTriggerInteraction.Ignore);
-        DealDamageFromHits(count, settings.groundAttackDamage);
+        AttackResult result = DealDamageFromHits(count, settings.groundAttackDamage);
 
         AnimationRequested?.Invoke(AnimRequest.Attack);
+
+        return result;
     }
 
-    private bool AirAttack()
+    private AttackResult AirAttack()
     {
         Vector3 p = transform.position;
         Vector3 center = new(p.x, p.y, settings.planeZ);
 
         int count = Physics.OverlapSphereNonAlloc(center, settings.airAttackRadius, hitBuffer, settings.attackMask, QueryTriggerInteraction.Ignore);
-        bool hitAny = DealDamageFromHits(count, settings.airAttackDamage);
+        AttackResult result = DealDamageFromHits(count, settings.airAttackDamage);
 
         AnimationRequested?.Invoke(AnimRequest.AirAttack);
 
-        return hitAny;
+        return result;
     }
 
-    private bool DealDamageFromHits(int count, int amount)
+    private AttackResult DealDamageFromHits(int count, int amount)
     {
         float critChance = DiceChanceTable.GetPlayerChance(stats.DiceValue);
         bool isCrit = critChance > 0f && UnityEngine.Random.value < critChance;
@@ -280,13 +296,16 @@ public sealed class PlayerCombat : MonoBehaviour
             if (!hitSet.Add(d2)) continue;
 
             d2.ApplyDamage(new DamagePayload(amount, gameObject));
+            if (isCrit) d2.CriticalHitEffect.Play();
+            else d2.HitEffect.Play();
+
             OnAttacked?.Invoke();
             hitAny = true;
         }
 
         if (hitAny && isCrit) AudioManager.Instance.PlaySFX("Critical");
 
-        return hitAny;
+        return new AttackResult(hitAny, hitAny && isCrit);
     }
 
     private void TryUseSkill()
@@ -339,35 +358,38 @@ public sealed class PlayerCombat : MonoBehaviour
         equippedUltimate.Execute(player, sign, mouseWorld);
     }
 
-    private void PlayGroundSlash(Vector3 mouseWorld)
+    private void PlayGroundSlash(Vector3 mouseWorld, bool isCritical)
     {
-        Vector3 p = SlashParent.transform.position;
+        Vector3 p = slashParent.transform.position;
 
         Vector2 d = new(mouseWorld.x - p.x, mouseWorld.y - p.y);
         if (d.sqrMagnitude < 0.0001f) d = new Vector2(movement.FacingSign, 0f);
 
         float angle = (Mathf.Atan2(d.y, d.x) * Mathf.Rad2Deg) - 90f;
+        Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
 
-        SlashParent.transform.rotation = Quaternion.Euler(0f, 0f, angle);
-        Slash.transform.rotation = Quaternion.Euler(0f, 0f, angle);
+        slashParent.transform.rotation = rotation;
 
-        Slash.Reinit();
-        Slash.Play();
+        VisualEffect effect = isCritical ? critSlash : slash;
+        effect.transform.rotation = rotation;
+        effect.Reinit();
+        effect.Play();
     }
 
-    private void PlayPogoSlash(Vector3 mouseWorld)
+    private void PlayPogoSlash(Vector3 mouseWorld, bool isCritical)
     {
-        Vector3 p = PogoSlash.transform.position;
+        Vector3 p = pogoSlash.transform.position;
 
         Vector2 d = new(mouseWorld.x - p.x, mouseWorld.y - p.y);
         if (d.sqrMagnitude < 0.0001f) d = new Vector2(movement.FacingSign, -1f);
 
         float angle = (Mathf.Atan2(d.y, d.x) * Mathf.Rad2Deg) - 90f;
+        Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
 
-        PogoSlash.transform.rotation = Quaternion.Euler(0f, 0f, angle);
-
-        PogoSlash.Reinit();
-        PogoSlash.Play();
+        VisualEffect effect = isCritical ? critPogoSlash : pogoSlash;
+        effect.transform.rotation = rotation;
+        effect.Reinit();
+        effect.Play();
     }
 
     private bool TryGetMouseWorldOnPlane(out Vector3 world)

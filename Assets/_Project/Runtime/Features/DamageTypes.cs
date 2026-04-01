@@ -14,5 +14,9 @@ public readonly struct DamagePayload
 
 public interface IDamageable
 {
+    ParticleSystem HitEffect { get; }
+
+    ParticleSystem CriticalHitEffect { get; }
+
     public void ApplyDamage(DamagePayload payload);
 }
