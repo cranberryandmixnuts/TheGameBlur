@@ -9,12 +9,15 @@ public class SlotMachineManager : MonoBehaviour
     [Header("Probability")]
     [SerializeField] private float succesWeight;
     [SerializeField] private float failWeight;
+    [SerializeField] private int maxSuccesStack;
 
     [Header("ResultSetting")]
     [SerializeField] private SlotMachineView.ImageType succesResult;
     [SerializeField] private SlotMachineView.ImageType failResult;
 
     private bool isCooldown = false;
+
+    private int succesStack = 0;
 
     public void QuitGame()
     {
@@ -30,8 +33,12 @@ public class SlotMachineManager : MonoBehaviour
         var result = Random.Range(0, succesWeight + failWeight);
         List<SlotMachineView.ImageType> slotInfos = new();
 
-        if (result <= succesWeight) // Succes
+        AudioManager.Instance.PlaySFX("SlotMachineReel");
+
+        if (result <= succesWeight && succesStack < maxSuccesStack) // Succes
         {
+            succesStack++;
+
             StartCoroutine(DelayedPlaySound("Jackpot", 1.2f));
             StartCoroutine(DelayedSuccesComment(2.5f));
 
