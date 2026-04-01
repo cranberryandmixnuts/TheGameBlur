@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Skill_Fireball
   m_EditorClassIdentifier: Assembly-CSharp::FireballPlayerSkill
   icon: {fileID: 21300000, guid: 3cc12547cdbd3da4fa46e733c174aece, type: 3}
-  manaCost: 20
+  manaCost: 2
   lockDuration: 0.2
-  cooldown: 1
+  cooldown: 2
   projectilePrefab: {fileID: 2275904855793171323, guid: 7d21e3356ad94dd45835632953900131, type: 3}
   speed: 12
-  maxDistance: 12
+  maxDistance: 18
   spawnOffset: 1
-  damage: 12
+  damage: 15
   hitRadius: 0.35
