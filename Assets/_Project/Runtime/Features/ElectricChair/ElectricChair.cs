@@ -32,13 +32,13 @@ public sealed class ElectricChair : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponentInParent<Player>() == player)
+        if (other.GetComponent<Player>() == player)
             playerInRange = true;
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.GetComponentInParent<Player>() == player)
+        if (other.GetComponent<Player>() == player)
             playerInRange = false;
     }
 

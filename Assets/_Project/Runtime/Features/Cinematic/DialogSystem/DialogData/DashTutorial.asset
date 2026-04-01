@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8c01357d99225d41ad5dfa01f80b6a5, type: 3}
+  m_Name: DashTutorial
+  m_EditorClassIdentifier: Assembly-CSharp::DialogData
+  _dialogs:
+  - name: "\uAC70\uBA38\uB9AC"
+    line: "Space\uB85C \uC810\uD504\uD55C \uD6C4 Shift\uB85C \uB300\uC26C\uB97C \uD574\uBD10!"
+    textColor: {r: 1, g: 0, b: 0, a: 1}
+    isSelectable: 0
+    selections: []

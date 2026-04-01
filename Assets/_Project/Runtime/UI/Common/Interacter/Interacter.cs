@@ -15,13 +15,19 @@ public class Interacter : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (!other.gameObject.TryGetComponent<Player>(out var _))
+            return;
+
         interactionViews.Add(Instantiate(interactionViewPrefab));
         interactionViews[^1].SetInteraction(transform, offset);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if(interactionViews.Count > 0)
+        if (!other.gameObject.TryGetComponent<Player>(out var _))
+            return;
+
+        if (interactionViews.Count > 0)
         {
             Destroy(interactionViews[0].gameObject);
             interactionViews.RemoveAt(0);
