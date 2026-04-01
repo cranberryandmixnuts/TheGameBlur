@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,8 +24,16 @@ public class AudioRegistry : ScriptableObject
 
     public AudioClip GetAudioClip(string audioName)
     {
-        cache.TryGetValue(audioName, out var clip);
+        try
+        {
+            cache.TryGetValue(audioName, out var clip);
 
-        return clip;
+            return clip;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e.Message);
+            return null;
+        }
     }
 }
