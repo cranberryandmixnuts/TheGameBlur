@@ -21858,6 +21858,18 @@ PrefabInstance:
       propertyPath: ui
       value: 
       objectReference: {fileID: 1650220984}
+    - target: {fileID: 24876250837502006, guid: 219b1130b5761c941bc68062e1c9e5cd, type: 3}
+      propertyPath: diceAbilityUnlocked
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 24876250837502006, guid: 219b1130b5761c941bc68062e1c9e5cd, type: 3}
+      propertyPath: skillAbilityUnlocked
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 24876250837502006, guid: 219b1130b5761c941bc68062e1c9e5cd, type: 3}
+      propertyPath: potionAbilityUnlocked
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 63980262664024360, guid: 219b1130b5761c941bc68062e1c9e5cd, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.0005832883

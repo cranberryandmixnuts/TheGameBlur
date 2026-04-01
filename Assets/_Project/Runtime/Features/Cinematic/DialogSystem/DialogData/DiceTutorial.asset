@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8c01357d99225d41ad5dfa01f80b6a5, type: 3}
+  m_Name: DiceTutorial
+  m_EditorClassIdentifier: Assembly-CSharp::DialogData
+  _dialogs:
+  - name: "\uAC70\uBA38\uB9AC"
+    line: "\uB108 \uC8FC\uBA38\uB2C8\uC5D0\uC11C \uD5A5\uAE30\uB85C\uC6B4 \uB0C4\uC0C8\uAC00
+      \uB098"
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    isSelectable: 0
+    selections: []
+  - name: "\uC70C\uB77C"
+    line: "\uC5B4 \uBB50\uC57C \uC774\uAC70"
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    isSelectable: 0
+    selections: []
+  - name: "\uAC70\uBA38\uB9AC"
+    line: "\uC774\uAC74 \uB9C8\uBC95\uC8FC\uC0AC\uC704!"
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    isSelectable: 0
+    selections: []
+  - name: "\uAC70\uBA38\uB9AC"
+    line: "\uC8FC\uC0AC\uC704\uB97C \uB0B4\uAC00 \uAD74\uB824\uC11C \uB108\uC758
+      \uC804\uD22C\uB97C \uB3C4\uC640\uC904\uAC8C"
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    isSelectable: 0
+    selections: []
+  - name: "\uAC70\uBA38\uB9AC"
+    line: "\uC8FC\uC0AC\uC704\uB97C \uAD74\uB9B4 \uB54C\uB9C8\uB2E4 \uAC8C\uC774\uC9C0\uAC00
+      \uC62C\uB77C\uAC00"
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    isSelectable: 0
+    selections: []
+  - name: "\uAC70\uBA38\uB9AC"
+    line: "\uADF8\uB7EC\uBA74 \uD655\uC815\uC73C\uB85C \uC8FC\uC0AC\uC704 \uB208\uC744
+      12\uB85C \uD560 \uC218 \uC788\uC5B4!"
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    isSelectable: 0
+    selections: []
+  - name: "\uAC70\uBA38\uB9AC"
+    line: "\uC8FC\uC0AC\uC704 \uB208\uB9CC\uD07C \uB108\uAC00 \uAC15\uD574\uC838!"
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    isSelectable: 0
+    selections: []
+  - name: "\uAC70\uBA38\uB9AC"
+    line: "(\uC57D\uD574\uC9C8\uC218\uB3C4 \uC788\uC5B4\u2026)"
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    isSelectable: 0
+    selections: []
+  - name: "\uAC70\uBA38\uB9AC"
+    line: "\uAC8C\uC774\uC9C0\uAC00 \uBAA8\uB450 \uCC28\uBA74 F\uB97C \uB20C\uB7EC\uC11C
+      \uC8FC\uC0AC\uC704 \uB208\uC744 12\uB85C \uB9CC\uB4E4 \uC218 \uC788\uC5B4"
+    textColor: {r: 1, g: 0, b: 0, a: 1}
+    isSelectable: 0
+    selections: []

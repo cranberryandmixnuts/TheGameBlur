@@ -7,6 +7,7 @@ public class HealthPotionTutorial : MonoBehaviour
     private void Start()
     {
         Player.Instance.OnPlayerStandUp += OnPlayerStandUp;
+        Player.Instance.SetPotionAbilityUnlocked(true);
     }
 
     private void OnPlayerStandUp()

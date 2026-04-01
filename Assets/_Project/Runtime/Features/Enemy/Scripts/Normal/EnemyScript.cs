@@ -532,4 +532,9 @@ public class EnemyScript : MonoBehaviour, IDamageable
             Destroy(effect, 3f);
         }
     }
+
+    private void OnDestroy()
+    {
+        Player.Instance.SetSkillAbilityUnlocked(true);
+    }
 }

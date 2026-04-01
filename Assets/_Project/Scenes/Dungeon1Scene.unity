@@ -13033,6 +13033,18 @@ PrefabInstance:
       propertyPath: ui
       value: 
       objectReference: {fileID: 746036460}
+    - target: {fileID: 24876250837502006, guid: 219b1130b5761c941bc68062e1c9e5cd, type: 3}
+      propertyPath: diceAbilityUnlocked
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 24876250837502006, guid: 219b1130b5761c941bc68062e1c9e5cd, type: 3}
+      propertyPath: skillAbilityUnlocked
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 24876250837502006, guid: 219b1130b5761c941bc68062e1c9e5cd, type: 3}
+      propertyPath: potionAbilityUnlocked
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3327593786185691891, guid: 219b1130b5761c941bc68062e1c9e5cd, type: 3}
       propertyPath: m_Name
       value: Player
@@ -32176,63 +32188,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2e8763d702ecfe540bb2c9a85cb57ebf, type: 3}
   m_PrefabInstance: {fileID: 1173235663}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &1175270371
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 5944043247712690549, guid: e69866c4bb51b1241bd6e54b7e7e0d68, type: 3}
-      propertyPath: m_Name
-      value: Default Enemy
-      objectReference: {fileID: 0}
-    - target: {fileID: 7470836293574429575, guid: e69866c4bb51b1241bd6e54b7e7e0d68, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 44.043106
-      objectReference: {fileID: 0}
-    - target: {fileID: 7470836293574429575, guid: e69866c4bb51b1241bd6e54b7e7e0d68, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -13.947666
-      objectReference: {fileID: 0}
-    - target: {fileID: 7470836293574429575, guid: e69866c4bb51b1241bd6e54b7e7e0d68, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.7513059
-      objectReference: {fileID: 0}
-    - target: {fileID: 7470836293574429575, guid: e69866c4bb51b1241bd6e54b7e7e0d68, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: -0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 7470836293574429575, guid: e69866c4bb51b1241bd6e54b7e7e0d68, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7470836293574429575, guid: e69866c4bb51b1241bd6e54b7e7e0d68, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 7470836293574429575, guid: e69866c4bb51b1241bd6e54b7e7e0d68, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7470836293574429575, guid: e69866c4bb51b1241bd6e54b7e7e0d68, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7470836293574429575, guid: e69866c4bb51b1241bd6e54b7e7e0d68, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 270
-      objectReference: {fileID: 0}
-    - target: {fileID: 7470836293574429575, guid: e69866c4bb51b1241bd6e54b7e7e0d68, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: e69866c4bb51b1241bd6e54b7e7e0d68, type: 3}
 --- !u!1001 &1175908592
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -42895,6 +42850,86 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 97848bce835009749ba1ee2fa62c1617, type: 3}
   m_PrefabInstance: {fileID: 1526498264}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1529417735
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1529417736}
+  - component: {fileID: 1529417738}
+  - component: {fileID: 1529417737}
+  - component: {fileID: 1529417739}
+  m_Layer: 0
+  m_Name: InitialEnterDialogPlayer_DiceUnlock
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1529417736
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1529417735}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -1, z: -0, w: 0.0000029504295}
+  m_LocalPosition: {x: 41, y: -9.71, z: 2.3999658}
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1529417737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1529417735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de03484fe256fa242af7f54103bac00a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InitialEnterDialogPlayer
+  dialog: {fileID: 11400000, guid: e825b02d555532f46b5f9ed1397f323b, type: 2}
+--- !u!65 &1529417738
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1529417735}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 5.53, z: 4.46}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1529417739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1529417735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d0fa4ceba5ad48409d6452797ab4ded, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DiceTutorial
 --- !u!1001 &1531786580
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -55471,7 +55506,7 @@ MonoBehaviour:
   - {fileID: 146056973}
   - {fileID: 1025922226}
   enemyPrefab: {fileID: 4508202383446449589, guid: e69866c4bb51b1241bd6e54b7e7e0d68, type: 3}
-  IsNotTutorial: 1
+  isActivate: 1
 --- !u!4 &2064798822
 Transform:
   m_ObjectHideFlags: 0
@@ -58422,6 +58457,7 @@ SceneRoots:
   - {fileID: 1315110037}
   - {fileID: 2097551720}
   - {fileID: 10817378}
+  - {fileID: 1529417736}
   - {fileID: 1098047053}
   - {fileID: 327174855}
   - {fileID: 482933073}
@@ -58429,4 +58465,4 @@ SceneRoots:
   - {fileID: 918691323}
   - {fileID: 1432302071}
   - {fileID: 2064798822}
-  - {fileID: 1175270371}
+  - {fileID: 1058304368}
