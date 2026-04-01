@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public sealed class PlayerStats : MonoBehaviour, IDamageable
 {
@@ -224,7 +225,14 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
 
         int before = hp;
         hp -= payload.Amount;
-        if (hp < 0) hp = 0;
+        if (hp <= 0)
+        {
+            hp = 0;
+
+            Debug.Log("Player died.");
+            SceneType currentScene = System.Enum.Parse<SceneType>(SceneManager.GetActiveScene().name);
+            SceneController.Instance.LoadScene(currentScene);
+        }
 
         AudioManager.Instance.PlaySFX("TakeDamagePlayerAndMonster");
         hitEffect.Play();
