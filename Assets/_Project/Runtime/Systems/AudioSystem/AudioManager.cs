@@ -32,7 +32,8 @@ public class AudioManager : MonoBehaviour
         set
         {
             bgmVolume = value;
-            Instance.bgmSourcePool.First.Value.volume = value;
+            if(Instance.bgmSourcePool.First != null)
+                Instance.bgmSourcePool.First.Value.volume = value;
         }
     }
 

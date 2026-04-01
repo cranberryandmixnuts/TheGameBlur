@@ -1,9 +1,13 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SettingView : UIView
 {
     [SerializeField] private Animator settingAnimator;
+
+    [SerializeField] private Scrollbar bgmScrollbar;
+    [SerializeField] private Scrollbar sfxScrollbar;
 
     public event Action OnQuit;
     public event Action OnContinue;
@@ -34,6 +38,9 @@ public class SettingView : UIView
     public void EnterOption()
     {
         settingAnimator.Play("EnterOption", 0, 0f);
+
+        bgmScrollbar.value = AudioManager.BGMVolume;
+        sfxScrollbar.value = AudioManager.SFXVolume;
     }
 
     public void ExitOption()

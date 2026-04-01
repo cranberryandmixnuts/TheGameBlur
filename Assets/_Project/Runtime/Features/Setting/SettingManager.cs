@@ -52,6 +52,14 @@ public class SettingManager : MonoBehaviour
         settingView.OnSetSFXVolume += SetSFXVolume;
     }
 
+    private void OnDisable()
+    {
+        settingView.OnQuit -= OnQuit;
+        settingView.OnContinue -= OnContinue;
+        settingView.OnSetBGMVolume -= SetBGMVolume;
+        settingView.OnSetSFXVolume -= SetSFXVolume;
+    }
+
     private void OnQuit()
     {
         UIManager.Show<QuitGameView>();
@@ -64,11 +72,11 @@ public class SettingManager : MonoBehaviour
 
     private void SetBGMVolume(float volume)
     {
-        AudioManager.SFXVolume = volume;
+        AudioManager.BGMVolume = volume;
     }
 
     private void SetSFXVolume(float volume)
     {
-        AudioManager.BGMVolume = volume;
+        AudioManager.SFXVolume = volume;
     }
 }

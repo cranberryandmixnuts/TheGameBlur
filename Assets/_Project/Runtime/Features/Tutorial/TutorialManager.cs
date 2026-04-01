@@ -59,6 +59,7 @@ public class TutorialManager : MonoBehaviour
     {
         leech.gameObject.SetActive(true);
         leech.Play("LeechFall");
+        cameraController.GetComponent<Animator>().Play("LeechFall", 0, 0f);
 
         yield return new WaitForSeconds(1.5f);
 
