@@ -6062,7 +6062,7 @@ MonoBehaviour:
   - {fileID: 186336992}
   - {fileID: 282551563}
   enemyPrefab: {fileID: 4508202383446449589, guid: e69866c4bb51b1241bd6e54b7e7e0d68, type: 3}
-  IsNotTutorial: 0
+  isActivate: 0
 --- !u!4 &402536454
 Transform:
   m_ObjectHideFlags: 0
@@ -6358,7 +6358,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 402802138}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a23a8ac93f43e1438823fef5412589a, type: 3}
   m_Name: 
@@ -6376,7 +6376,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 402802138}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ef440f84f1a3fbe43bd23cc297978f48, type: 3}
   m_Name: 

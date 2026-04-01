@@ -94,6 +94,8 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         Destroy(cameraController.GetComponent<Animator>());
+        cameraController.enabled = true;
+        cameraController.gameObject.GetComponent<SideScrollerCameraController>().enabled = true;
 
         EnemyScript[] allEnemies = FindObjectsByType<EnemyScript>(FindObjectsSortMode.None);
 

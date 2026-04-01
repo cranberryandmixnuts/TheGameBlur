@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class SlotMachineManager : MonoBehaviour
 {
@@ -15,6 +16,9 @@ public class SlotMachineManager : MonoBehaviour
     [SerializeField] private SlotMachineView.ImageType succesResult;
     [SerializeField] private SlotMachineView.ImageType failResult;
 
+    [Header("Effects")]
+    [SerializeField] private VisualEffect blinkEffect;
+
     private bool isCooldown = false;
 
     private int succesStack = 0;
@@ -28,6 +32,8 @@ public class SlotMachineManager : MonoBehaviour
     {
         if (isCooldown)
             return;
+
+        blinkEffect.Stop();
 
         isCooldown = true;
         var result = Random.Range(0, succesWeight + failWeight);
@@ -79,6 +85,7 @@ public class SlotMachineManager : MonoBehaviour
 
     private void OnSuccesCommentFinisihed(Cinematic obj)
     {
+        blinkEffect.Play();
         isCooldown = false;
     }
 }
