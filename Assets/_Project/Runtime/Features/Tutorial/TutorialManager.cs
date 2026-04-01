@@ -34,6 +34,8 @@ public class TutorialManager : MonoBehaviour
         }
 
         Player.Instance.Stats.PlayerSetActive(false);
+        Player.Instance.UseForceBattle = true;
+        Player.Instance.ForceBattleMode = false;
     }
 
     public void OnEndCinemtaic()
@@ -63,8 +65,8 @@ public class TutorialManager : MonoBehaviour
 
         yield return new WaitForSeconds(1.5f);
 
-        playerUI.gameObject.SetActive(true);
-        Player.Instance.ForceBattle = true;
+        Player.Instance.ForceBattleMode = true;
+        Player.Instance.UseForceBattle = false;
 
         var cinematicDialog = CinematicManager.Show<CinematicDialog>();
         cinematicDialog.BindDialog("MainTutorial4");
