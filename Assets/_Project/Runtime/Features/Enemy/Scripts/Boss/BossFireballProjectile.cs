@@ -56,8 +56,7 @@ public sealed class BossFireballProjectile : MonoBehaviour
         if (owner != null && other.transform.IsChildOf(owner.transform))
             return;
 
-        IDamageable player = other.GetComponent<IDamageable>();
-        if (player != null)
+        if (other.TryGetComponent<IDamageable>(out var player))
         {
             player.ApplyDamage(new DamagePayload(damage, owner != null ? owner : gameObject));
             Destroy(gameObject);

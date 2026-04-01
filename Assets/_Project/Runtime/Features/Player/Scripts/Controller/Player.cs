@@ -32,8 +32,9 @@ public sealed class Player : Singleton<Player, SceneScope>
     [SerializeField] private float battleHoldDuration = 1f;
     [SerializeField] private BoxCollider CheckCollider;
     [SerializeField] private LayerMask EnemyLayer;
-    public bool ForceBattle = false;
-    
+    public bool UseForceBattle = false;
+    public bool ForceBattleMode = false;
+
     private readonly Collider[] results = new Collider[16];
 
 
@@ -68,7 +69,6 @@ public sealed class Player : Singleton<Player, SceneScope>
     {
         bool setBattleMode = false;
 
-        setBattleMode |= ForceBattle;
         setBattleMode |= combat.IsAnyActionActive;
 
         Vector3 center = CheckCollider.transform.TransformPoint(CheckCollider.center);
@@ -109,6 +109,8 @@ public sealed class Player : Singleton<Player, SceneScope>
             battleHoldTimer -= Time.deltaTime;
             setBattleMode = true;
         }
+
+        if (UseForceBattle) setBattleMode = ForceBattleMode;
 
         stats.SetBattle(setBattleMode);
     }

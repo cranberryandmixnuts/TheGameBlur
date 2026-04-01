@@ -13,6 +13,13 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
     [SerializeField] private bool isActive = true;
     private bool isBattle = false;
 
+    [Header("VFX")]
+    [SerializeField] private ParticleSystem hitEffect;
+    [SerializeField] private ParticleSystem criticalHitEffect;
+
+    public ParticleSystem HitEffect => hitEffect;
+    public ParticleSystem CriticalHitEffect => criticalHitEffect;
+
     public bool IsActive => isActive;
 
     public bool IsBattle => isBattle;
@@ -180,6 +187,7 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         if (hp < 0) hp = 0;
 
         AudioManager.Instance.PlaySFX("TakeDamagePlayerAndMonster");
+        hitEffect.Play();
 
         if (hp != before) HpChanged?.Invoke(hp, maxHp);
     }

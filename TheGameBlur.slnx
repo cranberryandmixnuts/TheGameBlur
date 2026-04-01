@@ -1,9 +1,9 @@
-<Solution>
-  <Project Path="MerryYellow.CodeAssist.Editor.csproj" Id="a627e442-0977-408a-7530-cc254c2d8bdf" />
-  <Project Path="MagicaClothV2.csproj" Id="a529c693-7479-4996-4038-11841f6da3c5" />
-  <Project Path="Assembly-CSharp.csproj" Id="201cfab9-cab5-f5be-c1fe-70668edfec67" />
-  <Project Path="MagicaClothV2.Editor.csproj" Id="b9c14f3f-0300-0f30-1be1-e31fc6332a67" />
-  <Project Path="Assembly-CSharp-firstpass.csproj" Id="c5a27dad-ec5b-c1f2-e3bc-d485c4b4db47" />
-  <Project Path="Assembly-CSharp-Editor.csproj" Id="54a30348-be20-36a6-ef9c-63864c643f18" />
-  <Project Path="Assembly-CSharp-Editor-firstpass.csproj" Id="b375bf28-3557-ba99-f72b-fefbedcfb35d" />
+﻿<Solution>
+  <Project Path="MerryYellow.CodeAssist.Editor.csproj" />
+  <Project Path="MagicaClothV2.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="MagicaClothV2.Editor.csproj" />
+  <Project Path="Assembly-CSharp-firstpass.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="Assembly-CSharp-Editor-firstpass.csproj" />
 </Solution>

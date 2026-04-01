@@ -17,7 +17,6 @@ public class EnemyScript : MonoBehaviour, IDamageable
 
     [Header("AI")]
     public bool enableNormalAI = true;
-
     public bool startAIOnStart = true;
 
     [Header("Combat")]
@@ -30,6 +29,10 @@ public class EnemyScript : MonoBehaviour, IDamageable
     [Header("Model Facing")]
     public float baseYawForLeft = 0f;
 
+    [Header("VFX")]
+    [SerializeField] private ParticleSystem hitEffect;
+    [SerializeField] private ParticleSystem criticalHitEffect;
+
     [Header("Debug")]
     public bool debugLog = false;
 
@@ -37,9 +40,10 @@ public class EnemyScript : MonoBehaviour, IDamageable
 
     Coroutine aiRoutine; 
     Coroutine moveRoutine;   
-    Coroutine lockRoutine;   
+    Coroutine lockRoutine;
 
-
+    public ParticleSystem HitEffect => hitEffect;
+    public ParticleSystem CriticalHitEffect => criticalHitEffect;
 
     int currentHP;
 
@@ -101,15 +105,6 @@ public class EnemyScript : MonoBehaviour, IDamageable
         spawnRot = transform.rotation;
 
         currentHP = data.maxHP;
-
-        //if (enableNormalAI && startAIOnStart)
-        //{
-        //    ActivateEnemy(resetHp: false, resetTransform: false);
-        //}
-        //else
-        //{
-        //    DeactivateEnemy(resetTransform: false);
-        //}
     }
 
 
