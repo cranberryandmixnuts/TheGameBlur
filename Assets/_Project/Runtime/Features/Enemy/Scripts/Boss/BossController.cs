@@ -152,6 +152,8 @@ public sealed class BossController : MonoBehaviour
 
         if (debugLog)
             Debug.Log("[Boss] ActivateBoss()");
+
+        AudioManager.Instance.SetBGM("º¸½ºBGM");
     }
 
     public void DeactivateBoss()
@@ -193,6 +195,9 @@ public sealed class BossController : MonoBehaviour
 
         if (debugLog)
             Debug.Log("[Boss] DeactivateBoss() Reset Done");
+
+
+        AudioManager.Instance.SetBGM(null);
     }
 
     public void RefreshBossHPBar(int currentHP)
