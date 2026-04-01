@@ -21,6 +21,8 @@ public class DialogView : UIView
         this.dialog = dialog;
         nameText.text = dialog.Name;
         lineText.text = dialog.Line;
+        lineText.color = dialog.TextColor;
+
         this.dialogEventReciever = dialogEventReciever;
         if(onFinished != null) OnFinished += onFinished;
 

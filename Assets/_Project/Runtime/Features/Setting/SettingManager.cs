@@ -54,10 +54,13 @@ public class SettingManager : MonoBehaviour
 
     private void OnDisable()
     {
-        settingView.OnQuit -= OnQuit;
-        settingView.OnContinue -= OnContinue;
-        settingView.OnSetBGMVolume -= SetBGMVolume;
-        settingView.OnSetSFXVolume -= SetSFXVolume;
+        if (settingView != null)
+        {
+            settingView.OnQuit -= OnQuit;
+            settingView.OnContinue -= OnContinue;
+            settingView.OnSetBGMVolume -= SetBGMVolume;
+            settingView.OnSetSFXVolume -= SetSFXVolume;
+        }
     }
 
     private void OnQuit()

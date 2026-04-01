@@ -34,6 +34,8 @@ public class TutorialManager : MonoBehaviour
         }
 
         Player.Instance.Stats.PlayerSetActive(false);
+        Player.Instance.UseForceBattle = true;
+        Player.Instance.ForceBattleMode = false;
     }
 
     public void OnEndCinemtaic()
@@ -62,6 +64,9 @@ public class TutorialManager : MonoBehaviour
         cameraController.GetComponent<Animator>().Play("LeechFall", 0, 0f);
 
         yield return new WaitForSeconds(1.5f);
+
+        Player.Instance.ForceBattleMode = true;
+        Player.Instance.UseForceBattle = false;
 
         var cinematicDialog = CinematicManager.Show<CinematicDialog>();
         cinematicDialog.BindDialog("MainTutorial4");
@@ -99,7 +104,6 @@ public class TutorialManager : MonoBehaviour
 
         Player.Instance.Stats.PlayerSetActive(true);
         cameraController.Active();
-        playerUI.gameObject.SetActive(true);
         CinematicManager.Show<CinematicMainTutorial>().Play();
     }
 }
