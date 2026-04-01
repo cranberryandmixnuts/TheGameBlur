@@ -77,7 +77,10 @@ public sealed class FireballProjectile : MonoBehaviour
             if (d == null) continue;
 
             if (hitSet.Add(d))
+            {
                 d.ApplyDamage(new DamagePayload(damage, source));
+                d.HitEffect.Play();
+            }
         }
 
         transform.position = next;

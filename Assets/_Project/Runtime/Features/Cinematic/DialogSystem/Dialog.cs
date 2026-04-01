@@ -6,6 +6,7 @@ public class Dialog
 {
     [SerializeField] private string name;
     [SerializeField] private string line;
+    [SerializeField] private Color textColor = Color.white;
 
     [SerializeField] private bool isSelectable;
 
@@ -13,6 +14,7 @@ public class Dialog
 
     public string Name => name;
     public string Line => line;
+    public Color TextColor => textColor;
 
     public bool IsSelectable => isSelectable;
 

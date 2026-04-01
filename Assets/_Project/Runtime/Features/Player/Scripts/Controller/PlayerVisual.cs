@@ -261,7 +261,7 @@ public sealed class PlayerVisual : MonoBehaviour
         float z = zReference.position.z;
 
         Ray ray = targetCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-        Plane plane = new Plane(Vector3.forward, new Vector3(0f, 0f, z));
+        Plane plane = new(Vector3.forward, new Vector3(0f, 0f, z));
 
         if (plane.Raycast(ray, out float enter))
             lookPoint = ray.GetPoint(enter);

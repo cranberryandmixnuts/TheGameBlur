@@ -63,6 +63,9 @@ public class TutorialManager : MonoBehaviour
 
         yield return new WaitForSeconds(1.5f);
 
+        playerUI.gameObject.SetActive(true);
+        Player.Instance.ForceBattle = true;
+
         var cinematicDialog = CinematicManager.Show<CinematicDialog>();
         cinematicDialog.BindDialog("MainTutorial4");
         cinematicDialog.OnFinished += OnEndMainTutorial3;
@@ -99,7 +102,6 @@ public class TutorialManager : MonoBehaviour
 
         Player.Instance.Stats.PlayerSetActive(true);
         cameraController.Active();
-        playerUI.gameObject.SetActive(true);
         CinematicManager.Show<CinematicMainTutorial>().Play();
     }
 }

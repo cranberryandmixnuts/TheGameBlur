@@ -16,20 +16,24 @@ MonoBehaviour:
   - name: "\uBCF4\uB514\uAC00\uB4DC"
     line: "\uB108 \uBB50 \uBC29\uAE08 \uCDA9\uACA9\uC73C\uB85C \uC6C0\uC9C1\uC774\uB294
       \uBC95\uC744 \uAE4C\uBA39\uAE30\uB77C\uB3C4 \uD588\uB0D0"
+    textColor: {r: 1, g: 1, b: 1, a: 1}
     isSelectable: 0
     selections: []
   - name: "\uBCF4\uB514\uAC00\uB4DC"
     line: "\uD0A4\uBCF4\uB4DC\uC5D0\uC11C A, D \uB97C \uB204\uB974\uBA74 \uC6C0\uC9C1\uC77C
       \uC218 \uC788\uC5B4"
+    textColor: {r: 1, g: 0, b: 0, a: 1}
     isSelectable: 0
     selections: []
   - name: "\uC70C\uB77C"
     line: "\uADF8\uB807\uAD70..."
+    textColor: {r: 1, g: 1, b: 1, a: 1}
     isSelectable: 0
     selections: []
   - name: "\uBCF4\uB514\uAC00\uB4DC"
     line: "\uB531\uD788 \uB108\uAC00 \uB9D8\uC5D0 \uB4E4\uC5B4\uC11C \uB9D0\uD574
       \uC8FC\uB294\uAC74 \uC544\uB2C8\uC57C \uADF8\uB7EC\uB2C8 \uC5EC\uAE30\uC11C
       \uAEBC\uC838!"
+    textColor: {r: 1, g: 1, b: 1, a: 1}
     isSelectable: 0
     selections: []
