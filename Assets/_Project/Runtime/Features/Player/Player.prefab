@@ -4763,8 +4763,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3492707412419221428}
   - {fileID: 9105105856563087570}
@@ -50178,8 +50178,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7764776693154467631}
   - {fileID: 7113588180172421706}
@@ -60861,6 +60861,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerVisual
   swordObject: {fileID: 1663154227435855477}
   bandObject: {fileID: 6092134824944726864}
+  battleVisibilityTweenDuration: 0.5
   animator: {fileID: 6815087249476273077}
   crossFadeTime: 0.1
   modelOriginalRoot: {fileID: 609148590348966351}
