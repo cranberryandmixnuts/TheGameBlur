@@ -1,13 +1,8 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
     public static CameraController Instance { get; private set; }
-
-    [SerializeField] private Transform playerTransform;
-    [SerializeField] private Vector2 offset;
-    [SerializeField] private float speed;
 
     [SerializeField] private bool isActive = false;
 
@@ -17,7 +12,7 @@ public class CameraController : MonoBehaviour
     {
         Instance = this;
 
-        if(!TryGetComponent(out cameraShaker))
+        if (!TryGetComponent(out cameraShaker))
             cameraShaker = gameObject.AddComponent<CameraShaker>();
     }
 
@@ -45,17 +40,5 @@ public class CameraController : MonoBehaviour
     public void Inactive()
     {
         isActive = false;
-    }
-
-    private void Update()
-    {
-        if (!isActive)
-            return;
-
-        var target = Vector2.Lerp(
-            transform.position, 
-            new Vector2(playerTransform.position.x, playerTransform.position.y) + offset, 
-            speed * Time.deltaTime);
-        transform.position = new Vector3(target.x, target.y, transform.position.z);
     }
 }
