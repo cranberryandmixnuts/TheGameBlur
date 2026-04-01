@@ -126,7 +126,9 @@ public sealed class PlayerUI : MonoBehaviour
     private bool diceUiVisible;
     private bool battleUiVisible;
 
-    private bool lastPotionUnlocked;
+    private bool lastPotionAvailable;
+    private bool lastDiceAbilityUnlocked;
+    private bool lastSkillAbilityUnlocked;
 
     private void Start()
     {
@@ -144,8 +146,10 @@ public sealed class PlayerUI : MonoBehaviour
         criticalChanceBaseAnchoredPos = criticalChanceText.rectTransform.anchoredPosition;
         skillSizeBaseAnchoredPos = skillSizeText.rectTransform.anchoredPosition;
 
-        lastPotionUnlocked = settings.potionUnlocked;
-        ApplyPotionUnlocked(lastPotionUnlocked);
+        lastPotionAvailable = IsPotionAvailable();
+        lastDiceAbilityUnlocked = player.IsDiceAbilityUnlocked;
+        lastSkillAbilityUnlocked = player.IsSkillAbilityUnlocked;
+        ApplyPotionUnlocked(lastPotionAvailable);
 
         ConfigureSkillImages();
 
@@ -162,7 +166,7 @@ public sealed class PlayerUI : MonoBehaviour
         ApplyDiceUiVisible(diceUiVisible);
         RebuildDiceModels(lastUltimate);
 
-        RefreshSkillSprites();
+        ApplySkillVisibility();
         RefreshPotionUi();
         RefreshHpMpUi();
         ApplyDiceValueUi(stats.DiceValue, false);
@@ -182,10 +186,26 @@ public sealed class PlayerUI : MonoBehaviour
 
     private void Update()
     {
-        if (settings.potionUnlocked != lastPotionUnlocked)
+        bool potionAvailable = IsPotionAvailable();
+        if (potionAvailable != lastPotionAvailable)
         {
-            lastPotionUnlocked = settings.potionUnlocked;
-            ApplyPotionUnlocked(lastPotionUnlocked);
+            lastPotionAvailable = potionAvailable;
+            ApplyPotionUnlocked(lastPotionAvailable);
+        }
+
+        bool diceAbilityUnlocked = player.IsDiceAbilityUnlocked;
+        if (diceAbilityUnlocked != lastDiceAbilityUnlocked)
+        {
+            lastDiceAbilityUnlocked = diceAbilityUnlocked;
+            ApplyDiceUiVisible(diceUiVisible);
+            ApplyDiceValueUi(stats.DiceValue, false);
+        }
+
+        bool skillAbilityUnlocked = player.IsSkillAbilityUnlocked;
+        if (skillAbilityUnlocked != lastSkillAbilityUnlocked)
+        {
+            lastSkillAbilityUnlocked = skillAbilityUnlocked;
+            ApplySkillVisibility();
         }
 
         float dt = Time.deltaTime;
@@ -202,7 +222,7 @@ public sealed class PlayerUI : MonoBehaviour
         }
         else
         {
-            if (lastPotionUnlocked) TickPotionInput(dt);
+            if (lastPotionAvailable) TickPotionInput(dt);
             else
             {
                 wasHealHeld = false;
@@ -231,10 +251,24 @@ public sealed class PlayerUI : MonoBehaviour
 
     public void RestorePotionToFull()
     {
-        if (!lastPotionUnlocked) return;
-
         potionUses = settings.uiPotionMaxUses;
         RefreshPotionUi();
+    }
+
+    public void RefreshAbilityStates()
+    {
+        if (settings == null || stats == null || combat == null) return;
+
+        lastPotionAvailable = IsPotionAvailable();
+        lastDiceAbilityUnlocked = player.IsDiceAbilityUnlocked;
+        lastSkillAbilityUnlocked = player.IsSkillAbilityUnlocked;
+
+        ApplyPotionUnlocked(lastPotionAvailable);
+        ApplySkillVisibility();
+        ApplyDiceUiVisible(diceUiVisible);
+        RefreshPotionUi();
+        ApplyDiceValueUi(stats.DiceValue, false);
+        ApplyUltimateGauge(stats.DiceGauge, stats.DiceGaugeMax);
     }
 
     private void ApplyPotionUnlocked(bool unlocked)
@@ -245,7 +279,7 @@ public sealed class PlayerUI : MonoBehaviour
         if (!unlocked)
         {
             potionType = PotionType.Hp;
-            potionUses = 0;
+            potionUses = settings.uiPotionMaxUses;
 
             wasHealHeld = false;
             healHoldElapsed = 0f;
@@ -262,7 +296,8 @@ public sealed class PlayerUI : MonoBehaviour
     {
         AudioManager.Instance.PlaySFX("LeechOnAndOff");
         ApplyBattleUi(battle, false);
-        if (diceUiVisible) StartDicePanelTransition(battle);
+        if (IsDiceVisualVisible()) StartDicePanelTransition(battle);
+        else diceInnerImage.gameObject.SetActive(false);
     }
 
     private void ApplyBattleUi(bool battle, bool immediate)
@@ -272,6 +307,7 @@ public sealed class PlayerUI : MonoBehaviour
         hpMpRoot.SetActive(battle);
         consumableSkillRoot.SetActive(battle);
 
+        ApplySkillVisibility();
         ApplyChanceTextVisibility();
 
         if (!immediate) return;
@@ -285,18 +321,20 @@ public sealed class PlayerUI : MonoBehaviour
 
     private void ApplyDiceUiVisible(bool visible)
     {
+        bool diceVisualVisible = visible && lastDiceAbilityUnlocked;
+
         diceOuterImage.gameObject.SetActive(visible);
 
-        if (!visible) diceInnerImage.gameObject.SetActive(false);
+        if (!diceVisualVisible) diceInnerImage.gameObject.SetActive(false);
 
-        lowerDiceRoot.gameObject.SetActive(visible);
-        upperDiceRoot.gameObject.SetActive(visible);
-        diceSumValueText.gameObject.SetActive(visible);
+        lowerDiceRoot.gameObject.SetActive(diceVisualVisible);
+        upperDiceRoot.gameObject.SetActive(diceVisualVisible);
+        diceSumValueText.gameObject.SetActive(diceVisualVisible);
         ultimateGauge.gameObject.SetActive(visible);
 
         ApplyChanceTextVisibility();
 
-        if (!visible)
+        if (!diceVisualVisible)
         {
             KillDiceTweens();
             KillChanceTextTweens();
@@ -309,7 +347,7 @@ public sealed class PlayerUI : MonoBehaviour
 
     private void ApplyChanceTextVisibility()
     {
-        bool visible = diceUiVisible && battleUiVisible;
+        bool visible = IsDiceVisualVisible() && battleUiVisible;
 
         dodgeChanceText.gameObject.SetActive(visible);
         criticalChanceText.gameObject.SetActive(visible);
@@ -333,6 +371,7 @@ public sealed class PlayerUI : MonoBehaviour
     {
         hpFillImage.fillAmount = stats.MaxHp > 0 ? (float)stats.Hp / stats.MaxHp : 0f;
         mpFillImage.fillAmount = stats.MaxMp > 0 ? (float)stats.Mp / stats.MaxMp : 0f;
+        SetMpUiVisible(battleUiVisible && lastSkillAbilityUnlocked);
     }
 
     private void TickPotionInput(float dt)
@@ -366,7 +405,7 @@ public sealed class PlayerUI : MonoBehaviour
 
     private void TogglePotionType()
     {
-        if (!lastPotionUnlocked) return;
+        if (!lastPotionAvailable) return;
 
         if (potionType == PotionType.Hp) potionType = PotionType.Mp;
         else potionType = PotionType.Hp;
@@ -374,7 +413,7 @@ public sealed class PlayerUI : MonoBehaviour
 
     private void TryConsumePotion()
     {
-        if (!lastPotionUnlocked) return;
+        if (!lastPotionAvailable) return;
 
         if (potionUses <= 0) return;
         if (player.IsSitting) return;
@@ -396,7 +435,7 @@ public sealed class PlayerUI : MonoBehaviour
 
     private void RestorePotionUse(int amount)
     {
-        if (!lastPotionUnlocked) return;
+        if (!lastPotionAvailable) return;
 
         potionUses += amount;
         if (potionUses > settings.uiPotionMaxUses) potionUses = settings.uiPotionMaxUses;
@@ -407,14 +446,14 @@ public sealed class PlayerUI : MonoBehaviour
     {
         bool ultimateActive = combat.IsUltimateActive;
 
-        if (lastPotionUnlocked && ultimateActive && !wasUltimateActive) RestorePotionUse(1);
+        if (lastPotionAvailable && ultimateActive && !wasUltimateActive) RestorePotionUse(1);
 
         wasUltimateActive = ultimateActive;
     }
 
     private void RefreshPotionUi()
     {
-        if (!lastPotionUnlocked) return;
+        if (!lastPotionAvailable) return;
 
         potionIconImage.sprite = potionType == PotionType.Hp ? hpPotionSprite : mpPotionSprite;
         potionCountText.text = potionUses.ToString();
@@ -424,7 +463,7 @@ public sealed class PlayerUI : MonoBehaviour
     {
         PlayerSkill skill = combat.EquippedSkill;
 
-        if (skill == null || !skill.IsEquipped || skill.Icon == null)
+        if (!lastSkillAbilityUnlocked || skill == null || !skill.IsEquipped || skill.Icon == null)
         {
             skillBaseGreyImage.enabled = false;
             skillFillImage.enabled = false;
@@ -442,7 +481,7 @@ public sealed class PlayerUI : MonoBehaviour
     {
         PlayerSkill skill = combat.EquippedSkill;
 
-        if (skill == null || !skill.IsEquipped || skill.Icon == null)
+        if (!lastSkillAbilityUnlocked || skill == null || !skill.IsEquipped || skill.Icon == null)
         {
             skillBaseGreyImage.enabled = false;
             skillFillImage.enabled = false;
@@ -551,6 +590,12 @@ public sealed class PlayerUI : MonoBehaviour
 
     private void ApplyInnerVisibility()
     {
+        if (!IsDiceVisualVisible())
+        {
+            diceInnerImage.gameObject.SetActive(false);
+            return;
+        }
+
         if (dicePanelState == DicePanelState.IdleLoop)
         {
             diceInnerImage.gameObject.SetActive(false);
@@ -569,7 +614,7 @@ public sealed class PlayerUI : MonoBehaviour
 
     private void OnDiceRolled(int a, int b)
     {
-        if (!diceUiVisible) return;
+        if (!IsDiceVisualVisible()) return;
 
         pendingDiceA = a;
         pendingDiceB = b;
@@ -789,5 +834,32 @@ public sealed class PlayerUI : MonoBehaviour
         dodgeChanceText.rectTransform.anchoredPosition = dodgeChanceBaseAnchoredPos;
         criticalChanceText.rectTransform.anchoredPosition = criticalChanceBaseAnchoredPos;
         skillSizeText.rectTransform.anchoredPosition = skillSizeBaseAnchoredPos;
+    }
+
+    private bool IsPotionAvailable() => settings.potionUnlocked && player.IsPotionAbilityUnlocked;
+
+    private bool IsDiceVisualVisible() => diceUiVisible && lastDiceAbilityUnlocked;
+
+    private void ApplySkillVisibility()
+    {
+        SetMpUiVisible(battleUiVisible && lastSkillAbilityUnlocked);
+
+        if (!battleUiVisible || !lastSkillAbilityUnlocked)
+        {
+            skillBaseGreyImage.enabled = false;
+            skillFillImage.enabled = false;
+            return;
+        }
+
+        RefreshSkillSprites();
+    }
+
+    private void SetMpUiVisible(bool visible)
+    {
+        Transform parent = mpFillImage.transform.parent;
+        if (parent != null)
+            parent.gameObject.SetActive(visible);
+        else
+            mpFillImage.gameObject.SetActive(visible);
     }
 }

@@ -42,10 +42,12 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
     public int Mp => mp;
     public int MaxMp => maxMp;
 
+    private Player player;
     private PlayerSettings settings;
     private PlayerCombat combat;
 
     private bool isInvincible;
+    private bool isInitialized;
 
     private int hp;
     private int maxHp;
@@ -71,10 +73,12 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
     private bool diceIsFromRandomRoll;
 
     private PlayerUltimate lastUltimate;
+    private bool lastDiceAbilityUnlocked;
+    private bool lastSkillAbilityUnlocked;
 
     private void Awake()
     {
-        Player player = GetComponent<Player>();
+        player = GetComponent<Player>();
 
         settings = player.Settings;
         combat = player.Combat;
@@ -95,11 +99,35 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         lastBattle = isBattle;
 
         lastUltimate = combat.EquippedUltimate;
+        lastDiceAbilityUnlocked = player.IsDiceAbilityUnlocked;
+        lastSkillAbilityUnlocked = player.IsSkillAbilityUnlocked;
+
         ApplyUltimateDiceMode(lastUltimate);
+        ApplySkillAbilityState(lastSkillAbilityUnlocked);
+        ApplyDiceAbilityState(lastDiceAbilityUnlocked);
+
+        isInitialized = true;
     }
 
     private void Update()
     {
+        bool diceAbilityUnlocked = player.IsDiceAbilityUnlocked;
+        if (diceAbilityUnlocked != lastDiceAbilityUnlocked)
+        {
+            lastDiceAbilityUnlocked = diceAbilityUnlocked;
+            ApplyDiceAbilityState(diceAbilityUnlocked);
+        }
+
+        bool skillAbilityUnlocked = player.IsSkillAbilityUnlocked;
+        if (skillAbilityUnlocked != lastSkillAbilityUnlocked)
+        {
+            lastSkillAbilityUnlocked = skillAbilityUnlocked;
+            ApplySkillAbilityState(skillAbilityUnlocked);
+        }
+
+        if (!lastSkillAbilityUnlocked) RestoreMpToFull();
+        if (!lastDiceAbilityUnlocked) ApplyNeutralDiceIfNeeded();
+
         PlayerUltimate nowUltimate = combat.EquippedUltimate;
         if (nowUltimate != lastUltimate)
         {
@@ -116,6 +144,7 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         }
 
         if (!isBattle) return;
+        if (!lastDiceAbilityUnlocked) return;
 
         PlayerUltimate ultimate = combat.EquippedUltimate;
         if (ultimate == null) return;
@@ -153,6 +182,17 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
         bool mpChanged = mp != maxMp;
         mp = maxMp;
         if (mpChanged) MpChanged?.Invoke(mp, maxMp);
+    }
+
+    public void RefreshAbilityStates()
+    {
+        if (!isInitialized) return;
+
+        lastDiceAbilityUnlocked = player.IsDiceAbilityUnlocked;
+        lastSkillAbilityUnlocked = player.IsSkillAbilityUnlocked;
+
+        ApplySkillAbilityState(lastSkillAbilityUnlocked);
+        ApplyDiceAbilityState(lastDiceAbilityUnlocked);
     }
 
     public void SetBattle(bool value)
@@ -241,6 +281,12 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
 
     public void RollDiceForUltimate()
     {
+        if (!player.IsDiceAbilityUnlocked)
+        {
+            ApplyNeutralDiceIfNeeded();
+            return;
+        }
+
         PlayerUltimate ultimate = combat.EquippedUltimate;
         if (ultimate == null) return;
         if (!ultimate.DiceEnabled) return;
@@ -293,6 +339,13 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
     {
         diceSettleRemaining = 0f;
 
+        if (!player.IsDiceAbilityUnlocked)
+        {
+            diceRollRemaining = float.PositiveInfinity;
+            ApplyNeutralDiceIfNeeded();
+            return;
+        }
+
         PlayerUltimate ultimate = combat.EquippedUltimate;
         if (ultimate == null)
         {
@@ -319,6 +372,13 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
     private void ApplyUltimateDiceMode(PlayerUltimate ultimate)
     {
         diceSettleRemaining = 0f;
+
+        if (!player.IsDiceAbilityUnlocked)
+        {
+            diceRollRemaining = float.PositiveInfinity;
+            ApplyNeutralDiceIfNeeded();
+            return;
+        }
 
         if (ultimate == null)
         {
@@ -393,6 +453,48 @@ public sealed class PlayerStats : MonoBehaviour, IDamageable
 
         settledDiceA = pendingSettledDiceA;
         settledDiceB = pendingSettledDiceB;
+
+        DiceSettled?.Invoke(settledDiceA, settledDiceB);
+    }
+
+    private void ApplySkillAbilityState(bool unlocked)
+    {
+        if (unlocked) return;
+
+        RestoreMpToFull();
+    }
+
+    private void ApplyDiceAbilityState(bool unlocked)
+    {
+        if (!unlocked)
+        {
+            diceSettleRemaining = 0f;
+            diceRollRemaining = float.PositiveInfinity;
+            ApplyNeutralDiceIfNeeded();
+            return;
+        }
+
+        ApplyUltimateDiceMode(lastUltimate);
+    }
+
+    private void RestoreMpToFull()
+    {
+        bool mpChanged = mp != maxMp;
+        mp = maxMp;
+        if (mpChanged) MpChanged?.Invoke(mp, maxMp);
+    }
+
+    private void ApplyNeutralDiceIfNeeded()
+    {
+        if (settledDiceA == 3 && settledDiceB == 3 && diceA == 3 && diceB == 3 && pendingSettledDiceA == 3 && pendingSettledDiceB == 3) return;
+
+        diceA = 3;
+        diceB = 3;
+        pendingSettledDiceA = 3;
+        pendingSettledDiceB = 3;
+        settledDiceA = 3;
+        settledDiceB = 3;
+        diceIsFromRandomRoll = false;
 
         DiceSettled?.Invoke(settledDiceA, settledDiceB);
     }

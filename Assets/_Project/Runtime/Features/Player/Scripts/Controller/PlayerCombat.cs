@@ -131,7 +131,7 @@ public sealed class PlayerCombat : MonoBehaviour
         if (movement.IsDashing) return;
 
         if (input.AttackDown) TryBasicAttack();
-        if (input.SkillDown) TryUseSkill();
+        if (input.SkillDown && player.IsSkillAbilityUnlocked) TryUseSkill();
         if (input.DiceSkillDown) TryUseUltimate();
     }
 
@@ -310,6 +310,7 @@ public sealed class PlayerCombat : MonoBehaviour
 
     private void TryUseSkill()
     {
+        if (!player.IsSkillAbilityUnlocked) return;
         if (IsSkillOrUltimateActive) return;
         if (equippedSkill == null) return;
         if (!equippedSkill.IsEquipped) return;

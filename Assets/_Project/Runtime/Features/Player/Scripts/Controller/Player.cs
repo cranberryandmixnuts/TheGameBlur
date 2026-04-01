@@ -29,6 +29,11 @@ public sealed class Player : Singleton<Player, SceneScope>
     [SerializeField] private PlayerStats stats;
     [SerializeField] private PlayerUI ui;
 
+    [Header("Ability Unlock")]
+    [SerializeField] private bool diceAbilityUnlocked = true;
+    [SerializeField] private bool skillAbilityUnlocked = true;
+    [SerializeField] private bool potionAbilityUnlocked = true;
+
     [Header("BettleModeCheck")]
     [SerializeField] private float battleHoldDuration = 1f;
     [SerializeField] private BoxCollider CheckCollider;
@@ -37,7 +42,6 @@ public sealed class Player : Singleton<Player, SceneScope>
     public bool ForceBattleMode = false;
 
     private readonly Collider[] results = new Collider[16];
-
 
     public PlayerSettings Settings => settings;
     public Rigidbody Body => body;
@@ -48,6 +52,10 @@ public sealed class Player : Singleton<Player, SceneScope>
     public PlayerStats Stats => stats;
     public PlayerUI UI => ui;
     public InputManager Input => InputManager.Instance;
+
+    public bool IsDiceAbilityUnlocked => diceAbilityUnlocked;
+    public bool IsSkillAbilityUnlocked => skillAbilityUnlocked;
+    public bool IsPotionAbilityUnlocked => potionAbilityUnlocked;
 
     public bool IsSitting => chairState != ChairState.None;
     public ChairState CurrentChairState => chairState;
@@ -66,6 +74,8 @@ public sealed class Player : Singleton<Player, SceneScope>
         movement = GetComponent<PlayerMovement>();
         combat = GetComponent<PlayerCombat>();
         stats = GetComponent<PlayerStats>();
+
+        RefreshAbilityStates();
     }
 
     private void Update()
@@ -118,6 +128,30 @@ public sealed class Player : Singleton<Player, SceneScope>
         stats.SetBattle(setBattleMode);
     }
 
+    public void SetDiceAbilityUnlocked(bool unlocked)
+    {
+        if (diceAbilityUnlocked == unlocked) return;
+
+        diceAbilityUnlocked = unlocked;
+        RefreshAbilityStates();
+    }
+
+    public void SetSkillAbilityUnlocked(bool unlocked)
+    {
+        if (skillAbilityUnlocked == unlocked) return;
+
+        skillAbilityUnlocked = unlocked;
+        RefreshAbilityStates();
+    }
+
+    public void SetPotionAbilityUnlocked(bool unlocked)
+    {
+        if (potionAbilityUnlocked == unlocked) return;
+
+        potionAbilityUnlocked = unlocked;
+        RefreshAbilityStates();
+    }
+
     public void Sit(ElectricChair chair, Vector3 seatWorldPosition)
     {
         if (IsSitting) return;
@@ -159,5 +193,11 @@ public sealed class Player : Singleton<Player, SceneScope>
         currentChair = null;
         movement.ExitSitting();
         OnPlayerStandUp?.Invoke();
+    }
+
+    private void RefreshAbilityStates()
+    {
+        stats.RefreshAbilityStates();
+        ui.RefreshAbilityStates();
     }
 }
