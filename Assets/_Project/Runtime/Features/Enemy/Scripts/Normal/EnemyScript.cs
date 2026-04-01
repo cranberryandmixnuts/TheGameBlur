@@ -485,8 +485,7 @@ public class EnemyScript : MonoBehaviour, IDamageable
     {
         currentHP -= amount;
 
-        BossController boss = GetComponent<BossController>();
-        if (boss != null)
+        if (TryGetComponent<BossController>(out var boss))
             boss.RefreshBossHPBar(currentHP);
 
         if (currentHP <= 0)
@@ -502,6 +501,7 @@ public class EnemyScript : MonoBehaviour, IDamageable
         if (rng != null && rng.TryEvadeIncomingDamage())
             return;
 
+        AudioManager.Instance.PlaySFX("TakeDamagePlayerAndMonster");
         TakeDamage(payload.Amount);
     }
 
