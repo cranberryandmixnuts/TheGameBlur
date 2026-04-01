@@ -10,6 +10,7 @@ public class DialogDrawer : PropertyDrawer
 
         var nameProp = property.FindPropertyRelative("name");
         var lineProp = property.FindPropertyRelative("line");
+        var colorProp = property.FindPropertyRelative("textColor");
         var selectableProp = property.FindPropertyRelative("isSelectable");
         var selectionsProp = property.FindPropertyRelative("selections");
 
@@ -21,6 +22,9 @@ public class DialogDrawer : PropertyDrawer
         y += lineHeight + spacing;
 
         EditorGUI.PropertyField(new Rect(position.x, y, position.width, lineHeight), lineProp);
+        y += lineHeight + spacing;
+
+        EditorGUI.PropertyField(new Rect(position.x, y, position.width, lineHeight), colorProp);
         y += lineHeight + spacing;
 
         EditorGUI.BeginChangeCheck();
@@ -55,7 +59,7 @@ public class DialogDrawer : PropertyDrawer
         var selectableProp = property.FindPropertyRelative("isSelectable");
         var selectionsProp = property.FindPropertyRelative("selections");
 
-        height += (lineHeight + spacing) * 3;
+        height += (lineHeight + spacing) * 4;
 
         if (selectableProp.boolValue)
         {
