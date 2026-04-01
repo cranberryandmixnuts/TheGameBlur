@@ -7,7 +7,7 @@ public sealed class SideScrollerCameraController : Singleton<SideScrollerCameraC
     [SerializeField] private PlayerSettings settings;
     [SerializeField] private Player player;
     [SerializeField] private Transform target;
-    [SerializeField] private CameraBounds bounds;
+    [SerializeField] private CompositeCameraBounds bounds;
 
     [Header("Move Detection")]
     [SerializeField] private float moveThreshold = 0.1f;
