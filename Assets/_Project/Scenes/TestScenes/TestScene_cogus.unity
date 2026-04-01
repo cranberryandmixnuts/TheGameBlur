@@ -485,7 +485,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CompositeCameraBounds
   boundsList:
   - {fileID: 1758552333}
-  - {fileID: 0}
 --- !u!1 &395056247
 GameObject:
   m_ObjectHideFlags: 0
