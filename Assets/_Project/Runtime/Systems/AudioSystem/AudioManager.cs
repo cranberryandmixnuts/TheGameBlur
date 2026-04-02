@@ -73,7 +73,8 @@ public class AudioManager : MonoBehaviour
             bgmSourcePool.AddFirst(Instantiate(bgmPrefab, transform));
 
         AudioSource audioSource = bgmSourcePool.First.Value;
-        if(audioName != null) audioSource.clip = audioRegistry.GetAudioClip(audioName);
+        if (audioName != null) audioSource.clip = audioRegistry.GetAudioClip(audioName);
+        else audioSource.clip = null;
         audioSource.Play();
         audioSource.volume = 0;
         audioSource.DOKill();
