@@ -67,7 +67,7 @@ public sealed class BossController : MonoBehaviour
     private Vector3 spawnPos;
     private Quaternion spawnRot;
 
-    private int FireballDamage = 5;
+    private int FireballDamage = 3;
 
     void Awake()
     {
