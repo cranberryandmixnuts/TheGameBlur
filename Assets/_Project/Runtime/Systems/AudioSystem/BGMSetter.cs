@@ -6,6 +6,10 @@ public class BGMSetter : MonoBehaviour
 
     private void Start()
     {
-        AudioManager.Instance.SetBGM(audioClip.name);
+        if(audioClip == null)
+        {
+            AudioManager.Instance.SetBGM(null);
+        }
+        else AudioManager.Instance.SetBGM(audioClip.name);
     }
 }
