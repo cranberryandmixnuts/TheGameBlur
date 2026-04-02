@@ -587,6 +587,7 @@ public sealed class BossController : MonoBehaviour
     void OnDisable()
     {
         DeactivateBoss();
+        Player.Instance.SetSkillAbilityUnlocked(true);
     }
 
     IEnumerator WaitRotateDone()

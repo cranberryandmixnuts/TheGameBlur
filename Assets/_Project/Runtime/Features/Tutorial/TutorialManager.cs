@@ -67,6 +67,7 @@ public class TutorialManager : MonoBehaviour
 
         Player.Instance.ForceBattleMode = true;
         Player.Instance.UseForceBattle = false;
+        playerUI.gameObject.SetActive(true);
 
         var cinematicDialog = CinematicManager.Show<CinematicDialog>();
         cinematicDialog.BindDialog("MainTutorial4");

@@ -7,13 +7,14 @@ public class HealthPotionTutorial : MonoBehaviour
     private void Start()
     {
         Player.Instance.OnPlayerStandUp += OnPlayerStandUp;
-        Player.Instance.SetPotionAbilityUnlocked(true);
     }
 
     private void OnPlayerStandUp()
     {
         if (!isFirstStandUp)
             return;
+
+        Player.Instance.SetPotionAbilityUnlocked(true);
 
         isFirstStandUp = false;
         CinematicManager.Show<CinematicDialog>().BindDialog("HealthPotionTutorial");

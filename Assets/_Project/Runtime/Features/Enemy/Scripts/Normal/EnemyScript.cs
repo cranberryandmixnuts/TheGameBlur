@@ -535,6 +535,6 @@ public class EnemyScript : MonoBehaviour, IDamageable
 
     private void OnDestroy()
     {
-        Player.Instance.SetSkillAbilityUnlocked(true);
+        
     }
 }
