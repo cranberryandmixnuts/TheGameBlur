@@ -16,7 +16,8 @@ public class SettingView : UIView
 
     public void Quit()
     {
-        OnQuit?.Invoke();
+        Application.Quit();
+        //OnQuit?.Invoke();
     }
 
     public void Continue()
