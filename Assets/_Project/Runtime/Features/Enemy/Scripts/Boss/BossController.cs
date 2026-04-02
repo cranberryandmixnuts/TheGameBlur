@@ -67,6 +67,8 @@ public sealed class BossController : MonoBehaviour
     private Vector3 spawnPos;
     private Quaternion spawnRot;
 
+    private int FireballDamage = 5;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -540,7 +542,7 @@ public sealed class BossController : MonoBehaviour
         BossFireballProjectile proj = go.GetComponent<BossFireballProjectile>();
         if (proj != null)
         {
-            proj.Init(1, gameObject, velocity);
+            proj.Init(FireballDamage, gameObject, velocity);
             return;
         }
 
