@@ -590,6 +590,7 @@ public sealed class BossController : MonoBehaviour
     {
         DeactivateBoss();
         Player.Instance.SetSkillAbilityUnlocked(true);
+        CinematicManager.Show<CinematicDialog>().BindDialog("FireBallTutorial");
     }
 
     IEnumerator WaitRotateDone()
