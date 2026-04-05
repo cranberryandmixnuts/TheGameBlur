@@ -1003,7 +1003,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombat
   hitOrigin: {fileID: 7470836293574429575}
-  debugShowHitbox: 1
+  debugShowHitbox: 0
   debugPersistSeconds: 0.15
   hitboxVisualizer: {fileID: 0}
 --- !u!1 &6306963701410726257
