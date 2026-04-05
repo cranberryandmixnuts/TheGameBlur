@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   grade: 4
   maxHP: 200
-  damage: 3
+  damage: 2
   moveSpeed: 2
   moveDistance: 3
   restTime: 1
