@@ -42,18 +42,14 @@ MonoBehaviour:
     isSelectable: 0
     selections: []
   - name: "\uAC70\uBA38\uB9AC"
-    line: "\uADF8\uB7EC\uBA74 \uD655\uC815\uC73C\uB85C \uC8FC\uC0AC\uC704 \uB208\uC744
-      12\uB85C \uD560 \uC218 \uC788\uC5B4!"
+    line: "\uAC8C\uC774\uC9C0\uAC00 100%\uC77C \uB54C \uD655\uC815\uC73C\uB85C \uC8FC\uC0AC\uC704
+      \uB208\uC744 12\uB85C \uB9CC\uB4E4 \uC218 \uC788\uC5B4!"
     textColor: {r: 1, g: 1, b: 1, a: 1}
     isSelectable: 0
     selections: []
   - name: "\uAC70\uBA38\uB9AC"
-    line: "\uC8FC\uC0AC\uC704 \uB208\uB9CC\uD07C \uB108\uAC00 \uAC15\uD574\uC838!"
-    textColor: {r: 1, g: 1, b: 1, a: 1}
-    isSelectable: 0
-    selections: []
-  - name: "\uAC70\uBA38\uB9AC"
-    line: "(\uC57D\uD574\uC9C8\uC218\uB3C4 \uC788\uC5B4\u2026)"
+    line: "\uC8FC\uC0AC\uC704 \uB208\uB9CC\uD07C \uB108\uAC00 \uAC15\uD574\uC9C0\uAC70\uB098
+      \uC57D\uD574\uC838"
     textColor: {r: 1, g: 1, b: 1, a: 1}
     isSelectable: 0
     selections: []

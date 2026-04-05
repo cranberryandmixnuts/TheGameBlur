@@ -24,7 +24,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Yellow
-  m_Shader: {fileID: -6465566751694194690, guid: 660f4e83e6df0634fb117fcdac20a521, type: 3}
+  m_Shader: {fileID: 4800000, guid: c4edd00ff2db5b24391a4fcb1762e459, type: 3}
   m_Parent: {fileID: 2100000, guid: dde1e1e3beb412844af0ae0341758e66, type: 2}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -38,10 +38,8 @@ Material:
   stringTagMap:
     MotionVector: User
   disabledShaderPasses:
-  - TransparentDepthPrepass
-  - TransparentDepthPostpass
-  - TransparentBackface
-  - RayTracingPrepass
+  - DistortionVectors
+  - MOTIONVECTORS
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -51,6 +49,6 @@ Material:
     - _Smoothness: 0.59999996
     m_Colors:
     - _BaseColor: {r: 0.90588236, g: 0.8784314, b: 0.49803922, a: 1}
-    - _Color: {r: 0.90588236, g: 0.8784314, b: 0.49803913, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
