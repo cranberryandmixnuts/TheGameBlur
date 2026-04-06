@@ -516,9 +516,11 @@ public class EnemyScript : MonoBehaviour, IDamageable
     {
         if (deathEffectPrefab == null) return;
 
+        Vector3 Spawnpos = transform.position + new Vector3(0f, 1f, 0f);
+
         GameObject effect = Instantiate(
             deathEffectPrefab,
-            transform.position,
+            Spawnpos,
             deathEffectPrefab.transform.rotation
         );
 
