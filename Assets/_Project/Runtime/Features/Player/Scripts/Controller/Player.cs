@@ -200,4 +200,14 @@ public sealed class Player : Singleton<Player, SceneScope>
         stats.RefreshAbilityStates();
         ui.RefreshAbilityStates();
     }
+
+    public void FreezePlayer()
+    {
+
+    }
+
+    public void UnFreezePlayer()
+    {
+
+    }
 }

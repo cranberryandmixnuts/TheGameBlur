@@ -35,6 +35,8 @@ public class CinematicDialog : Cinematic
         dialogEventReciever = new GameObject(typeof(DialogEventReciever).Name).AddComponent<DialogEventReciever>();
         ProcessDialog();
 
+        Player.Instance.FreezePlayer();
+
         if(instance != null )
         {
             Destroy(instance.gameObject);
@@ -89,7 +91,9 @@ public class CinematicDialog : Cinematic
     {
         base.Finish();
 
-        if(dialogEventReciever != null) Destroy(dialogEventReciever.gameObject);
+        Player.Instance.UnFreezePlayer();
+
+        if (dialogEventReciever != null) Destroy(dialogEventReciever.gameObject);
         if (dialogView != null) Destroy(dialogView.gameObject);
         if (selectionView != null) Destroy(selectionView.gameObject);
         Destroy(gameObject);
