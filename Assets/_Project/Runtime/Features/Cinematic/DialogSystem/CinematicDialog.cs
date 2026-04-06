@@ -35,9 +35,10 @@ public class CinematicDialog : Cinematic
         dialogEventReciever = new GameObject(typeof(DialogEventReciever).Name).AddComponent<DialogEventReciever>();
         ProcessDialog();
 
-        Player.Instance.FreezePlayer();
+        if (Player.Instance != null) Player.Instance.FreezePlayer();
+        else if (PrologPlayerController.Instance != null) PrologPlayerController.Instance.IsMovable = false;
 
-        if(instance != null )
+        if (instance != null )
         {
             Destroy(instance.gameObject);
         }
@@ -91,7 +92,8 @@ public class CinematicDialog : Cinematic
     {
         base.Finish();
 
-        Player.Instance.UnFreezePlayer();
+        if (Player.Instance != null) Player.Instance.UnFreezePlayer();
+        else if (PrologPlayerController.Instance != null) PrologPlayerController.Instance.IsMovable = true;
 
         if (dialogEventReciever != null) Destroy(dialogEventReciever.gameObject);
         if (dialogView != null) Destroy(dialogView.gameObject);

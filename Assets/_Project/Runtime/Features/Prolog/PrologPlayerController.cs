@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class PrologPlayerController : MonoBehaviour
 {
+    public static PrologPlayerController Instance {  get; private set; }
+
     [SerializeField] private float moveSpeed;
 
     [SerializeField] private Transform playerModelTransform;
@@ -9,6 +11,13 @@ public class PrologPlayerController : MonoBehaviour
 
     private Rigidbody _rigidBody;
     private bool isActive = false;
+
+    public bool IsMovable {  get; set; }
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     public void ActivePlayer()
     {
@@ -24,6 +33,9 @@ public class PrologPlayerController : MonoBehaviour
 
     public void InactivePlayer()
     {
+        playerModelAnimator.SetBool("IsRun", false);
+        playerModelTransform.rotation = Quaternion.Euler(0f, 90f, 0f);
+
         isActive = false;
     }
 
@@ -33,6 +45,8 @@ public class PrologPlayerController : MonoBehaviour
             return;
 
         float moveRate = InputManager.Instance.MoveAxis;
+        if(!IsMovable) moveRate = 0f;
+
         _rigidBody.linearVelocity = moveRate * moveSpeed * Vector3.right;
 
         if (!Mathf.Approximately(moveRate, 0))
