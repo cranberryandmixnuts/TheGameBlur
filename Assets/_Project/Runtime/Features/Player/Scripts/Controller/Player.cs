@@ -203,11 +203,13 @@ public sealed class Player : Singleton<Player, SceneScope>
 
     public void FreezePlayer()
     {
-
+        combat.enabled = false;
+        stats.enabled = false;
     }
 
     public void UnFreezePlayer()
     {
-
+        combat.enabled = true;
+        stats.enabled = true;
     }
 }
