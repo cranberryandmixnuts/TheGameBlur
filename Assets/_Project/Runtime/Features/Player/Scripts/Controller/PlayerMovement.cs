@@ -32,14 +32,12 @@ public sealed class PlayerMovement : MonoBehaviour
 
     private Player player;
     private Rigidbody body;
-    private Collider bodyCollider;
     private PlayerSettings settings;
     private PlayerStats stats;
     private PlayerCombat combat;
     private InputManager input;
 
     private int moveSign;
-    private bool runHeldRaw;
     private bool runActive;
     private bool jumpDown;
     private bool jumpUp;
@@ -84,7 +82,6 @@ public sealed class PlayerMovement : MonoBehaviour
         player = Player.Instance;
 
         body = player.Body;
-        bodyCollider = player.BodyCollider;
         settings = player.Settings;
         stats = player.Stats;
         combat = player.Combat;
@@ -106,6 +103,8 @@ public sealed class PlayerMovement : MonoBehaviour
 
     private void OnDestroy()
     {
+        facingTween?.Kill();
+
         for (int i = spawnedDustParticles.Count - 1; i >= 0; i--)
         {
             ParticleSystem particle = spawnedDustParticles[i];
@@ -131,49 +130,24 @@ public sealed class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        if (!player.Stats.IsActive) return;
-
-        float dt = Time.deltaTime;
-        if (runLockRemaining > 0f)
+        if (!stats.IsActive)
         {
-            runLockRemaining -= dt;
-            if (runLockRemaining < 0f) runLockRemaining = 0f;
-        }
-
-        float axis = input.MoveAxis;
-
-        moveSign = 0;
-        if (axis > settings.moveDeadZone) moveSign = 1;
-        else if (axis < -settings.moveDeadZone) moveSign = -1;
-
-        if (player.IsSitting)
-        {
-            if (!isStandingUpFromChair && moveSign != 0) player.RequestStandUpFromChair();
-
-            moveSign = 0;
-
-            runHeldRaw = false;
-            runActive = false;
-            runLockRemaining = 0f;
-            jumpDown = false;
-            jumpUp = false;
-            jumpHeld = false;
-            dashDown = false;
-
+            ClearCachedInput();
             return;
         }
 
-        if (moveSign != 0) LastMoveSign = moveSign;
+        TickRunLock(Time.deltaTime);
+        CacheMoveInput();
 
-        runHeldRaw = input.RunHeld;
-        runActive = runHeldRaw && moveSign != 0 && runLockRemaining <= 0f;
+        if (player.IsSitting)
+        {
+            HandleSittingInput();
+            return;
+        }
 
-        jumpDown = input.JumpDown;
-        jumpUp = input.JumpUp;
-        jumpHeld = input.JumpHeld;
-
-        dashDown = input.DashDown;
-
+        RememberMoveDirection();
+        UpdateRunState();
+        CacheActionInput();
         UpdateFacing();
     }
 
@@ -181,69 +155,28 @@ public sealed class PlayerMovement : MonoBehaviour
     {
         CleanupDustParticles();
 
-        if (!player.Stats.IsActive) return;
+        if (!stats.IsActive)
+        {
+            ClearActionInput();
+            return;
+        }
 
         float dt = Time.fixedDeltaTime;
 
-        UpdateGrounded();
-        TryPlayLandSfx();
+        RefreshGroundState();
+        TickDashCooldown(dt);
 
-        if (dashCooldownRemaining > 0f) dashCooldownRemaining -= dt;
-
-        if (player.IsSitting)
-        {
-            body.linearVelocity = Vector3.zero;
-            pendingImpulse = Vector3.zero;
-            LockPlaneZ();
-            ResetFootstepState();
-            return;
-        }
-
-        if (combat.IsUltimateActive)
-        {
-            body.linearVelocity = Vector3.zero;
-            pendingImpulse = Vector3.zero;
-            LockPlaneZ();
-
-            ResetFootstepState();
-
-            dashDown = false;
-            jumpDown = false;
-            jumpUp = false;
-            return;
-        }
-
-        if (IsDashing)
-        {
-            TickDash(dt);
-            ApplyPendingImpulse();
-            LockPlaneZ();
-            ResetFootstepState();
-            return;
-        }
-
-        if (dashDown) TryStartDash();
+        if (TryHandleSittingPhysics()) return;
+        if (TryHandleUltimatePhysics()) return;
+        if (TryHandleDashPhysics(dt)) return;
+        if (TryConsumeDashInput()) return;
 
         TickJump(dt);
-
-        float vx = ComputeHorizontalVelocity(dt);
-        float vy = ComputeVerticalVelocity(dt);
-
-        Vector3 v = body.linearVelocity;
-        v.x = vx;
-        v.y = vy;
-        v.z = 0f;
-
-        body.linearVelocity = v;
-
-        ApplyPendingImpulse();
-        LockPlaneZ();
-
+        ApplyMovementVelocity(dt);
+        ApplyPostMovementPhysics();
         TickFootsteps(dt);
 
-        dashDown = false;
-        jumpDown = false;
-        jumpUp = false;
+        ClearActionInput();
     }
 
     public void EnterSitting()
@@ -270,10 +203,9 @@ public sealed class PlayerMovement : MonoBehaviour
         FacingSign = 1;
         isStandingUpFromChair = false;
 
-        runHeldRaw = false;
-        runActive = false;
         runLockRemaining = 0f;
 
+        ClearCachedInput();
         ResetFootstepState();
 
         ApplyVisualFacing();
@@ -339,20 +271,169 @@ public sealed class PlayerMovement : MonoBehaviour
         if (jumpHoldActive) CancelJumpHoldWithoutCut();
     }
 
+    private void TickRunLock(float dt)
+    {
+        if (runLockRemaining <= 0f) return;
+
+        runLockRemaining -= dt;
+        if (runLockRemaining < 0f) runLockRemaining = 0f;
+    }
+
+    private void CacheMoveInput()
+    {
+        moveSign = ResolveMoveSign(input.MoveAxis);
+    }
+
+    private int ResolveMoveSign(float axis)
+    {
+        if (axis > settings.moveDeadZone) return 1;
+        if (axis < -settings.moveDeadZone) return -1;
+
+        return 0;
+    }
+
+    private void HandleSittingInput()
+    {
+        if (!isStandingUpFromChair && moveSign != 0)
+            player.RequestStandUpFromChair();
+
+        ClearCachedInput();
+        runLockRemaining = 0f;
+    }
+
+    private void RememberMoveDirection()
+    {
+        if (moveSign != 0) LastMoveSign = moveSign;
+    }
+
+    private void UpdateRunState()
+    {
+        runActive = input.RunHeld && moveSign != 0 && runLockRemaining <= 0f;
+    }
+
+    private void CacheActionInput()
+    {
+        jumpDown |= input.JumpDown;
+        jumpUp |= input.JumpUp;
+        jumpHeld = input.JumpHeld;
+        dashDown |= input.DashDown;
+    }
+
+    private void ClearCachedInput()
+    {
+        moveSign = 0;
+        runActive = false;
+        jumpDown = false;
+        jumpUp = false;
+        jumpHeld = false;
+        dashDown = false;
+    }
+
+    private void ClearActionInput()
+    {
+        jumpDown = false;
+        jumpUp = false;
+        dashDown = false;
+    }
+
+    private void RefreshGroundState()
+    {
+        UpdateGrounded();
+        TryPlayLandSfx();
+    }
+
+    private void TickDashCooldown(float dt)
+    {
+        if (dashCooldownRemaining <= 0f) return;
+
+        dashCooldownRemaining -= dt;
+        if (dashCooldownRemaining < 0f) dashCooldownRemaining = 0f;
+    }
+
+    private bool TryHandleSittingPhysics()
+    {
+        if (!player.IsSitting) return false;
+
+        StopPhysicsMotion();
+        ResetFootstepState();
+        ClearCachedInput();
+
+        return true;
+    }
+
+    private bool TryHandleUltimatePhysics()
+    {
+        if (!combat.IsUltimateActive) return false;
+
+        StopPhysicsMotion();
+        ResetFootstepState();
+        ClearActionInput();
+
+        return true;
+    }
+
+    private bool TryHandleDashPhysics(float dt)
+    {
+        if (!IsDashing) return false;
+
+        TickDash(dt);
+        ApplyPostMovementPhysics();
+        ResetFootstepState();
+
+        return true;
+    }
+
+    private bool TryConsumeDashInput()
+    {
+        if (!dashDown) return false;
+        if (!TryStartDash()) return false;
+
+        ApplyPostMovementPhysics();
+        ResetFootstepState();
+
+        return true;
+    }
+
+    private void StopPhysicsMotion()
+    {
+        body.linearVelocity = Vector3.zero;
+        pendingImpulse = Vector3.zero;
+        LockPlaneZ();
+    }
+
+    private void ApplyMovementVelocity(float dt)
+    {
+        float vx = ComputeHorizontalVelocity(dt);
+        float vy = ComputeVerticalVelocity(dt);
+
+        Vector3 v = body.linearVelocity;
+        v.x = vx;
+        v.y = vy;
+        v.z = 0f;
+
+        body.linearVelocity = v;
+    }
+
+    private void ApplyPostMovementPhysics()
+    {
+        ApplyPendingImpulse();
+        LockPlaneZ();
+    }
+
     private void CancelJumpHoldWithoutCut()
     {
         jumpHoldActive = false;
         jumpHoldElapsed = settings.maxJumpHoldTime;
     }
 
-    private void TryStartDash()
+    private bool TryStartDash()
     {
-        if (combat.IsSkillOrUltimateActive) return;
-        if (dashCooldownRemaining > 0f) return;
+        if (combat.IsSkillOrUltimateActive) return false;
+        if (dashCooldownRemaining > 0f) return false;
 
         bool grounded = IsGrounded;
 
-        if (!grounded && hasUsedAirDash) return;
+        if (!grounded && hasUsedAirDash) return false;
 
         int sign = moveSign != 0 ? moveSign : LastMoveSign;
         if (sign == 0) sign = FacingSign;
@@ -393,9 +474,9 @@ public sealed class PlayerMovement : MonoBehaviour
 
         AudioManager.Instance.PlaySFX("Dash");
 
-        dashDown = false;
-        jumpDown = false;
-        jumpUp = false;
+        ClearActionInput();
+
+        return true;
     }
 
     private void TickDash(float dt)
