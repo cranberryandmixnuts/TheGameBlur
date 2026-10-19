@@ -254,8 +254,8 @@ public sealed class PlayerCombat : MonoBehaviour
 
         Vector3 center = new(p.x + d.x * settings.groundAttackReach, p.y + d.y * settings.groundAttackReach, settings.planeZ);
 
-        int count = Physics.OverlapSphereNonAlloc(center, settings.groundAttackRadius, hitBuffer, settings.attackMask, QueryTriggerInteraction.Ignore);
-        AttackResult result = DealDamageFromHits(count, settings.groundAttackDamage);
+        int count = CollectAttackHits(center, settings.groundAttackRadius, out Collider[] hits);
+        AttackResult result = DealDamageFromHits(hits, count, settings.groundAttackDamage);
 
         AnimationRequested?.Invoke(AnimRequest.Attack);
 
@@ -267,15 +267,29 @@ public sealed class PlayerCombat : MonoBehaviour
         Vector3 p = transform.position;
         Vector3 center = new(p.x, p.y, settings.planeZ);
 
-        int count = Physics.OverlapSphereNonAlloc(center, settings.airAttackRadius, hitBuffer, settings.attackMask, QueryTriggerInteraction.Ignore);
-        AttackResult result = DealDamageFromHits(count, settings.airAttackDamage);
+        int count = CollectAttackHits(center, settings.airAttackRadius, out Collider[] hits);
+        AttackResult result = DealDamageFromHits(hits, count, settings.airAttackDamage);
 
         AnimationRequested?.Invoke(AnimRequest.AirAttack);
 
         return result;
     }
 
-    private AttackResult DealDamageFromHits(int count, int amount)
+    private int CollectAttackHits(Vector3 center, float radius, out Collider[] hits)
+    {
+        int count = Physics.OverlapSphereNonAlloc(center, radius, hitBuffer, settings.attackMask, QueryTriggerInteraction.Ignore);
+
+        if (count == hitBuffer.Length)
+        {
+            hits = Physics.OverlapSphere(center, radius, settings.attackMask, QueryTriggerInteraction.Ignore);
+            return hits.Length;
+        }
+
+        hits = hitBuffer;
+        return count;
+    }
+
+    private AttackResult DealDamageFromHits(Collider[] hits, int count, int amount)
     {
         float critChance = DiceChanceTable.GetPlayerChance(stats.DiceValue);
         bool isCrit = critChance > 0f && UnityEngine.Random.value < critChance;
@@ -286,7 +300,7 @@ public sealed class PlayerCombat : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            Collider c = hitBuffer[i];
+            Collider c = hits[i];
             if (c == null) continue;
             if (c.transform.IsChildOf(transform)) continue;
 

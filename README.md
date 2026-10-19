@@ -115,7 +115,7 @@ Assets/_Project/Runtime/Features/Player/Scripts/Controller/PlayerCombat.cs
   ↓
 공격 방향 계산
   ↓
-OverlapSphereNonAlloc으로 타격 대상 검색
+OverlapSphereNonAlloc으로 타격 대상 검색 (버퍼 포화 시 전체 조회로 한 번 재탐색)
   ↓
 IDamageable 대상 필터링
   ↓
@@ -123,6 +123,21 @@ IDamageable 대상 필터링
   ↓
 치명타 여부에 따라 이펙트/사운드 분기
 ```
+
+#### 일반 공격 버퍼 포화 시 재탐색
+
+지상·공중 일반 공격은 48칸의 콜라이더 버퍼를 공유합니다. `OverlapSphereNonAlloc`의 반환 개수가 버퍼 길이와 같으면 결과가 잘렸을 가능성이 있으므로 재탐색합니다. 정확히 48개인 경우와 48개를 초과한 경우를 반환값만으로 구분할 수 없기 때문에, 조건은 `count == hitBuffer.Length`입니다. 버퍼의 단위는 적 수가 아닌 콜라이더 수입니다.
+
+- 48칸의 고정 버퍼를 재사용하며, 버퍼를 확장하지 않습니다.
+- 버퍼가 가득 차면 즉시 `Physics.OverlapSphere`로 전체 결과를 한 번 조회해 타격 대상 누락을 방지합니다. 이 결과 배열은 재사용 버퍼로 보관하지 않으며, 다음 공격도 48칸 버퍼로 시작합니다.
+- 최종 조회 결과에만 피해를 적용합니다. 기존 `HashSet<IDamageable>`로 중복을 제거하므로 콜라이더가 여러 개인 적도 공격당 한 번만 피해를 받습니다.
+- 모든 조회에서 공격 중심, 반경, 레이어 마스크와 트리거 제외 조건을 유지합니다.
+
+**설계 선택:** 평상시에는 고정 버퍼를 사용하는 NonAlloc 조회로 결과 배열 할당을 피하고, 포화 시에는 전체 조회로 타격 정확성을 확보합니다. 단계적인 버퍼 확장 없이 재탐색을 최대 한 번으로 제한하므로, 공격당 물리 조회는 최대 2회(최초 NonAlloc 조회 1회 + 전체 조회 1회)입니다.
+
+**비용과 한계:** `Physics.OverlapSphere`는 결과 배열을 할당하므로, 버퍼 포화가 반복되면 할당도 반복됩니다. 재탐색 횟수는 제한하지만 전체 조회의 실행 시간이나 메모리 사용량까지 일정하게 보장하는 것은 아닙니다. 정확히 48개의 콜라이더가 검출되어도 포화 여부를 구분할 수 없어 전체 조회를 수행합니다.
+
+API 참고: [OverlapSphereNonAlloc](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Physics.OverlapSphereNonAlloc.html), [OverlapSphere](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Physics.OverlapSphere.html).
 
 ### 4. 스킬 시스템
 
